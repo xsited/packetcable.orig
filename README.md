@@ -20,6 +20,10 @@ Socket Client Server
 4. Clean up the org.program.connection classes to handle client/server and add a generic send.
 
 
+Git
+
+git clone https://github.com/xsited/packetcable.git
+
 Quickstart
 
 0. run.sh

@@ -4,6 +4,9 @@
 
 JFLAGS = -g
 JC = javac
+CLASSPATH =  -classpath .:src/main/java/pcmm.jar 
+JFLAGS = -encoding UTF-8  $(CLASSPATH) 
+JAR_PKG = Test.jar
 
 
 #
@@ -38,16 +41,17 @@ JC = javac
 # CLASSES is a macro consisting of 4 words (one for each java source file)
 #
 
-CLASSES = \
-        TextMenu.java \
-        Main.java 
+SOURCES = \
+        Main.java \
+        Test.java 
 
+CLASSES = $(SOURCES:%.java=%.class)
 
 #
 # the default make target entry
 #
 
-default: classes
+default: classes 
 
 
 #
@@ -58,7 +62,13 @@ default: classes
 # with the .class suffix
 #
 
-classes: $(CLASSES:.java=.class)
+classes: $(SOURCES:.java=.class)
+
+jar:
+	jar cve $(JAR_PKG) $(CLASSES)
+
+tar:
+	tar czpf $(TARBALL) $(SOURCES) Makefile
 
 
 #
