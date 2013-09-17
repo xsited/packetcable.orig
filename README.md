@@ -1,15 +1,22 @@
 PCMM
 
-1. Make a stub class for PCMM that can be filled in along the way as needed
+1. Make a stub packet/classes for PCMM net.protocol.pcmm which will extend net.protocol.cops that can be filled in along the way as needed.  The primary objective is to format these objects for COPS connection sequence.
+
 	a) Multimedia Version Info object.
+
 	b) Version Info object.
+
 
 COPS
 
 2 Use the Client and Server to 
+
 	a) Open TCP connection Client to Server listening for incoming COPS connections on the TCP port number 3918.
+
 	b) Send PEP COPS Server OPN to Client PDP Client-Open message without Multimedia Version Info object.
+
 	c) Send PDP Client-Accept message without the Version Info.
+
 
 Reference: PKT-SP-MM-I06-110629.pdf Section 6.5Section 6.5.1  page 77-78.
 
