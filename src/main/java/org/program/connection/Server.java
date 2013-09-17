@@ -32,7 +32,12 @@ public class Server {
         }
     }
 
-    public static void main(String argv[]) {
+    public static void stop() {
+	// server.close();
+
+    }
+
+    public static void start() {
         int port = 3918;
 
         Server server = null;

@@ -66,6 +66,7 @@ public class Client {
         System.err.println("Exiting.");
     }
 
+/*
     public static void main(String argv[]) {
         String hostname = "localhost";
         int port = 3918;
@@ -74,5 +75,6 @@ public class Client {
         Client client = new Client(hostname, port, data);
         client.sendSomeMessages(100);
     }
+*/
 }
 

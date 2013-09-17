@@ -104,6 +104,7 @@ SOURCES = \
 
 
 CLASSES = $(SOURCES:%.java=%.class)
+
 #
 # the default make target entry
 #
@@ -121,7 +122,7 @@ default: classes jar
 classes: $(SOURCES:.java=.class)
 
 jar:
-	jar cfe $(JAR_PKG) $(CLASSES)
+	jar cvf $(JAR_PKG) $(CLASSES)
 
 tar:
 	tar czpf $(TARBALL) $(SOURCES) Makefile

@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.protocol.common.util.*;
+import net.protocol.cops.*;
+import org.program.connection.*;
  
  
 class TextMenuItem implements Runnable {
@@ -109,7 +112,7 @@ class TextMenu extends TextMenuItem {
 
 
 
-class TestTextMenu {
+class Test {
  
     private static TextMenuItem item1= new TextMenuItem("Add Flow 1",new Runnable() {
         public void run() {
@@ -155,10 +158,13 @@ class TestTextMenu {
     private static TextMenu topMenu= new TextMenu("\nMenu        \n--------------", false, true, item1, item2, item3, item4, item5);
  
     public static void main(String[] args) {
- 
+        String hostname = "localhost";
+        int port = 3918;
+        byte[] data = "Hello World".getBytes();
+	
+        System.out.println("Test - starting Client");
+        Client client = new Client(hostname, port, data);
         topMenu.run();
     }
 }
-
- 
 
