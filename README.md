@@ -9,7 +9,7 @@ PCMM
 
 COPS
 
-2 Use the Client and Server to 
+2. Use the Client and Server to 
 
 	a) Open TCP connection Client to Server listening for incoming COPS connections on the TCP port number 3918.
 
