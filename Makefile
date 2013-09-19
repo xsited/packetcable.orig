@@ -4,7 +4,7 @@
 
 JFLAGS = -g
 JC = javac
-CLASSPATH =  -classpath .:src/main/java/pcmm.jar 
+CLASSPATH =  -classpath .:src/main/java/protocol-labs.jar:src/main/java/jcops.jar:src/main/java/ara.jar
 JFLAGS = -encoding UTF-8  $(CLASSPATH) 
 JAR_PKG = Test.jar
 
