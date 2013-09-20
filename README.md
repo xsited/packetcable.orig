@@ -1,60 +1,29 @@
-Reference: PKT-SP-MM-I06-110629.pdf Section 6.5Section 6.5.1  page 77-78.
+Target Functionality
+
+1. PCMM Connet OPN
+PKT-SP-MM-I06-110629.pdf Section 6.5Section 6.5.1  page 77-78.
+
+2. Create Best Effort Service Flow
+
+3. Delete Service Flow
+
+4. Map GateId to Flow Names
+
+5. Modify Best Effort Service Flow (Optional)
+
 
 Git
 
 git clone https://github.com/xsited/packetcable.git
 
-Quickstart
+Quickstart with Makefiles
 
-0. run.sh
+run.sh
 
-or
+Using Maven
 
-1. Make the class jar
-cd packetcable/src/main/java/
-make
+Maven (http://maven.apache.org/) is a build tool. Maven defines project types (archetypes) needed for the target delivery type of Bundles. When you choose one (or more) archetype for your project, it mandates a deep directory structure.  At the moment this repo builds a jar.
 
-2. Make the menu-based test program
-cd packetcable
-make
+mvn clean install
 
-3. Run server 
-
-java -classpath .:src/main/java/pcmm.jar Main 
-
-4. Run test client
-
-java -classpath .:src/main/java/pcmm.jar Test
-
-The menuing system is a placeholder for testing and is not the ultimate taget for integration.
-
-Other notes ...
-
-Maven
-
-Maven (http://maven.apache.org/) is a build tool. Maven defines project types (archetypes) needed for the target delivery type of Bundles. When you choose one (or more) archetype for your project, it mandates a directory structure that is quite deep. 
-
-For example:
-
-project-name
-+- src/
-   +- main/
-      +- java/
-         +- com/example/project-name/
-            +- Java source files
-   +- test/
-      +- tends to mirror above
-+- target/
-   +- classes/
-      +- com/example/project-name/
-         +- Java class files
-   +- test-classes/
-      +- tends to mirror above
-...etc...
-
-This project structure is constraining, but the Maven way.  Maven will also give you lots of standard commands to run, such as compile, test, install, etc.
-
-Maven is also useful for dependencies on third-party libraries. You declare these in your Maven project file and they are retrieved from repositories on the internet (and cached locally unless you set it up otherwise).
-
-Coming from a C background, Makefile got things up and running despite not being the Java way. 
 
