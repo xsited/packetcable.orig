@@ -3,9 +3,6 @@
 pushd src/main/java/
 make
 popd
-pushd pcmm
-make
-popd
 make
 
 
