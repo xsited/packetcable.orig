@@ -1,7 +1,4 @@
 import java.io.IOException;
-import net.protocol.common.util.*;
-import net.protocol.cops.*;
-import org.program.connection.*;
  
  
 class Main {
@@ -19,13 +16,5 @@ class Main {
 //      System.out.println(args[0]);
         int port = 3918;
 
-        Server server = null;
-        try {
-            server = new Server(port);
-        }
-        catch (IOException e) {
-            e.printStackTrace(System.err);
-        }
-        server.waitForConnections();
     }
 }

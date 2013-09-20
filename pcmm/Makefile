@@ -4,7 +4,7 @@
 
 JFLAGS = -g
 JC = javac
-CLASSPATH =  -classpath .:src/main/java/jcops.jar
+CLASSPATH =  -classpath .:../src/main/java/jcops.jar
 JFLAGS = -encoding UTF-8  $(CLASSPATH) 
 JAR_PKG = Test.jar
 
@@ -42,10 +42,9 @@ JAR_PKG = Test.jar
 #
 
 SOURCES = \
-        Main.java \
-        Test.java 
+	PCMMPdpAgent.java \
+	PCMMPepAgent.java 
 
-CLASSES = $(SOURCES:%.java=%.class)
 
 #
 # the default make target entry

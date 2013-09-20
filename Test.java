@@ -5,9 +5,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.protocol.common.util.*;
-import net.protocol.cops.*;
-import org.program.connection.*;
 
 // jcops
 import org.umu.cops.common.COPSDebug;
@@ -16,15 +13,6 @@ import org.umu.cops.common.COPS_def;
 import org.umu.cops.prpep.COPSPepAgent;
 import org.umu.cops.prpep.COPSPepConnection;
 import org.umu.cops.prpep.COPSPepReqStateMan;
-
-
-import org.umu.cops.test.prpolicyclient.*;
- 
-// ara
-
-import cops.*;
-import auxClasses.*;
-import copsMsgs.*;
 
  
 class TextMenuItem implements Runnable {
@@ -180,19 +168,7 @@ class Test {
         byte[] data = "Hello World".getBytes();
 	
         System.out.println("Test - starting Client");
-        Client client = new Client(hostname, port, data);
 
-
-	// Test references resolution
-
-	// From org.umu.cops.prpdp.COPSPdpAgent.java
-	// We don't need s policy, but they do ...
-	COPSPepAgent agent = new COPSPepAgent (COPS_def.C_IPSEC);
-//        IPsecPolicyDataProcess process = new IPsecPolicyDataProcess();
-//        COPSPdpAgent agent = new COPSPdpAgent(COPS_def.C_IPSEC, process);
-
-	// From cops.PDPThread.java
-	PDPThread pdpthread  = new PDPThread();
 
         topMenu.run();
     }
