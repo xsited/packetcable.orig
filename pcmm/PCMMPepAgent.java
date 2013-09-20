@@ -200,53 +200,40 @@ public class PCMMPepAgent {
 		if (_conn != null)
 			return _conn.getReqStateMans();
 		return null;
-	}	/**
-	 * Runs the PDP process
+	}	
+	/**
+	 * Runs the PEP process
+	 * XXX - not sure of the exception throwing
 	 */
-	public void run() {
-	   try {
+	public void run() 
+		throws UnknownHostException, COPSPepException, COPSException {
+	    try {
 		_serverSocket = new ServerSocket (_serverPort);
-
                 //Loop through for Incoming messages
 
                 // server infinite loop
-                while(true) {
+            while(true) {
 
                 // Wait for an incoming connection from a PEP
                 Socket socket = _serverSocket.accept();
 
-                COPSDebug.out(getClass().getName(),"New connection accepted " +
+                COPSDebug.err(getClass().getName(),"New connection accepted " +
                           socket.getInetAddress() +
                           ":" + socket.getPort());
 
 		processConnection(socket);
-                // We're waiting for an OPN message
-/*
-                try
-                {
-                    COPSMsg msg = COPSTransceiver.receiveMsg(socket);
-                    if (msg.getHeader().isAClientOpen())
-                    {
-                        handleClientOpenMsg(socket, msg);
-                    }
-                    else {
-                        // COPSDebug.err(getClass().getName(), COPSDebug.ERROR_NOEXPECTEDMSG);
-                        try { socket.close();} catch(Exception ex){};
-                    }
-                }
-                catch (Exception e) // COPSException, IOException
-                {
-                    // COPSDebug.err(getClass().getName(), COPSDebug.ERROR_EXCEPTION,
-                    //    "(" + socket.getInetAddress() + ":" + socket.getPort() + ")", e);
-                    try {socket.close();} catch(Exception ex){};
-                }
-*/
-                }
-        }
-        catch (IOException e) {
-            COPSDebug.err(getClass().getName(), COPSDebug.ERROR_SOCKET, e);
-            return;
-        }
+	 	/** XXX - processConnection handles the open request from PEP 
+                 *	And a thread is created for conn = new COPSPepConnection(_clientType, socket);
+		 *      the main processing loop for PEP
+		 */
+		
+
+            }
+            }
+            catch (IOException e) {
+                COPSDebug.err(getClass().getName(), COPSDebug.ERROR_SOCKET, e);
+                return;
+            }
 	}
 
 

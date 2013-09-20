@@ -3,7 +3,7 @@
 #
 
 JFLAGS = -g
-JC = javac
+JC = javac -classpath .
 JAR_PKG = jcops.jar
 TARBALL = jcops.tar.gz
 

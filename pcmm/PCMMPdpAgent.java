@@ -254,7 +254,6 @@ public class PCMMPdpAgent extends Thread {
                     try {socket.close();} catch(Exception ex){};
                 }
             }
-            return(false);
 	 
 	}
 		
