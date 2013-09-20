@@ -1,6 +1,13 @@
+
+
 import java.io.IOException;
- 
- 
+import java.util.Random;
+
+import org.umu.cops.common.*;
+import org.umu.cops.prpep.PCMMPepAgent;
+import org.umu.cops.stack.COPSError;
+
+
 class Main {
     public static void main(String[] args){
         String nodeId = new String("00:02:fc:84:08:1a");
@@ -15,6 +22,17 @@ class Main {
         System.out.println("Main - starting Server");
 //      System.out.println(args[0]);
         int port = 3918;
+	Random ran = new Random();
+	Integer PepId = new Integer(ran.nextInt(1000) + 50000);
+
+	//PCMMPepAgent cmts = PCMMPepAgent(PepId.toString(), COPS_def.C_RSVP);
+	PCMMPepAgent cmts = new PCMMPepAgent(COPS_def.C_RSVP);
+	try  {
+	   cmts.run();
+	} catch (Exception e) {
+		
+        	System.out.println(e.getMessage());
+	}
 
     }
 }

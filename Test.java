@@ -7,12 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 // jcops
-import org.umu.cops.common.COPSDebug;
+import org.umu.cops.common.*;
 import org.umu.cops.stack.*;
-import org.umu.cops.common.COPS_def;
-import org.umu.cops.prpep.COPSPepAgent;
-import org.umu.cops.prpep.COPSPepConnection;
-import org.umu.cops.prpep.COPSPepReqStateMan;
+import org.umu.cops.prpdp.PCMMPdpAgent;
 
  
 class TextMenuItem implements Runnable {
@@ -168,6 +165,14 @@ class Test {
         byte[] data = "Hello World".getBytes();
 	
         System.out.println("Test - starting Client");
+	
+	PCMMPdpAgent pdp = new PCMMPdpAgent(COPS_def.C_RSVP, null) ;
+	try  {
+	    pdp.connect( "localhost", 3918 );
+	} catch (Exception e) {
+		
+            System.out.println(e.getMessage());
+	}
 
 
         topMenu.run();

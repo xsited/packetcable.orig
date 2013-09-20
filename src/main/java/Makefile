@@ -128,6 +128,8 @@ SOURCES = \
   	org/umu/cops/prpep/COPSPepReqStateMan.java \
 	org/umu/cops/test/prpolicyclient/PolicyClient.java \
 	org/umu/cops/test/prpolicyserver/IPsecPolicyDataProcess.java \
+  	org/umu/cops/prpdp/PCMMPdpAgent.java \
+  	org/umu/cops/prpep/PCMMPepAgent.java \
 	org/umu/cops/test/prpolicyserver/PolicyServer.java
 
 
