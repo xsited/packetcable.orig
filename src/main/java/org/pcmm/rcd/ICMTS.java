@@ -31,7 +31,7 @@ package org.pcmm.rcd;
  * communication), and acts as a client for the rest of the exchange process.
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface ICMTS extends IPCMMServer {

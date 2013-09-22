@@ -20,7 +20,7 @@ import org.pcmm.rcd.IPCMMClient;
  * 
  * default implementation for {@link IPCMMClient}
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public class AbstractPCMMClient implements IPCMMClient {

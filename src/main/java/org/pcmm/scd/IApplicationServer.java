@@ -22,7 +22,7 @@ package org.pcmm.scd;
  * may pass the request on to the Policy Server.
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IApplicationServer {

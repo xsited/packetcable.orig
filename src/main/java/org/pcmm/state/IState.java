@@ -7,7 +7,11 @@ package org.pcmm.state;
  * </p>
  * 
  * 
+<<<<<<< HEAD:src/main/java/org/pcmm/state/IState.java
  * @author rhadjamor@gmail.com 
+=======
+ * @author 
+>>>>>>> ##################################:src/main/java/org/pcmm/state/IState.java
  * 
  */
 public interface IState {

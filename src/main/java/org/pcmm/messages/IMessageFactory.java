@@ -6,7 +6,7 @@ package org.pcmm.messages;
 import org.pcmm.messages.IMessage.MessageType;
 
 /**
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IMessageFactory {

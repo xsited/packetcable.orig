@@ -3,7 +3,7 @@ package org.pcmm.gates;
 import java.net.InetAddress;
 
 /**
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IClassifier {

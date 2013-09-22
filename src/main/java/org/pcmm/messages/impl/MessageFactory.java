@@ -10,7 +10,7 @@ import org.pcmm.messages.IMessage.MessageType;
 /**
  * factory to create messages.
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public class MessageFactory implements IMessageFactory {

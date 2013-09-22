@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * This defines the messages exchanged between client and server.
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IMessage extends Serializable {

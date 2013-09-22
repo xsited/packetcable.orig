@@ -64,7 +64,7 @@ import org.pcmm.state.IStateful;
  * </p>
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IPCMMServer extends IStateful {
@@ -85,7 +85,7 @@ public interface IPCMMServer extends IStateful {
 	 * When a client connects to the server, a handler is needed to manage the
 	 * exchange of the messages between this client and the server.
 	 * 
-	 * @author rhadjamor@gmail.com 
+	 * @author rhadjamor@gmail.com
 	 * 
 	 */
 	public static interface IPCMMClientHandler extends Runnable {
@@ -105,7 +105,6 @@ public interface IPCMMServer extends IStateful {
 		 *            received message.
 		 */
 		void receiveMessage(IMessage inMessage);
-		
-		
+
 	}
 }

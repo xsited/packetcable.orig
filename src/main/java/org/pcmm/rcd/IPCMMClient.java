@@ -15,7 +15,7 @@ import org.pcmm.messages.IMessage;
  * access network.
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IPCMMClient {

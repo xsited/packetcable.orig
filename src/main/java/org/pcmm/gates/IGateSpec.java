@@ -7,7 +7,7 @@ package org.pcmm.gates;
  * message.
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IGateSpec {
@@ -19,7 +19,7 @@ public interface IGateSpec {
 	 * support flows or gates in the downstream direction.
 	 * </p>
 	 * 
-	 * @author rhadjamor@gmail.com 
+	 * @author rhadjamor@gmail.com
 	 * 
 	 */
 	enum Direction {
@@ -97,7 +97,7 @@ public interface IGateSpec {
 	int getCommittedRecoveryTimer();
 
 	int getDSCP_TOSOverwrite();
-	
+
 	int getDSCP_TOSMask();
 
 }
