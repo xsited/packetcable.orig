@@ -1,10 +1,11 @@
-package pcmm;
+package pcmm.utils;
 
-public class PacketCableError extends Exception {
+public class PCMMError extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 
 }

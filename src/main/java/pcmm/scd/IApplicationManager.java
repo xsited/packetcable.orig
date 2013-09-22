@@ -1,5 +1,7 @@
 package pcmm.scd;
 
+import pcmm.rcd.IPCMMClient;
+
 /**
  * <p>
  * As noted in the preceding summary, the Application Manager is a network
@@ -42,6 +44,6 @@ package pcmm.scd;
  * @author riadh
  * 
  */
-public interface IApplicationManager {
+public interface IApplicationManager extends IPCMMClient {
 
 }

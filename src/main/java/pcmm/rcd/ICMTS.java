@@ -26,12 +26,16 @@ package pcmm.rcd;
  * of QoS. The CMTS also sends Event Messages detailing actual usage of QoS
  * resources to the Record Keeping Server.
  * </p>
+ * <p>
+ * The CMTS acts as a a server ( PS should send OPN message to CMTS to initiate
+ * communication), and acts as a client for the rest of the exchange process.
+ * </p>
  * 
  * @author riadh
  * 
  */
-public interface ICableModemTerminationSystem {
-	
-	//generates a GateID and assigns it to the IPCMMGate.
+public interface ICMTS extends IPCMMServer {
+
+	// generates a GateID and assigns it to the IPCMMGate.
 
 }
