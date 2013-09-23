@@ -58,6 +58,7 @@ SOURCES = \
 	./org/pcmm/PCMMDef.java \
 	./org/pcmm/PCMMPdpAgent.java \
 	./org/pcmm/PCMMPepAgent.java \
+	./org/pcmm/PCMMPdpDataProcess.java \
 	./org/pcmm/rcd/ICMTS.java \
 	./org/pcmm/rcd/impl/AbstractPCMMClient.java \
 	./org/pcmm/rcd/impl/AbstractPCMMServer.java \
