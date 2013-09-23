@@ -1,12 +1,13 @@
 #
 # define compiler and compiler flag variables
 #
-
 JFLAGS = -g
 JC = javac
-CLASSPATH =  -classpath .:../src/main/java/jcops.jar
+JUNIT=/usr/share/junit/junit.jar
+CLASSPATH =  -classpath .:jcops.jar:$(JUNIT)
 JFLAGS = -encoding UTF-8  $(CLASSPATH) 
-JAR_PKG = Test.jar
+JAR_PKG = pcmm.jar
+TARBALL = pcmm.tar.gz
 
 
 #
@@ -42,15 +43,42 @@ JAR_PKG = Test.jar
 #
 
 SOURCES = \
-	PCMMPdpAgent.java \
-	PCMMPepAgent.java 
+ 	./org/pcmm/gates/IAMID.java \
+ 	./org/pcmm/gates/IClassifier.java \
+ 	./org/pcmm/gates/IExtendedClassifier.java \
+ 	./org/pcmm/gates/IGateSpec.java \
+	./org/pcmm/gates/IIPv6Classifier.java \
+	./org/pcmm/gates/IPCMMGate.java \
+	./org/pcmm/gates/ISubscriberID.java \
+	./org/pcmm/gates/ITrafficProfile.java \
+	./org/pcmm/messages/IMessage.java \
+	./org/pcmm/messages/IMessageFactory.java \
+	./org/pcmm/messages/impl/MessageFactory.java \
+	./org/pcmm/messages/impl/PCMMMessage.java \
+	./org/pcmm/PCMMDef.java \
+	./org/pcmm/PCMMPdpAgent.java \
+	./org/pcmm/PCMMPepAgent.java \
+	./org/pcmm/rcd/ICMTS.java \
+	./org/pcmm/rcd/impl/AbstractPCMMClient.java \
+	./org/pcmm/rcd/impl/AbstractPCMMServer.java \
+	./org/pcmm/rcd/impl/CMTS.java \
+	./org/pcmm/rcd/IPCMMClient.java \
+	./org/pcmm/rcd/IPCMMPolicyServer.java \
+	./org/pcmm/rcd/IPCMMServer.java \
+	./org/pcmm/scd/IApplicationServer.java \
+	./org/pcmm/state/IPCMMRecordKeepingServer.java \
+	./org/pcmm/state/IState.java \
+	./org/pcmm/state/IStateful.java \
+	./org/pcmm/utils/PCMMError.java \
+	./org/pcmm/utils/PCMMLogger.java 
 
+CLASSES = $(SOURCES:%.java=%.class)
 
 #
 # the default make target entry
 #
 
-default: classes 
+default: classes jar
 
 
 #
@@ -64,7 +92,7 @@ default: classes
 classes: $(SOURCES:.java=.class)
 
 jar:
-	jar cve $(JAR_PKG) $(CLASSES)
+	jar cvf $(JAR_PKG) $(CLASSES)
 
 tar:
 	tar czpf $(TARBALL) $(SOURCES) Makefile
@@ -75,5 +103,5 @@ tar:
 #
 
 clean:
-	$(RM) *.class
+	$(RM) $(CLASSES) $(JAR_PKG)
 

@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.Random;
 
 import org.umu.cops.common.*;
-import org.umu.cops.prpep.PCMMPepAgent;
+import org.pcmm.PCMMPepAgent;
+import org.pcmm.PCMMDef;
 import org.umu.cops.stack.COPSError;
 
 
@@ -25,8 +26,7 @@ class Main {
 	Random ran = new Random();
 	Integer PepId = new Integer(ran.nextInt(1000) + 50000);
 
-	//PCMMPepAgent cmts = PCMMPepAgent(PepId.toString(), COPS_def.C_RSVP);
-	PCMMPepAgent cmts = new PCMMPepAgent(COPS_def.C_RSVP);
+	PCMMPepAgent cmts = new PCMMPepAgent(PCMMDef.C_PCMM);
 	try  {
 	   cmts.run();
 	} catch (Exception e) {

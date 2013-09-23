@@ -9,7 +9,8 @@ import java.util.List;
 // jcops
 import org.umu.cops.common.*;
 import org.umu.cops.stack.*;
-import org.umu.cops.prpdp.PCMMPdpAgent;
+import org.pcmm.PCMMDef;
+import org.pcmm.PCMMPdpAgent;
 
  
 class TextMenuItem implements Runnable {
@@ -166,7 +167,7 @@ class Test {
 	
         System.out.println("Test - starting Client");
 	
-	PCMMPdpAgent pdp = new PCMMPdpAgent(COPS_def.C_RSVP, null) ;
+	PCMMPdpAgent pdp = new PCMMPdpAgent(PCMMDef.C_PCMM, null) ;
 	try  {
 	    pdp.connect( "localhost", 3918 );
 	} catch (Exception e) {
