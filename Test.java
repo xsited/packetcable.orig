@@ -11,6 +11,7 @@ import org.umu.cops.common.*;
 import org.umu.cops.stack.*;
 import org.pcmm.PCMMDef;
 import org.pcmm.PCMMPdpAgent;
+import org.pcmm.PCMMPdpDataProcess;
 
  
 class TextMenuItem implements Runnable {
@@ -161,13 +162,12 @@ class Test {
     private static TextMenu topMenu= new TextMenu("\nMenu        \n--------------", false, true, item1, item2, item3, item4, item5);
  
     public static void main(String[] args) {
-        String hostname = "localhost";
-        int port = 3918;
         byte[] data = "Hello World".getBytes();
 	
         System.out.println("Test - starting Client");
 	
-	PCMMPdpAgent pdp = new PCMMPdpAgent(PCMMDef.C_PCMM, null) ;
+	PCMMPdpDataProcess process = new PCMMPdpDataProcess();
+	PCMMPdpAgent pdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
 	try  {
 	    pdp.connect( "localhost", 3918 );
 	} catch (Exception e) {
