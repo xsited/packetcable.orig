@@ -182,6 +182,10 @@ public class COPSPdpReqStateMan {
 	protected void processRequest(COPSReqMsg msg)
 		throws COPSPdpException {
 
+		COPSHeader hdrmsg = msg.getHeader();
+		COPSHandle handlemsg = msg.getClientHandle();
+		COPSContext contextmsg = msg.getContext();
+
 		//** Analyze the request
 		//**
 
@@ -195,11 +199,6 @@ public class COPSPdpReqStateMan {
 		* Very important, this is actually being treated like this:
 		* <Named ClientSI> ::= <PRID> | <EPD>
 		*
-		*/
-
-	//	COPSHeader hdrmsg = msg.getHeader();
-	//	COPSHandle handlemsg = msg.getClientHandle();
-	//	COPSContext contextmsg = msg.getContext();
 
 		// Named ClientSI
 		Vector clientSIs = msg.getClientSI();
@@ -241,6 +240,7 @@ public class COPSPdpReqStateMan {
 		//**
         _sender.sendDecision(removeDecs, installDecs);
         _status = ST_DECS;
+		*/
 	}
 
 	/**

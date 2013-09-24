@@ -124,58 +124,99 @@ class Test {
         }
     });
  
-    private static TextMenuItem item2= new TextMenuItem("Add Flow 2",new Runnable() {
+    private  static TextMenuItem item2= new TextMenuItem("Add Flow 2",new Runnable() {
         public void run() {
             System.out.println("Add Flow 2");
         }
     });
  
-    private static TextMenuItem item3= new TextMenuItem("Toggle Flow",new Runnable() {
+    private  static TextMenuItem item3= new TextMenuItem("Toggle Flow",new Runnable() {
         public void run() {
             System.out.println("Toggle Flow");
         }
     });
 
-    private static TextMenuItem item4= new TextMenuItem("Remove Flow 1",new Runnable() {
+    private  static TextMenuItem item4= new TextMenuItem("Remove Flow 1",new Runnable() {
         public void run() {
             System.out.println("Remove Flow 1");
         }
     });
 
-    private static TextMenuItem item5= new TextMenuItem("Remove Flow 2",new Runnable() {
+    private  static TextMenuItem item5= new TextMenuItem("Remove Flow 2",new Runnable() {
         public void run() {
             System.out.println("Remove Flow 2");
         }
     });
+
+    private  static TextMenuItem item6= new TextMenuItem("Localhost open",new Runnable() {
+        public void run() {
+            System.out.println("Localhost open");
+	try  {
+//	    lpdp.connect( "localhost", 3918 );
+	} catch (Exception e) {
+		
+            System.out.println(e.getMessage());
+        }
+	}
+    });
+
+    private  static TextMenuItem item7= new TextMenuItem("Localhost close",new Runnable() {
+        public void run() {
+            System.out.println("Localhost close");
+        }
+    });
+
+    private  static TextMenuItem item8= new TextMenuItem("Remote open",new Runnable() {
+        public void run() {
+            System.out.println("Remote open");
+	try  {
+//	    rpdp.connect( "10.32.4.3", 3918 );
+	} catch (Exception e) {
+		
+            System.out.println(e.getMessage());
+	}
+        }
+    });
+
+    private  static TextMenuItem item9= new TextMenuItem("Remote close",new Runnable() {
+        public void run() {
+            System.out.println("Remote close");
+        }
+    });
+
  
-/*
-    private static TextMenuItem item6= new TextMenuItem("Quit",new Runnable() {
+    private  static TextMenuItem item10= new TextMenuItem("Quit",new Runnable() {
         public void run() {
             System.out.println("Quit");
             System.exit(0);
         }
     });
-*/
 
     private static TextMenu nestedMenu= new TextMenu("nested menu", true, false, item2, item3);
-    //private static TextMenu topMenu= new TextMenu("top menu", false, true, item1, nestedMenu);
-    private static TextMenu topMenu= new TextMenu("\nMenu        \n--------------", false, true, item1, item2, item3, item4, item5);
+    //private  TextMenu topMenu= new TextMenu("top menu", false, true, item1, nestedMenu);
+    private static TextMenu topMenu= new TextMenu("\nMenu        \n--------------", false, false, 
+		item1, item2, item3, item4, item5,
+		item6, item7, item8, item9, item10);
  
     public static void main(String[] args) {
         byte[] data = "Hello World".getBytes();
 	
         System.out.println("Test - starting Client");
+        PCMMPdpDataProcess process;
+        PCMMPdpAgent lpdp;
+        PCMMPdpAgent rpdp;
 	
-	PCMMPdpDataProcess process = new PCMMPdpDataProcess();
-	PCMMPdpAgent pdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
+	process = new PCMMPdpDataProcess();
+	lpdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
+	rpdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
 	try  {
-	    pdp.connect( "localhost", 3918 );
+	lpdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
+	    lpdp.connect( "10.32.4.3", 3918 );
+//	    rpdp.connect( "localhost", 3918 );
 	} catch (Exception e) {
 		
             System.out.println(e.getMessage());
 	}
-
-
         topMenu.run();
     }
 }
