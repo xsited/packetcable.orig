@@ -1,78 +1,42 @@
 package org.pcmm.messages;
 
-import java.io.Serializable;
-
 /**
  * This defines the messages exchanged between client and server.
  * 
- * @author rhadjamor@gmail.com
  * 
+ * <pre>
+ * 1 = Request                 (REQ)
+ * 2 = Decision                (DEC)
+ * 3 = Report State            (RPT)
+ * 4 = Delete Request State    (DRQ)
+ * 5 = Synchronize State Req   (SSQ)
+ * 6 = Client-Open             (OPN)
+ * 7 = Client-Accept           (CAT)
+ * 8 = Client-Close            (CC)
+ * 9 = Keep-Alive              (KA)
+ * 10= Synchronize Complete    (SSC)
+ * </pre>
+ * 
+ * @author rhadjamor@gmail.com
  */
-public interface IMessage extends Serializable {
+public interface IMessage {
 
-	public enum MessageType {
-		/**
-		 * Client-Open message
-		 */
-		OPN,
-		/**
-		 * Client-Accept message
-		 */
-		CAT,
-		/**
-		 * Client-Close message
-		 */
-		CC,
-		/**
-		 * Request message
-		 */
-		REQ,
-		/**
-		 * Decision message
-		 */
-		DEC,
-		/**
-		 * Report-State message
-		 */
-		RPT,
-		/**
-		 * Delete-Request-State message
-		 */
-		DRQ,
-		/**
-		 * Keep-Alive message
-		 */
-		KA
+	public enum MessageProperties {
+		CLIENT_TYPE("Client-Type"), PEP_ID("Pep-ID"), KA_TIMER("KA-Timer"), ACCEPT_TIMER(
+				"Accept-Timer"), ERR_MESSAGE("Error-Message"), MM_MAJOR_VERSION_INFO(
+				"MM-Major-Version-info"), MM_MINOR_VERSION_INFO(
+				"MM-Minor-Version-info"), R_TYPE("R-Type"), M_TYPE("M-Type"), CLIENT_HANDLE(
+				"Client-Handle");
+
+		private MessageProperties(String valueString) {
+			this.value = valueString;
+		}
+
+		private String value;
+
+		public String getValue() {
+			return value;
+		}
 	}
-
-	/**
-	 * sets the message type
-	 * 
-	 * @param mt
-	 *            : message type.
-	 */
-	void setMessagType(MessageType mt);
-
-	/**
-	 * returns the message type.
-	 * 
-	 * @return message type
-	 */
-	MessageType getMessageType();
-
-	/**
-	 * sets the message content.
-	 * 
-	 * @param messageContent
-	 *            : message content.
-	 */
-	void setContent(Object messageContent);
-
-	/**
-	 * returns this message content.
-	 * 
-	 * @return message content.
-	 */
-	Object getContent();
 
 }

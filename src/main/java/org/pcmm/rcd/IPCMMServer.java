@@ -88,23 +88,7 @@ public interface IPCMMServer extends IStateful {
 	 * @author rhadjamor@gmail.com
 	 * 
 	 */
-	public static interface IPCMMClientHandler extends Runnable {
-
-		/**
-		 * sends a message to the client.
-		 * 
-		 * @param responseMessage
-		 *            response message.
-		 */
-		void sendResponse(IMessage responseMessage);
-
-		/**
-		 * Receives message.
-		 * 
-		 * @param inMessage
-		 *            received message.
-		 */
-		void receiveMessage(IMessage inMessage);
+	public static interface IPCMMClientHandler extends Runnable, IPCMMClient {
 
 	}
 }

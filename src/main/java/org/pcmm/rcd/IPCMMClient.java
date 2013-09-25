@@ -3,6 +3,7 @@ package org.pcmm.rcd;
 import java.net.InetAddress;
 
 import org.pcmm.messages.IMessage;
+import org.umu.cops.stack.COPSMsg;
 
 /**
  * <p>
@@ -26,20 +27,24 @@ public interface IPCMMClient {
 	static final int DEFAULT_SERVER_PORT = 3918;
 
 	/**
+	 * PCMM client-type
+	 */
+	static final short CLIENT_TYPE = (short) 0x800A;
+
+	/**
 	 * sends a message to the server.
 	 * 
 	 * @param requestMessage
 	 *            request message.
 	 */
-	void sendRequest(IMessage requestMessage);
+	void sendRequest(COPSMsg requestMessage);
 
 	/**
 	 * Reads message from server
 	 * 
-	 * @param message
-	 *            received message
+	 * @return COPS message
 	 */
-	void readMessage(IMessage message);
+	COPSMsg readMessage();
 
 	/**
 	 * tries to connect to the server.
@@ -69,5 +74,11 @@ public interface IPCMMClient {
 	 * @return disconnection status.
 	 */
 	boolean disconnect();
+
+	/**
+	 * 
+	 * @return whether the client is connected to the server of not.
+	 */
+	boolean isConnected();
 
 }

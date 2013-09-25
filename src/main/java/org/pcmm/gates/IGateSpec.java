@@ -7,7 +7,9 @@ package org.pcmm.gates;
  * message.
  * </p>
  * 
- * @author rhadjamor@gmail.com
+ * 
+ * @author rhadjamor@gmail.com 
+ * 
  * 
  */
 public interface IGateSpec {
