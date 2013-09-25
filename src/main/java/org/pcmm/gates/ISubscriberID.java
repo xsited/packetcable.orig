@@ -22,7 +22,7 @@ import java.net.InetAddress;
  * Error.
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 
