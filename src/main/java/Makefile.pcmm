@@ -43,7 +43,7 @@ TARBALL = pcmm.tar.gz
 #
 
 SOURCES = \
-	org/pcmm/obj/MMVersionInfo.java \
+	org/pcmm/objects/MMVersionInfo.java \
 	org/pcmm/gates/IAMID.java \
 	org/pcmm/gates/IClassifier.java \
 	org/pcmm/gates/IExtendedClassifier.java \

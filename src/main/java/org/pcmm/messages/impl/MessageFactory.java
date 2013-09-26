@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import org.pcmm.messages.IMessage;
 import org.pcmm.messages.IMessage.MessageProperties;
 import org.pcmm.messages.IMessageFactory;
-import org.pcmm.obj.MMVersionInfo;
+import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.ICMTS;
 import org.pcmm.rcd.IPCMMClient;
 import org.umu.cops.stack.COPSAcctTimer;
