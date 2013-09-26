@@ -1,9 +1,5 @@
 package org.pcmm.rcd;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-import org.pcmm.messages.IMessage;
 import org.pcmm.state.IStateful;
 
 /**

@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
-import org.pcmm.obj.MMVersionInfo;
+import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMClient;
 import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSMsg;

@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.pcmm.messages.impl.MessageFactory;
-import org.pcmm.obj.MMVersionInfo;
+import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMPolicyServer;
 import org.pcmm.state.IState;
 import org.umu.cops.prpdp.COPSPdpConnection;

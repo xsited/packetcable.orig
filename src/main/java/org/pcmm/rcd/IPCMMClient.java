@@ -2,7 +2,6 @@ package org.pcmm.rcd;
 
 import java.net.InetAddress;
 
-import org.pcmm.messages.IMessage;
 import org.umu.cops.stack.COPSMsg;
 
 /**
