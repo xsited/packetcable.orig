@@ -25,7 +25,7 @@ package org.pcmm.gates;
  * (one for each configured Application Manager Tag).
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IAMID {

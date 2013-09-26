@@ -21,7 +21,7 @@ package org.pcmm.gates;
  * 
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IPCMMGate {
