@@ -7,7 +7,7 @@ package org.pcmm.state;
  * </p>
  * 
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IState {

@@ -31,11 +31,13 @@ package org.pcmm.rcd;
  * communication), and acts as a client for the rest of the exchange process.
  * </p>
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface ICMTS extends IPCMMServer {
 
 	// generates a GateID and assigns it to the IPCMMGate.
+	static final short DEFAULT_R_TYPE = (short) 0x08;
+	static final short DEFAULT_M_TYPE = (short) 0;
 
 }

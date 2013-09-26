@@ -3,10 +3,12 @@
  */
 package org.pcmm.messages;
 
-import org.pcmm.messages.IMessage.MessageType;
+import java.util.Properties;
+
+import org.umu.cops.stack.COPSMsg;
 
 /**
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public interface IMessageFactory {
@@ -18,16 +20,16 @@ public interface IMessageFactory {
 	 *            message type
 	 * @return new message.
 	 */
-	IMessage create(MessageType messageType);
+	COPSMsg create(byte messageType);
 
 	/**
 	 * creates a new message with the specified message type and content
 	 * 
 	 * @param messageType
 	 *            message type
-	 * @param content
+	 * @param properties
 	 *            message content.
 	 * @return new message.
 	 */
-	IMessage create(MessageType messageType, Object content);
+	COPSMsg create(byte messageType, Properties properties);
 }

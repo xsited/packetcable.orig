@@ -4,8 +4,6 @@
 package org.pcmm.rcd.impl;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -13,34 +11,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
-import org.pcmm.messages.IMessage;
+import org.pcmm.obj.MMVersionInfo;
 import org.pcmm.rcd.IPCMMClient;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSTransceiver;
 
 /**
  * 
  * default implementation for {@link IPCMMClient}
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  */
 public class AbstractPCMMClient implements IPCMMClient {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	protected Logger logger = Logger.getLogger(getClass().getName());
 	/**
 	 * socket used to communicated with server.
 	 */
 	private Socket socket;
-	/**
-	 * output stream
-	 */
-	private ObjectOutputStream outputStream;
-	/**
-	 * input stream
-	 */
-	private ObjectInputStream inputStream;
+
+	private MMVersionInfo versionInfo;
 
 	public AbstractPCMMClient() {
-		logger.setLevel(Level.SEVERE);
+		logger.setLevel(Level.ALL);
 	}
 
 	/*
@@ -48,13 +43,16 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 * 
 	 * @see pcmm.rcd.IPCMMClient#sendRequest(pcmm.messages.IMessage)
 	 */
-	public void sendRequest(IMessage requestMessage) {
-		Assert.assertNotNull("Output stream is Null", getOutputStream());
+	public void sendRequest(COPSMsg requestMessage) {
+		Assert.assertNotNull("Client is not connected", isConnected());
 		Assert.assertNotNull("Message is Null", requestMessage);
 		try {
-			getOutputStream().writeObject(requestMessage);
-			getOutputStream().flush();
+			// logger.info("Sending message type : " +
+			// requestMessage.getHeader());
+			COPSTransceiver.sendMsg(requestMessage, getSocket());
 		} catch (IOException e) {
+			logger.severe(e.getMessage());
+		} catch (COPSException e) {
 			logger.severe(e.getMessage());
 		}
 	}
@@ -62,22 +60,20 @@ public class AbstractPCMMClient implements IPCMMClient {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see pcmm.rcd.IPCMMClient#readMessage(pcmm.messages.IMessage)
+	 * @see org.pcmm.rcd.IPCMMClient#readMessage()
 	 */
-	public void readMessage(IMessage message) {
-		Assert.assertNotNull("Input stream is Null", getInputStream());
-		Assert.assertNotNull("Message is Null", message);
+	public COPSMsg readMessage() {
+		Assert.assertNotNull("Client is not connected", isConnected());
 		try {
-			Object msg = getInputStream().readObject();
-			Assert.assertTrue("Can't understand message.",
-					(msg instanceof IMessage));
-			message.setMessagType(((IMessage) msg).getMessageType());
-			message.setContent(((IMessage) msg).getContent());
+			COPSMsg recvdMsg = COPSTransceiver.receiveMsg(getSocket());
+			// logger.info("received message : " + recvdMsg.getHeader());
+			return recvdMsg;
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
-		} catch (ClassNotFoundException e) {
+		} catch (COPSException e) {
 			logger.severe(e.getMessage());
 		}
+		return null;
 	}
 
 	/*
@@ -104,8 +100,6 @@ public class AbstractPCMMClient implements IPCMMClient {
 	public boolean tryConnect(InetAddress address, int port) {
 		try {
 			setSocket(new Socket(address, port));
-			setOutputStream(new ObjectOutputStream(socket.getOutputStream()));
-			setInputStream(new ObjectInputStream(socket.getInputStream()));
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
 			return false;
@@ -119,7 +113,7 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 * @see pcmm.rcd.IPCMMClient#disconnect()
 	 */
 	public boolean disconnect() {
-		if (socket != null && !socket.isClosed()) {
+		if (isConnected()) {
 			try {
 				socket.close();
 			} catch (IOException e) {
@@ -145,34 +139,28 @@ public class AbstractPCMMClient implements IPCMMClient {
 		this.socket = socket;
 	}
 
-	/**
-	 * @return the outputStream
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pcmm.rcd.IPCMMClient#isConnected()
 	 */
-	public ObjectOutputStream getOutputStream() {
-		return outputStream;
+	public boolean isConnected() {
+		return socket != null && socket.isConnected();
 	}
 
 	/**
-	 * @param outputStream
-	 *            the outputStream to set
+	 * @return the versionInfo
 	 */
-	public void setOutputStream(ObjectOutputStream outputStream) {
-		this.outputStream = outputStream;
+	public MMVersionInfo getVersionInfo() {
+		return versionInfo;
 	}
 
 	/**
-	 * @return the inputStream
+	 * @param versionInfo
+	 *            the versionInfo to set
 	 */
-	public ObjectInputStream getInputStream() {
-		return inputStream;
-	}
-
-	/**
-	 * @param inputStream
-	 *            the inputStream to set
-	 */
-	public void setInputStream(ObjectInputStream inputStream) {
-		this.inputStream = inputStream;
+	public void setVersionInfo(MMVersionInfo versionInfo) {
+		this.versionInfo = versionInfo;
 	}
 
 }
