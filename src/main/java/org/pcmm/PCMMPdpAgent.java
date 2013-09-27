@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 
 import org.umu.cops.common.COPSDebug;
 import org.umu.cops.ospep.COPSPepException;
@@ -211,8 +213,26 @@ public class PCMMPdpAgent extends COPSPdpAgent {
 		}
 
 		// Support
-		if ((cMsg.getClientSI() != null) || (cMsg.getPdpAddress() != null)
-				|| (cMsg.getIntegrity() != null)) {
+		if ((cMsg.getClientSI() != null) ) {
+		    System.out.println("ClientSI Version");
+		    // cMsg.getClientSI().dump(System.out);
+		    // XXX - tek Make object
+		    byte[] arr = cMsg.getClientSI().getData().getData();
+		    ByteBuffer bb = ByteBuffer.wrap(arr); // Wrapper around underlying byte[].
+		    ShortBuffer sb = bb.asShortBuffer(); // Wrapper around ByteBuffer.
+
+		    // Now traverse ShortBuffer to obtain each short.
+		    short s1 = sb.get();
+		    short s2 = sb.get(); // etc.
+		    short s3 = sb.get(); // etc.
+		    short s4 = sb.get(); // etc.
+
+		    System.out.println("Length=  " + s1 + " arr[1]= " + " s-num=  " + arr[2] + " s-type= " + arr[3]);
+		    System.out.println("Version Major : " + s3 + " Minor : " + s4);
+			
+		} else {
+		// || (cMsg.getPdpAddress() != null)
+		// if ((cMsg.getPdpAddress() != null) || (cMsg.getIntegrity() != null)) {
 
 			// Unsupported objects
 			COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_CC, msg
@@ -227,9 +247,10 @@ public class PCMMPdpAgent extends COPSPdpAgent {
 			} catch (IOException unae) {
 			}
 
-			throw new COPSException(
-					"Unsupported objects (ClientSI, PdpAddress, Integrity)");
+			throw new COPSException("Unsupported objects (PdpAddress, Integrity)");
 		}
+		/*
+		*/
 
 		// Connection accepted
 		COPSHeader ahdr = new COPSHeader(COPSHeader.COPS_OP_CAT, msg

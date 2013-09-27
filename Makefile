@@ -4,7 +4,10 @@
 
 JFLAGS = -g
 JC = javac
-CLASSPATH =  -classpath .:src/main/java/jcops.jar
+JUNIT=/usr/share/junit/junit.jar
+JCOPS=src/main/java/jcops.jar
+PCMM=src/main/java/pcmm.jar
+CLASSPATH =  -classpath .:$(PCMM):$(JCOPS):$(JUNIT)
 JFLAGS = -encoding UTF-8  $(CLASSPATH) 
 JAR_PKG = Test.jar
 
