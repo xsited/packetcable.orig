@@ -8,6 +8,23 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import org.pcmm.gates.IAMID;
+import org.pcmm.gates.IClassifier;
+import org.pcmm.gates.IGateSpec;
+import org.pcmm.gates.IGateSpec.DSCPTOS;
+import org.pcmm.gates.IGateSpec.Direction;
+import org.pcmm.gates.IPCMMGate;
+import org.pcmm.gates.ISubscriberID;
+import org.pcmm.gates.ITrafficProfile;
+import org.pcmm.gates.ITransactionID;
+import org.pcmm.gates.impl.AMID;
+import org.pcmm.gates.impl.Classifier;
+import org.pcmm.gates.impl.DOCSISServiceClassNameTrafficProfile;
+import org.pcmm.gates.impl.GateSpec;
+import org.pcmm.gates.impl.PCMMGate;
+import org.pcmm.gates.impl.SubsciberID;
+import org.pcmm.gates.impl.TransactionID;
+import org.pcmm.messages.IMessage;
 import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMPolicyServer;
@@ -17,9 +34,11 @@ import org.umu.cops.prpdp.COPSPdpDataProcess;
 import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
 import org.umu.cops.stack.COPSClientOpenMsg;
+import org.umu.cops.stack.COPSClientSI;
 import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSReportMsg;
 
 /**
  * 
@@ -30,6 +49,8 @@ import org.umu.cops.stack.COPSMsg;
  */
 public class PCMMPolicyServer extends AbstractPCMMClient implements
 		IPCMMPolicyServer {
+
+	private short transcationID;
 
 	/*
 	 * (non-Javadoc)
@@ -132,6 +153,135 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 			return null;
 		}
 		return getSocket();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pcmm.rcd.IPCMMPolicyServer#gateSet()
+	 */
+	@Override
+	public boolean gateSet() {
+		if (!isConnected())
+			throw new IllegalArgumentException("Not connected");
+
+		// setting up the gate
+		IPCMMGate gate = new PCMMGate();
+		// set transaction ID to gate set
+		ITransactionID trID = new TransactionID();
+		trID.setGateCommandType(ITransactionID.GateSet);
+		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
+				: trID);
+		trID.setTransactionIdentifier(transcationID);
+
+		IAMID amid = new AMID();
+		amid.setApplicationType((short) 0);
+		amid.setApplicationMgrTag((short) 0);
+
+		ISubscriberID subscriberID = new SubsciberID();
+		subscriberID.setSourceIPAddress(getSocket().getLocalAddress());
+
+		IGateSpec gateSpec = new GateSpec();
+		gateSpec.setDirection(Direction.DOWNSTREAM);
+		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
+
+		ITrafficProfile trafficProfile = new DOCSISServiceClassNameTrafficProfile();
+		trafficProfile.setEnvelop((byte) 0x111);
+		((DOCSISServiceClassNameTrafficProfile) trafficProfile)
+				.setServiceClassName("S_down");
+
+		IClassifier classifier = new Classifier();
+		classifier.setProtocol("tcp");
+		classifier.setSourceIPAddress(getSocket().getLocalAddress());
+		classifier.setDestinationIPAddress(getSocket().getInetAddress());
+		classifier.setSourcePort((short) getSocket().getLocalPort());
+		classifier.setDestinationPort((short) getSocket().getPort());
+
+		gate.setTransactionID(trID);
+		gate.setAMID(amid);
+		gate.setSubscriberID(subscriberID);
+		gate.setGateSpec(gateSpec);
+		gate.setClassifier(classifier);
+		gate.setTrafficProfile(trafficProfile);
+		Properties prop = new Properties();
+		prop.put(IMessage.MessageProperties.GATE_CONTROL, gate.getCopsData());
+		COPSMsg dec = MessageFactory.getInstance().create(
+				COPSHeader.COPS_OP_DEC, prop);
+
+		// sends the gate-set
+		sendRequest(dec);
+		// waits for the gate-set-ack or error
+		COPSMsg responseMsg = readMessage();
+		if (responseMsg.getHeader().isAReport()) {
+			COPSReportMsg reportMsg = (COPSReportMsg) responseMsg;
+			if (reportMsg.getClientSI().size() == 0) {
+				return false;
+			}
+			COPSClientSI clientSI = (COPSClientSI) reportMsg.getClientSI()
+					.elementAt(0);
+			IPCMMGate responseGate = new PCMMGate(clientSI.getData().getData());
+			if (responseGate.getTransactionID() != null
+					&& responseGate.getTransactionID().getGateCommandType() == ITransactionID.GateSetAck) {
+				// here CMTS responded that he acknowledged the Gate-Set
+				// TODO do further check of Gate-Set-Ack GateID etc...
+
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pcmm.rcd.IPCMMPolicyServer#gateDelete()
+	 */
+	@Override
+	public boolean gateDelete() {
+		IPCMMGate gate = new PCMMGate();
+		// set transaction ID to gate delete
+		ITransactionID trID = new TransactionID();
+		trID.setGateCommandType(ITransactionID.GateDelete);
+		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
+				: trID);
+		trID.setTransactionIdentifier(transcationID);
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pcmm.rcd.IPCMMPolicyServer#gateInfo()
+	 */
+	@Override
+	public boolean gateInfo() {
+		IPCMMGate gate = new PCMMGate();
+		// set transaction ID to gate info
+		ITransactionID trID = new TransactionID();
+		trID.setGateCommandType(ITransactionID.GateInfo);
+		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
+				: trID);
+		trID.setTransactionIdentifier(transcationID);
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pcmm.rcd.IPCMMPolicyServer#synchronize()
+	 */
+	@Override
+	public boolean synchronize() {
+		IPCMMGate gate = new PCMMGate();
+		// set transaction ID to synch request
+		ITransactionID trID = new TransactionID();
+		trID.setGateCommandType(ITransactionID.SynchRequest);
+		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
+				: trID);
+		trID.setTransactionIdentifier(transcationID);
+		return false;
 	}
 
 	public PCMMPolicyServer() {

@@ -22,6 +22,8 @@ import org.umu.cops.stack.COPSClientOpenMsg;
 import org.umu.cops.stack.COPSClientSI;
 import org.umu.cops.stack.COPSContext;
 import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSDecision;
+import org.umu.cops.stack.COPSDecisionMsg;
 import org.umu.cops.stack.COPSError;
 import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSHandle;
@@ -29,6 +31,7 @@ import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSKAMsg;
 import org.umu.cops.stack.COPSKATimer;
 import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSObjHeader;
 import org.umu.cops.stack.COPSPepId;
 import org.umu.cops.stack.COPSReqMsg;
 
@@ -83,7 +86,7 @@ public class MessageFactory implements IMessageFactory {
 		case COPSHeader.COPS_OP_CC:
 			return createCCMessage(properties);
 		case COPSHeader.COPS_OP_DEC:
-			break;
+			return createDECMessage(properties);
 		case COPSHeader.COPS_OP_DRQ:
 			break;
 		case COPSHeader.COPS_OP_KA:
@@ -96,6 +99,42 @@ public class MessageFactory implements IMessageFactory {
 			break;
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param prop
+	 * @return
+	 */
+	protected COPSMsg createDECMessage(Properties prop) {
+
+		// ===common part between all gate control messages
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC);
+		// TODO extract constants
+		COPSContext context = new COPSContext((short) 0x08, (short) 0);
+		COPSDecision decision = new COPSDecision();
+		// TODO add property to set this
+		decision.setCmdCode(COPSDecision.DEC_INSTALL);
+		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
+			decision.setData((COPSData) prop
+					.get(IMessage.MessageProperties.GATE_CONTROL));
+
+		COPSDecisionMsgEX msg = new COPSDecisionMsgEX();
+		try {
+			msg.add(hdr);
+
+			COPSHandle handle = new COPSHandle();
+			if (prop.get(IMessage.MessageProperties.CLIENT_HANDLE) != null)
+				handle.setId(new COPSData((String) prop
+						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
+
+			msg.add(handle);
+			msg.addDecision(decision, context);
+		} catch (COPSException e) {
+			logger.severe(e.getMessage());
+		}
+
+		return msg;
 	}
 
 	/**

@@ -4,18 +4,46 @@
 package org.pcmm.rcd.impl;
 
 import java.net.Socket;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Vector;
 
+import org.pcmm.gates.IAMID;
+import org.pcmm.gates.IClassifier;
+import org.pcmm.gates.IGateSpec;
+import org.pcmm.gates.IGateSpec.DSCPTOS;
+import org.pcmm.gates.IGateSpec.Direction;
+import org.pcmm.gates.IPCMMGate;
+import org.pcmm.gates.ISubscriberID;
+import org.pcmm.gates.ITrafficProfile;
+import org.pcmm.gates.ITransactionID;
+import org.pcmm.gates.impl.AMID;
+import org.pcmm.gates.impl.Classifier;
+import org.pcmm.gates.impl.DOCSISServiceClassNameTrafficProfile;
+import org.pcmm.gates.impl.GateSpec;
+import org.pcmm.gates.impl.PCMMGate;
+import org.pcmm.gates.impl.SubsciberID;
+import org.pcmm.gates.impl.TransactionID;
+import org.pcmm.messages.IMessage;
 import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.rcd.ICMTS;
 import org.umu.cops.prpep.COPSPepConnection;
 import org.umu.cops.prpep.COPSPepException;
+import org.umu.cops.prpep.COPSPepReqStateMan;
 import org.umu.cops.stack.COPSAcctTimer;
 import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
+import org.umu.cops.stack.COPSClientSI;
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSDecision;
+import org.umu.cops.stack.COPSDecisionMsg;
 import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSKATimer;
 import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSPrObjBase;
+import org.umu.cops.stack.COPSReportMsg;
+import org.umu.cops.stack.COPSReqMsg;
 
 /**
  * @author rhadjamor@gmail.com
@@ -30,6 +58,7 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 	@Override
 	protected IPCMMClientHandler getPCMMClientHandler(final Socket socket) {
 		return new AbstractPCMMClientHandler(socket) {
+			private String handle;
 
 			public void run() {
 				try {
@@ -78,11 +107,16 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 							Properties prop = new Properties();
 							COPSMsg reqMsg = MessageFactory.getInstance()
 									.create(COPSHeader.COPS_OP_REQ, prop);
+							handle = ((COPSReqMsg) reqMsg).getClientHandle()
+									.toString();
 							sendRequest(reqMsg);
 						}
 						// Create the connection manager
-						COPSPepConnection conn = new COPSPepConnection(
+						PCMMCmtsConnection conn = new PCMMCmtsConnection(
 								CLIENT_TYPE, socket);
+						// pcmm specific handler
+						conn.addReqStateMgr(handle, new PCMMPSReqStateMan(
+								CLIENT_TYPE, handle));
 						conn.setKaTimer(kaTimeVal);
 						conn.setAcctTimer(acctTimer);
 						logger.info(getClass().getName()
@@ -98,6 +132,113 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 					logger.severe(e.getMessage());
 				}
 			}
+
 		};
 	}
+
+	/* public */class PCMMCmtsConnection extends COPSPepConnection {
+
+		public PCMMCmtsConnection(short clientType, Socket sock) {
+			super(clientType, sock);
+		}
+
+		public void addReqStateMgr(String hanlde, COPSPepReqStateMan r) {
+			// map < String(COPSHandle), COPSPepReqStateMan>;
+			getReqStateMans().put(hanlde, r);
+		}
+	}
+
+	class PCMMPSReqStateMan extends COPSPepReqStateMan {
+
+		public PCMMPSReqStateMan(short clientType, String clientHandle) {
+			super(clientType, clientHandle);
+		}
+
+		@Override
+		protected void processDecision(COPSDecisionMsg dMsg)
+				throws COPSPepException {
+
+
+			// COPSHandle handle = dMsg.getClientHandle();
+			Hashtable decisions = dMsg.getDecisions();
+			
+			Hashtable removeDecs = new Hashtable(40);
+			Hashtable installDecs = new Hashtable(40);
+			Hashtable errorDecs = new Hashtable(40);
+			for (Enumeration e = decisions.keys() ; e.hasMoreElements() ;) {
+				
+				COPSContext context = (COPSContext) e.nextElement();
+				Vector v = (Vector) decisions.get(context);
+				Enumeration ee = v.elements();
+				COPSDecision cmddecision = (COPSDecision) ee.nextElement();
+				
+				// cmddecision --> we must check whether it is an error!
+				
+				if(cmddecision.isInstallDecision()) {
+					String prid = new String();
+					for (; ee.hasMoreElements() ;) {
+						COPSDecision decision = (COPSDecision) ee.nextElement();
+
+						COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
+						switch (obj.getSNum())
+						{
+							case COPSPrObjBase.PR_PRID:
+								prid = obj.getData().str();
+								break;
+							case COPSPrObjBase.PR_EPD:
+								installDecs.put(prid, obj.getData().str());
+								break;
+							default:
+								break;
+						}
+					}
+				}
+				
+				if(cmddecision.isRemoveDecision()) {
+
+					String prid = new String();
+					for (; ee.hasMoreElements() ;) {
+						COPSDecision decision = (COPSDecision) ee.nextElement();
+
+						COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
+						switch (obj.getSNum())
+						{
+							case COPSPrObjBase.PR_PRID:
+								prid = obj.getData().str();
+								break;
+							case COPSPrObjBase.PR_EPD:
+								removeDecs.put(prid, obj.getData().str());
+								break;
+							default:
+								break;
+						}
+					}
+				}
+			}
+			
+			//** Apply decisions to the configuration
+			_process.setDecisions(this, removeDecs, installDecs, errorDecs);
+	        _status = ST_DECS;
+
+			
+			if (_process.isFailReport(this)) {
+				// COPSDebug.out(getClass().getName(),"Sending FAIL Report\n");
+				_sender.sendFailReport(_process.getReportData(this));
+			}
+			else {
+				// COPSDebug.out(getClass().getName(),"Sending SUCCESS Report\n");
+				_sender.sendSuccessReport(_process.getReportData(this));
+			}
+	        _status = ST_REPORT;
+
+			if (!_syncState) {
+				_sender.sendSyncComplete();
+				_syncState = true;
+	            _status = ST_SYNCALL;
+			}
+		
+			super.processDecision(dMsg);
+		}
+	}
+
 }

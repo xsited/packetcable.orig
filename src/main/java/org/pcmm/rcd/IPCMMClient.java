@@ -80,4 +80,20 @@ public interface IPCMMClient {
 	 */
 	boolean isConnected();
 
+	/**
+	 * gets the client handle
+	 * 
+	 * @return client handle
+	 */
+	String getClientHandle();
+
+	/**
+	 * 
+	 * sets the client handle
+	 * 
+	 * @param handle
+	 *            cleint hanlde
+	 */
+	void setClientHandle(String handle);
+
 }

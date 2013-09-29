@@ -1,6 +1,10 @@
 package org.pcmm.gates;
 
 public interface IIPv6Classifier extends IExtendedClassifier {
+	static final short LENGTH = 64;
+	static final short SNUM = 6;
+	static final short STYPE = 3;
+
 	// Tc-low
 	// Tc-high
 	// Tc-mask

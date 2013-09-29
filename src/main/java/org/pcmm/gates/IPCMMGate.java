@@ -1,5 +1,8 @@
 package org.pcmm.gates;
 
+import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSHeader;
+
 /**
  * <p>
  * A PacketCable Multimedia Gate is a logical representation of a policy
@@ -27,6 +30,13 @@ package org.pcmm.gates;
 public interface IPCMMGate {
 
 	/**
+	 * gets the cops decision header
+	 * 
+	 * @return cops header
+	 */
+	COPSHeader getCopsHeader();
+
+	/**
 	 * 
 	 * @return whether this gate is multicast or unicast.
 	 */
@@ -35,9 +45,53 @@ public interface IPCMMGate {
 	/**
 	 * GateID is the handle for the Gate.
 	 * 
-	 * @return the GateID.
 	 */
-	int getGateID();
+	void setGateID(IGateID gateid);
+
+	/**
+	 * AMID is the handle that identifies the Application Manager and
+	 * Application Type
+	 * 
+	 */
+	void setAMID(IAMID iamid);
+
+	/**
+	 * SubscriberID uniquely identifies the Client for which the policy is being
+	 * set.
+	 * 
+	 */
+	void setSubscriberID(ISubscriberID subscriberID);
+
+	/**
+	 * GateSpec describes specific authorization parameters defining a Gate
+	 * (i.e., QoS limits, timers, etc.).
+	 * 
+	 */
+	void setGateSpec(IGateSpec gateSpec);
+
+	/**
+	 * Classifier describes the IP flow(s) that will be mapped to the DOCSIS
+	 * Service Flow.
+	 * 
+	 */
+	void setClassifier(IClassifier classifier);
+
+	/**
+	 * Traffic Profile describes the QoS attributes of the Service Flow used to
+	 * support the IP flow.
+	 */
+	void setTrafficProfile(ITrafficProfile profile);
+
+	void setTransactionID(ITransactionID transactionID);
+
+	ITransactionID getTransactionID();
+
+	/**
+	 * GateID is the handle for the Gate.
+	 * 
+	 * @return gateID
+	 */
+	IGateID getGateID();
 
 	/**
 	 * AMID is the handle that identifies the Application Manager and
@@ -77,6 +131,7 @@ public interface IPCMMGate {
 	 */
 	ITrafficProfile getTrafficProfile();
 
+	COPSData getCopsData();
 	// Event Generation Info (optional)
 	// Time-Based Usage Limit (optional)
 	// Volume-Based Usage Limit (optional)

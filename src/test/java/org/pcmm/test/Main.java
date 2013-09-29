@@ -21,6 +21,7 @@ public class Main {
 		icmts.startServer();
 		IPCMMPolicyServer ps = new PCMMPolicyServer();
 		ps.requestCMTSConnection("192.168.1.43");
+		ps.gateSet();
 
 	}
 }

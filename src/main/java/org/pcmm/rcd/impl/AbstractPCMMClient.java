@@ -32,6 +32,8 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 */
 	private Socket socket;
 
+	private String clientHanlde;
+
 	private MMVersionInfo versionInfo;
 
 	public AbstractPCMMClient() {
@@ -161,6 +163,16 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 */
 	public void setVersionInfo(MMVersionInfo versionInfo) {
 		this.versionInfo = versionInfo;
+	}
+
+	@Override
+	public String getClientHandle() {
+		return clientHanlde;
+	}
+
+	@Override
+	public void setClientHandle(String handle) {
+		this.clientHanlde = handle;
 	}
 
 }

@@ -28,4 +28,32 @@ public interface IPCMMPolicyServer extends IPCMMServer, IPCMMClient {
 	 */
 	Socket requestCMTSConnection(InetAddress host);
 
+	/**
+	 * initiates a Gate-Set with the CMTS
+	 * 
+	 * @return
+	 */
+	boolean gateSet();
+
+	/**
+	 * initiates a Gate-Info with the CMTS
+	 * 
+	 * @return
+	 */
+	boolean gateInfo();
+
+	/**
+	 * initiates a Gate-Delete with the CMTS
+	 * 
+	 * @return
+	 */
+	boolean gateDelete();
+
+	/**
+	 * sends synch request
+	 * 
+	 * @return
+	 */
+	boolean synchronize();
+
 }
