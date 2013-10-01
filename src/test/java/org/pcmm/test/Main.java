@@ -20,7 +20,7 @@ public class Main {
 		ICMTS icmts = new CMTS();
 		icmts.startServer();
 		IPCMMPolicyServer ps = new PCMMPolicyServer();
-		ps.requestCMTSConnection("192.168.1.43");
+		ps.requestCMTSConnection("localhost");
 		ps.gateSet();
 
 	}

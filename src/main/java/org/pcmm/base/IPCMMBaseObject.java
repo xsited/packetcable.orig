@@ -61,4 +61,7 @@ public interface IPCMMBaseObject {
 	 */
 	COPSData getData();
 
+	
+	byte[] getAsBinaryArray();
+
 }

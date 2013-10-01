@@ -3,7 +3,9 @@
  */
 package org.pcmm.gates.impl;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.ISubscriberID;
@@ -12,21 +14,19 @@ import org.pcmm.gates.ISubscriberID;
  * @author riadh
  * 
  */
-public class SubsciberID extends PCMMBaseObject implements ISubscriberID {
-
-	private InetAddress address;
+public class SubscriberID extends PCMMBaseObject implements ISubscriberID {
 
 	/**
 	 * 
 	 */
-	public SubsciberID() {
+	public SubscriberID() {
 		this(LENGTH, STYPE, SNUM);
 	}
 
 	/**
 	 * @param data
 	 */
-	public SubsciberID(byte[] data) {
+	public SubscriberID(byte[] data) {
 		super(data);
 	}
 
@@ -35,7 +35,7 @@ public class SubsciberID extends PCMMBaseObject implements ISubscriberID {
 	 * @param sType
 	 * @param sNum
 	 */
-	public SubsciberID(short len, short sType, short sNum) {
+	public SubscriberID(short len, short sType, short sNum) {
 		super(len, sType, sNum);
 	}
 
@@ -46,7 +46,11 @@ public class SubsciberID extends PCMMBaseObject implements ISubscriberID {
 	 */
 	@Override
 	public InetAddress getSourceIPAddress() {
-		return address;
+		try {
+			return Inet4Address.getByAddress(getBytes((short) 0, (short) 4));
+		} catch (UnknownHostException e) {
+			return null;
+		}
 	}
 
 	/*
@@ -57,7 +61,7 @@ public class SubsciberID extends PCMMBaseObject implements ISubscriberID {
 	 */
 	@Override
 	public void setSourceIPAddress(InetAddress address) {
-		this.address = address;
+		setBytes(address.getAddress(), (short) 0);
 	}
 
 }

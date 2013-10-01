@@ -7,14 +7,10 @@ import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.IAMID;
 
 /**
- * @author riadh
+ * @author rhadjamor@gmail.com
  * 
  */
 public class AMID extends PCMMBaseObject implements IAMID {
-
-	private short applicationType;
-
-	private short applicationMgrTag;
 
 	/**
 	 * 
@@ -46,7 +42,7 @@ public class AMID extends PCMMBaseObject implements IAMID {
 	 */
 	@Override
 	public void setApplicationType(short type) {
-		this.applicationType = type;
+		setShort(type, (short) 0);
 	}
 
 	/*
@@ -56,7 +52,7 @@ public class AMID extends PCMMBaseObject implements IAMID {
 	 */
 	@Override
 	public short getApplicationType() {
-		return applicationType;
+		return getShort((short) 0);
 	}
 
 	/*
@@ -66,7 +62,7 @@ public class AMID extends PCMMBaseObject implements IAMID {
 	 */
 	@Override
 	public void setApplicationMgrTag(short type) {
-		applicationMgrTag = type;
+		setShort(type, (short) 2);
 	}
 
 	/*
@@ -76,7 +72,7 @@ public class AMID extends PCMMBaseObject implements IAMID {
 	 */
 	@Override
 	public short getApplicationMgrTag() {
-		return applicationMgrTag;
+		return getShort((short) 2);
 	}
 
 }

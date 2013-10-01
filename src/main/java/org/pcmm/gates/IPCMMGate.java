@@ -29,12 +29,6 @@ import org.umu.cops.stack.COPSHeader;
  */
 public interface IPCMMGate {
 
-	/**
-	 * gets the cops decision header
-	 * 
-	 * @return cops header
-	 */
-	COPSHeader getCopsHeader();
 
 	/**
 	 * 
@@ -131,7 +125,11 @@ public interface IPCMMGate {
 	 */
 	ITrafficProfile getTrafficProfile();
 
-	COPSData getCopsData();
+	/**
+	 * 
+	 * @return cops data
+	 */
+	byte[] getData();
 	// Event Generation Info (optional)
 	// Time-Based Usage Limit (optional)
 	// Volume-Based Usage Limit (optional)

@@ -38,6 +38,10 @@ public class GateSpec extends PCMMBaseObject implements IGateSpec {
 		dscpTOSMask = (byte) 0;
 	}
 
+	public GateSpec(byte[] data) {
+		super(data);
+	}
+
 	@Override
 	public ISessionClassID getSessionClassID() {
 		return sessionClassID;

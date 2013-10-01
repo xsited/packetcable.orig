@@ -72,6 +72,15 @@ public interface IClassifier extends IPCMMBaseObject {
 	 *            priority
 	 */
 	void setPriority(byte p);
+	
+	
+	byte getDSCPTOS();
+	
+	void setDSCPTOS(byte v);
+	
+	byte getDSCPTOSMask();
+	
+	void setDSCPTOSMask(byte v);
 
 	// DSCP/TOS Field
 	// 

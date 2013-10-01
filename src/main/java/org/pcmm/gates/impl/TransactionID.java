@@ -7,13 +7,10 @@ import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.ITransactionID;
 
 /**
- * @author riadh
+ * @author rhadjamor@gmail.com
  * 
  */
 public class TransactionID extends PCMMBaseObject implements ITransactionID {
-
-	private short transactionId;
-	private short cmdType;
 
 	/**
 	 * 
@@ -45,7 +42,7 @@ public class TransactionID extends PCMMBaseObject implements ITransactionID {
 	 */
 	@Override
 	public void setTransactionIdentifier(short id) {
-		transactionId = id;
+		setShort(id, (short) 0);
 	}
 
 	/*
@@ -55,7 +52,7 @@ public class TransactionID extends PCMMBaseObject implements ITransactionID {
 	 */
 	@Override
 	public short getTransactionIdentifier() {
-		return transactionId;
+		return getShort((short) 0);
 	}
 
 	/*
@@ -65,7 +62,7 @@ public class TransactionID extends PCMMBaseObject implements ITransactionID {
 	 */
 	@Override
 	public void setGateCommandType(short type) {
-		cmdType = type;
+		setShort(type, (short) 2);
 	}
 
 	/*
@@ -75,7 +72,7 @@ public class TransactionID extends PCMMBaseObject implements ITransactionID {
 	 */
 	@Override
 	public short getGateCommandType() {
-		return cmdType;
+		return getShort((short) 2);
 	}
 
 }

@@ -12,8 +12,6 @@ import org.pcmm.gates.IGateID;
  */
 public class GateID extends PCMMBaseObject implements IGateID {
 
-	private int gateID;
-
 	/**
 	 * 
 	 */
@@ -44,7 +42,7 @@ public class GateID extends PCMMBaseObject implements IGateID {
 	 */
 	@Override
 	public void setGateID(int gateID) {
-		this.gateID = gateID;
+		setInt(gateID, (short) 0);
 	}
 
 	/*
@@ -54,7 +52,7 @@ public class GateID extends PCMMBaseObject implements IGateID {
 	 */
 	@Override
 	public int getGateID() {
-		return gateID;
+		return getInt((short) 0);
 	}
 
 }

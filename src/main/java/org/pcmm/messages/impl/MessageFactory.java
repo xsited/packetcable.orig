@@ -31,7 +31,6 @@ import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSKAMsg;
 import org.umu.cops.stack.COPSKATimer;
 import org.umu.cops.stack.COPSMsg;
-import org.umu.cops.stack.COPSObjHeader;
 import org.umu.cops.stack.COPSPepId;
 import org.umu.cops.stack.COPSReqMsg;
 
@@ -109,7 +108,8 @@ public class MessageFactory implements IMessageFactory {
 	protected COPSMsg createDECMessage(Properties prop) {
 
 		// ===common part between all gate control messages
-		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC);
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC,
+				IPCMMClient.CLIENT_TYPE);
 		// TODO extract constants
 		COPSContext context = new COPSContext((short) 0x08, (short) 0);
 		COPSDecision decision = new COPSDecision();
@@ -118,16 +118,13 @@ public class MessageFactory implements IMessageFactory {
 		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
 			decision.setData((COPSData) prop
 					.get(IMessage.MessageProperties.GATE_CONTROL));
-
-		COPSDecisionMsgEX msg = new COPSDecisionMsgEX();
+		COPSDecisionMsg msg = new COPSDecisionMsg();
 		try {
 			msg.add(hdr);
-
 			COPSHandle handle = new COPSHandle();
 			if (prop.get(IMessage.MessageProperties.CLIENT_HANDLE) != null)
 				handle.setId(new COPSData((String) prop
 						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
-
 			msg.add(handle);
 			msg.addDecision(decision, context);
 		} catch (COPSException e) {
