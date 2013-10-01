@@ -1,5 +1,7 @@
 package org.pcmm.gates;
 
+import org.pcmm.base.IPCMMBaseObject;
+
 /**
  * <p>
  * The GateSpec describes some high-level attributes of the Gate, and contains
@@ -8,11 +10,16 @@ package org.pcmm.gates;
  * </p>
  * 
  * 
- * @author rhadjamor@gmail.com 
+ * @author rhadjamor@gmail.com
  * 
  * 
  */
-public interface IGateSpec {
+public interface IGateSpec extends IPCMMBaseObject {
+
+	static final short SNUM = 5;
+	static final short STYPE = 1;
+	static final short LENGTH = 16;
+
 	/**
 	 * <p>
 	 * Direction indicates whether the Gate is for an upstream or downstream
@@ -24,24 +31,81 @@ public interface IGateSpec {
 	 * @author rhadjamor@gmail.com
 	 * 
 	 */
-	enum Direction {
+	public enum Direction {
 
-		UPSTREAM("Upstream"), DOWNSTREAM("Downstream");
+		UPSTREAM((byte) 1), DOWNSTREAM((byte) 0);
 
-		private Direction(String value) {
+		private Direction(byte value) {
 			this.value = value;
 		}
 
-		public String getValue() {
+		public byte getValue() {
 			return value;
 		}
 
 		@Override
 		public String toString() {
-			return getValue();
+			switch (value) {
+			case 1:
+				return "Upstream";
+			default:
+				return "Downstream";
+			}
 		}
 
-		private String value;
+		private byte value;
+
+		public static Direction valueOf(byte v) {
+			switch (v) {
+			case 0:
+				return Direction.DOWNSTREAM;
+			case 1:
+				return Direction.UPSTREAM;
+			default:
+				throw new IllegalArgumentException("not supported value");
+			}
+		}
+
+	};
+
+	/**
+	 * @author rhadjamor@gmail.com
+	 * 
+	 */
+	public enum DSCPTOS {
+
+		ENABLE((byte) 1), OVERRIDE((byte) 0);
+
+		private DSCPTOS(byte value) {
+			this.value = value;
+		}
+
+		public byte getValue() {
+			return value;
+		}
+
+		@Override
+		public String toString() {
+			switch (value) {
+			case 1:
+				return "Enable";
+			default:
+				return "Override";
+			}
+		}
+
+		public static DSCPTOS valueOf(byte v) {
+			switch (v) {
+			case 0:
+				return DSCPTOS.OVERRIDE;
+			case 1:
+				return DSCPTOS.ENABLE;
+			default:
+				throw new IllegalArgumentException("not supported value");
+			}
+		}
+
+		private byte value;
 
 	};
 
@@ -57,7 +121,23 @@ public interface IGateSpec {
 	 * 
 	 * @return session class ID;
 	 */
-	int getSessionClassID();
+	ISessionClassID getSessionClassID();
+
+	/**
+	 * <p>
+	 * sets the session class ID;
+	 * </p>
+	 * <p>
+	 * SessionClassID is a 1-byte unsigned integer value which identifies the
+	 * proper admission control policy or parameters to be applied for this
+	 * Gate. The SessionClassID is a bit field, defined as follows: Bit 0-2:
+	 * Priority, a number from 0 to 7, where 0 is low priority and 7 is high.
+	 * Bit 3: Preemption, set to enable preemption of bandwidth allocated to
+	 * lower priority sessions if necessary (if supported). Bit 4-7:
+	 * Configurable, default to 0
+	 * </p>
+	 */
+	void setSessionClassID(ISessionClassID id);
 
 	/**
 	 * 
@@ -66,12 +146,28 @@ public interface IGateSpec {
 	Direction getDirection();
 
 	/**
+	 * sets the direction
+	 * 
+	 * @param direction
+	 *            Direction
+	 */
+	void setDirection(Direction direction);
+
+	/**
 	 * Authorized Timer limits the amount of time the authorization must remain
 	 * valid before it is reserved
 	 * 
 	 * @return time in ms;
 	 */
-	int getAuthorizedTimer();
+	short getAuthorizedTimer();
+
+	/**
+	 * sets the authorized timer
+	 * 
+	 * @param authTimer
+	 *            : authorized timer
+	 */
+	void setAuthorizedTimer(short authTimer);
 
 	/**
 	 * Reserved Timer limits the amount of time the reservation must remain
@@ -79,7 +175,14 @@ public interface IGateSpec {
 	 * 
 	 * @return time in ms;
 	 */
-	int getReservedTimer();
+	short getReservedTimer();
+
+	/**
+	 * sets the reserved timer.
+	 * 
+	 * @param timer
+	 */
+	void setReservedTimer(short timer);
 
 	/**
 	 * Committed Timer limits the amount of time a committed service flow may
@@ -87,7 +190,15 @@ public interface IGateSpec {
 	 * 
 	 * @return time in ms;
 	 */
-	int getCommittedTimer();
+	short getCommittedTimer();
+
+	/**
+	 * sets the committed timer.
+	 * 
+	 * @param t
+	 *            timer
+	 */
+	void setCommittedTimer(short t);
 
 	/**
 	 * Committed Recovery Timer limits the amount of time that a committed
@@ -96,10 +207,38 @@ public interface IGateSpec {
 	 * 
 	 * @return time in ms;
 	 */
-	int getCommittedRecoveryTimer();
+	short getCommittedRecoveryTimer();
 
-	int getDSCP_TOSOverwrite();
+	/**
+	 * sets the Committed Recovery Timer.
+	 * 
+	 * @param t
+	 *            timer
+	 */
+	void setCommittedRecoveryTimer(short t);
 
-	int getDSCP_TOSMask();
+	/**
+	 * 
+	 * @param dscpTos
+	 */
+	void setDSCP_TOSOverwrite(DSCPTOS dscpTos);
+
+	/**
+	 * 
+	 * @return DSCP/TOS
+	 */
+	DSCPTOS getDSCP_TOSOverwrite();
+
+	/**
+	 * 
+	 * @return
+	 */
+	byte getDSCP_TOSMask();
+
+	/**
+	 * 
+	 * @param dscp_tos_mask
+	 */
+	void setDSCP_TOSMask(byte dscp_tos_mask);
 
 }

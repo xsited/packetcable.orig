@@ -37,6 +37,7 @@ package org.pcmm.rcd;
 public interface ICMTS extends IPCMMServer {
 
 	// generates a GateID and assigns it to the IPCMMGate.
+
 	static final short DEFAULT_R_TYPE = (short) 0x08;
 	static final short DEFAULT_M_TYPE = (short) 0;
 

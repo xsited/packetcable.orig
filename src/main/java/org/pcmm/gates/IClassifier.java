@@ -2,13 +2,19 @@ package org.pcmm.gates;
 
 import java.net.InetAddress;
 
+import org.pcmm.base.IPCMMBaseObject;
+
 /**
  * 
  * @author rhadjamor@gmail.com
  * 
  * 
  */
-public interface IClassifier {
+public interface IClassifier extends IPCMMBaseObject {
+
+	static final short LENGTH = 24;
+	static final short SNUM = 6;
+	static final short STYPE = 1;
 
 	/**
 	 * IP Destination Address or IPv6 Destination Address is the termination
@@ -18,7 +24,11 @@ public interface IClassifier {
 	 */
 	InetAddress getDestinationIPAddress();
 
-	int getDestinationPort();
+	void setDestinationIPAddress(InetAddress address);
+
+	short getDestinationPort();
+
+	void setDestinationPort(short p);
 
 	/**
 	 * Source IP, IP Source Address, or IPv6 Source Address (in the case of
@@ -29,7 +39,11 @@ public interface IClassifier {
 	 */
 	InetAddress getSourceIPAddress();
 
-	int getSourcePort();
+	void setSourceIPAddress(InetAddress a);
+
+	short getSourcePort();
+	
+	void setSourcePort(short p);
 
 	/**
 	 * Protocol field, in a legacy Classifier or Extended Classifier, identifies
@@ -39,6 +53,8 @@ public interface IClassifier {
 	 * @return the protocol.
 	 */
 	String getProtocol();
+	
+	void setProtocol(String p);
 
 	/**
 	 * Priority may be used to distinguish between multiple classifiers that
@@ -47,7 +63,24 @@ public interface IClassifier {
 	 * 
 	 * @return priority.
 	 */
-	int getPriority();
+	byte getPriority();
+
+	/**
+	 * sets the priority;
+	 * 
+	 * @param p
+	 *            priority
+	 */
+	void setPriority(byte p);
+	
+	
+	byte getDSCPTOS();
+	
+	void setDSCPTOS(byte v);
+	
+	byte getDSCPTOSMask();
+	
+	void setDSCPTOSMask(byte v);
 
 	// DSCP/TOS Field
 	// 
