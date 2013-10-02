@@ -51,7 +51,7 @@ import org.umu.cops.stack.COPSReportMsg;
 public class PCMMPolicyServer extends AbstractPCMMClient implements
 		IPCMMPolicyServer {
 
-	private short transcationID;
+	private short transactionID;
 
 	/*
 	 * (non-Javadoc)
@@ -79,8 +79,8 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 	public Socket requestCMTSConnection(InetAddress host) {
 		try {
 			if (tryConnect(host, IANA_PORT)) {
-				boolean endNegociation = false;
-				while (!endNegociation) {
+				boolean endNegotiation = false;
+				while (!endNegotiation) {
 					logger.info("waiting for OPN message from CMTS");
 					COPSMsg opnMessage = readMessage();
 					// Client-Close
@@ -138,7 +138,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 									.setKaTimer(((COPSClientAcceptMsg) catMsg)
 											.getKATimer().getTimerVal());
 							new Thread(copsPdpConnection).start();
-							endNegociation = true;
+							endNegotiation = true;
 						} else
 							throw new COPSException("Can't understand request");
 					} else {
@@ -171,9 +171,9 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		// set transaction ID to gate set
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateSet);
-		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
-				: trID);
-		trID.setTransactionIdentifier(transcationID);
+		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
+				: trID.getTransactionIdentifier());
+		trID.setTransactionIdentifier(transactionID);
 
 		IAMID amid = new AMID();
 		amid.setApplicationType((short) 0);
@@ -248,9 +248,9 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		// set transaction ID to gate delete
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateDelete);
-		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
-				: trID);
-		trID.setTransactionIdentifier(transcationID);
+		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
+				: trID.getTransactionIdentifier());
+		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
 
@@ -265,9 +265,9 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		// set transaction ID to gate info
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateInfo);
-		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
-				: trID);
-		trID.setTransactionIdentifier(transcationID);
+		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
+				: trID.getTransactionIdentifier());
+		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
 
@@ -282,9 +282,9 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		// set transaction ID to synch request
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.SynchRequest);
-		transcationID = (short) (transcationID == 0 ? (short) (Math.random() * hashCode())
-				: trID);
-		trID.setTransactionIdentifier(transcationID);
+		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
+				: trID.getTransactionIdentifier());
+		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
 

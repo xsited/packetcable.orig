@@ -29,9 +29,12 @@ public class Test {
         PCMMPdpAgent lpdp;
         PCMMPdpAgent rpdp;
 
+        IPCMMPolicyServer ps = new PCMMPolicyServer();
+
         process = new PCMMPdpDataProcess();
         lpdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
         rpdp = new PCMMPdpAgent(PCMMDef.C_PCMM, process) ;
+
         // print menu
         System.out.println("1. Add Flow 1");
         System.out.println("2. Add Flow 2");
@@ -52,6 +55,7 @@ public class Test {
             switch (menuItem) {
             case 1:
                 System.out.println("Add Flow 1");
+                ps.gateSet();
                 break;
             case 2:
                 System.out.println("Add Flow 2");
@@ -76,8 +80,8 @@ public class Test {
                 break;
             case 7:
                 System.out.println("PCMMPolicyServer.requestCMTSConnection");
-		IPCMMPolicyServer ps = new PCMMPolicyServer();
 		ps.requestCMTSConnection("10.32.4.3");
+		//ps.requestCMTSConnection("127.0.0.1");
 
 
                 break;		

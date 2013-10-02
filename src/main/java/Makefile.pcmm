@@ -64,13 +64,30 @@ SOURCES = \
 	org/pcmm/rcd/impl/AbstractPCMMServer.java \
 	org/pcmm/rcd/impl/CMTS.java \
 	org/pcmm/rcd/impl/PCMMPolicyServer.java \
-	org/pcmm/rcd/IPCMMClient.java \
-	org/pcmm/rcd/IPCMMPolicyServer.java \
-	org/pcmm/rcd/IPCMMServer.java \
 	org/pcmm/scd/IApplicationServer.java \
 	org/pcmm/state/IPCMMRecordKeepingServer.java \
 	org/pcmm/state/IState.java \
 	org/pcmm/state/IStateful.java \
+	org/pcmm/PCMMGlobalConfig.java \
+	org/pcmm/base/IPCMMBaseObject.java \
+	org/pcmm/base/impl/PCMMBaseObject.java \
+	org/pcmm/gates/IGateID.java \
+	org/pcmm/gates/ISessionClassID.java \
+	org/pcmm/gates/ITransactionID.java \
+	org/pcmm/gates/impl/AMID.java \
+	org/pcmm/gates/impl/Classifier.java \
+	org/pcmm/gates/impl/DOCSISServiceClassNameTrafficProfile.java \
+	org/pcmm/gates/impl/ExtendedClassifier.java \
+	org/pcmm/gates/impl/GateID.java \
+	org/pcmm/gates/impl/GateSpec.java \
+	org/pcmm/gates/impl/PCMMGateReq.java \
+	org/pcmm/gates/impl/SessionClassID.java \
+	org/pcmm/gates/impl/SubscriberID.java \
+	org/pcmm/gates/impl/TransactionID.java \
+	org/pcmm/messages/impl/COPSDecisionMsgEX.java \
+	org/pcmm/rcd/IPCMMClient.java \
+	org/pcmm/rcd/IPCMMPolicyServer.java \
+	org/pcmm/rcd/IPCMMServer.java \
 	org/pcmm/utils/PCMMError.java \
 	org/pcmm/utils/PCMMLogger.java 
 
@@ -97,7 +114,7 @@ default: classes jar
 classes: $(SOURCES:.java=.class)
 
 jar:
-	jar cvf $(JAR_PKG) $(CLASSES)
+	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class
 
 tar:
 	tar czpf $(TARBALL) $(SOURCES) Makefile
