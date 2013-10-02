@@ -26,7 +26,7 @@ public interface IMessage {
 				"Accept-Timer"), ERR_MESSAGE("Error-Message"), MM_MAJOR_VERSION_INFO(
 				"MM-Major-Version-info"), MM_MINOR_VERSION_INFO(
 				"MM-Minor-Version-info"), R_TYPE("R-Type"), M_TYPE("M-Type"), CLIENT_HANDLE(
-				"Client-Handle");
+				"Client-Handle"), GATE_CONTROL("Gate-Control");
 
 		private MessageProperties(String valueString) {
 			this.value = valueString;

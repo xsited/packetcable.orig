@@ -2,6 +2,8 @@ package org.pcmm.gates;
 
 import java.net.InetAddress;
 
+import org.pcmm.base.IPCMMBaseObject;
+
 /**
  * <p>
  * The SubscriberID, consisting of the IPv4 or IPv6 address of either the CM or
@@ -26,7 +28,10 @@ import java.net.InetAddress;
  * 
  */
 
-public interface ISubscriberID {
+public interface ISubscriberID extends IPCMMBaseObject {
+	static final short LENGTH = 8;
+	static final short SNUM = 3;
+	static final short STYPE = 1;
 
 	/**
 	 * source IP address for the PCMM gate.
@@ -34,4 +39,7 @@ public interface ISubscriberID {
 	 * @return IP v4 or v6 ip address.
 	 */
 	InetAddress getSourceIPAddress();
+
+	void setSourceIPAddress(InetAddress address);
+
 }

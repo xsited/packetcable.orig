@@ -1,5 +1,7 @@
 package org.pcmm.gates;
 
+import org.pcmm.base.IPCMMBaseObject;
+
 /**
  * <p>
  * The AMID consists of two fields: the Application Manager Tag and Application
@@ -28,6 +30,18 @@ package org.pcmm.gates;
  * @author rhadjamor@gmail.com
  * 
  */
-public interface IAMID {
+public interface IAMID extends IPCMMBaseObject {
+
+	static final short LENGTH = 8;
+	static final short SNUM = 2;
+	static final short STYPE = 1;
+
+	void setApplicationType(short type);
+
+	short getApplicationType();
+
+	void setApplicationMgrTag(short type);
+
+	short getApplicationMgrTag();
 
 }

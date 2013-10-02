@@ -158,4 +158,3 @@ public class MMVersionInfo extends COPSObjBase {
 	}
 
 }
-

@@ -2,7 +2,6 @@ package org.pcmm.rcd;
 
 import java.net.InetAddress;
 
-import org.pcmm.messages.IMessage;
 import org.umu.cops.stack.COPSMsg;
 
 /**
@@ -80,5 +79,21 @@ public interface IPCMMClient {
 	 * @return whether the client is connected to the server of not.
 	 */
 	boolean isConnected();
+
+	/**
+	 * gets the client handle
+	 * 
+	 * @return client handle
+	 */
+	String getClientHandle();
+
+	/**
+	 * 
+	 * sets the client handle
+	 * 
+	 * @param handle
+	 *            cleint hanlde
+	 */
+	void setClientHandle(String handle);
 
 }
