@@ -3,8 +3,8 @@ package org.pcmm.gates;
 public interface IExtendedClassifier extends IClassifier {
 	
 	static final short LENGTH = 40;
-	static final short SNUM = 6;
-	static final short STYPE = 2;
+	static final byte SNUM = 6;
+	static final byte STYPE = 2;
 
 	int getIPSourceMask();
 

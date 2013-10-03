@@ -31,7 +31,7 @@ public class GateID extends PCMMBaseObject implements IGateID {
 	 * @param sType
 	 * @param sNum
 	 */
-	public GateID(short len, short sType, short sNum) {
+	public GateID(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 	}
 

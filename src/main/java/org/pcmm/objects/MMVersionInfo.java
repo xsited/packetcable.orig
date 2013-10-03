@@ -3,23 +3,16 @@
  */
 package org.pcmm.objects;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
-
-import org.umu.cops.stack.COPSData;
-import org.umu.cops.stack.COPSObjBase;
-import org.umu.cops.stack.COPSObjHeader;
+import org.pcmm.base.impl.PCMMBaseObject;
 
 /**
  * 
  * PCMM MM version info Object
- *@author rhadjamor@gmail.com  
+ * 
+ * @author rhadjamor@gmail.com
  */
-public class MMVersionInfo extends COPSObjBase {
+public class MMVersionInfo extends PCMMBaseObject {
 
-	private COPSObjHeader objHeader;
-	private COPSData copsData;
 	private short majorVersionNB;
 	private short minorVersionNB;
 	public static final short DEFAULT_MAJOR_VERSION_INFO = (short) 5;
@@ -30,101 +23,18 @@ public class MMVersionInfo extends COPSObjBase {
 	}
 
 	public MMVersionInfo(short majorVersionNB, short minorVersionNB) {
-		objHeader = new COPSObjHeader();
-		objHeader.setCNum((byte) 16);// len =16
-		objHeader.setCType((byte) 1);
-		objHeader.setDataLength((byte) 4);// total of 8
-		this.majorVersionNB = majorVersionNB;
-		this.minorVersionNB = minorVersionNB;
-		byte[] buff = new byte[4];
-		buff[0] = (byte) (this.majorVersionNB >> 8);
-		buff[1] = (byte) (this.majorVersionNB);
-		buff[2] = (byte) (this.minorVersionNB >> 8);
-		buff[3] = (byte) (this.minorVersionNB);
-		copsData = new COPSData(buff, 0, 4);
+		super((short) 8, (byte) 1, (byte) 16);
+		setShort(this.majorVersionNB = majorVersionNB, (short) 0);
+		setShort(this.minorVersionNB = minorVersionNB, (short) 2);
 	}
 
 	/**
 	 * Parse data and create COPSHandle object
 	 */
-	protected MMVersionInfo(byte[] dataPtr) {
-		objHeader = new COPSObjHeader();
-		objHeader.parse(dataPtr);
-		majorVersionNB |= ((short) dataPtr[4]) << 8;
-		majorVersionNB |= ((short) dataPtr[5]) & 0xFF;
-		minorVersionNB |= ((short) dataPtr[6]) << 8;
-		minorVersionNB |= ((short) dataPtr[7]) & 0xFF;
-		// Get the length of data following the obj header
-		int dLen = objHeader.getDataLength() - 8;
-		COPSData d = new COPSData(dataPtr, 4, dLen);
-		setId(d);
-	}
-
-	/**
-	 * Set handle value
-	 * 
-	 * @param id
-	 *            a COPSData
-	 * 
-	 */
-	public void setId(COPSData id) {
-		copsData = id;
-		majorVersionNB = 0;
-		minorVersionNB = 0;
-		byte[] dataPtr = id.getData();
-		majorVersionNB |= ((short) dataPtr[0]) << 8;
-		majorVersionNB |= ((short) dataPtr[1]) & 0xFF;
-		minorVersionNB |= ((short) dataPtr[2]) << 8;
-		minorVersionNB |= ((short) dataPtr[3]) & 0xFF;
-		objHeader.setDataLength((short) copsData.length());
-	}
-
-	/**
-	 * Returns size in number of octects, including header
-	 * 
-	 * @return a short
-	 * 
-	 */
-	public short getDataLength() {
-		// Add the size of the header also
-		return (short) objHeader.getDataLength();
-	}
-
-	/**
-	 * Get handle value
-	 * 
-	 * @return a COPSData
-	 * 
-	 */
-	public COPSData getCopsData() {
-		return copsData;
-	}
-
-	/**
-	 * Write data in network byte order on a given network socket
-	 * 
-	 * @param id
-	 *            a Socket
-	 * 
-	 * @throws IOException
-	 * 
-	 */
-	public void writeData(Socket id) throws IOException {
-		throw new RuntimeException(
-				"MMVersionInfo.writeData() is not implemented");
-	}
-
-	/**
-	 * Write an object textual description in the output stream
-	 * 
-	 * @param os
-	 *            an OutputStream
-	 * 
-	 * @throws IOException
-	 * 
-	 */
-	public void dump(OutputStream os) throws IOException {
-		throw new RuntimeException("MMVersionInfo.dump() is not implemented");
+	public MMVersionInfo(byte[] dataPtr) {
+		super(dataPtr);
+		majorVersionNB = getShort((short) 0);
+		minorVersionNB = getShort((short) 2);
 	}
 
 	/**

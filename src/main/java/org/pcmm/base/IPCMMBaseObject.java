@@ -1,5 +1,8 @@
 package org.pcmm.base;
 
+import java.io.IOException;
+import java.net.Socket;
+
 import org.umu.cops.stack.COPSData;
 
 public interface IPCMMBaseObject {
@@ -9,13 +12,13 @@ public interface IPCMMBaseObject {
 	 * 
 	 * @param stype
 	 */
-	void setSType(short stype);
+	void setSType(byte stype);
 
 	/**
 	 * 
 	 * @return S-Type
 	 */
-	short getSType();
+	byte getSType();
 
 	/**
 	 * sets the S-Num
@@ -23,14 +26,14 @@ public interface IPCMMBaseObject {
 	 * @param snum
 	 *            S-Num
 	 */
-	void setSNum(short snum);
+	void setSNum(byte snum);
 
 	/**
 	 * gets the S-Num
 	 * 
 	 * @return S-Num
 	 */
-	short getSNum();
+	byte getSNum();
 
 	/**
 	 * sets the length;
@@ -61,6 +64,7 @@ public interface IPCMMBaseObject {
 	 */
 	COPSData getData();
 
+	void writeData(Socket id) throws IOException ;
 	
 	byte[] getAsBinaryArray();
 

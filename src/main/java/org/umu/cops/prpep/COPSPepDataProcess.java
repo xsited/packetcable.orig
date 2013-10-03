@@ -6,14 +6,14 @@
 
 package org.umu.cops.prpep;
 
-import org.umu.cops.stack.COPSError;
-
 import java.util.Hashtable;
+
+import org.umu.cops.stack.COPSError;
 
 /**
  * COPSPepDataProcess process policy data and events.
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
+ * @author Fï¿½lix Jesï¿½s Garcï¿½a Clemente  (fgarcia@dif.um.es)
  * @version COPSPepDataProcess.java, v 2.00 2004
  *
  */

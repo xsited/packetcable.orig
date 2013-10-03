@@ -31,7 +31,7 @@ public class AMID extends PCMMBaseObject implements IAMID {
 	 * @param sType
 	 * @param sNum
 	 */
-	public AMID(short len, short sType, short sNum) {
+	public AMID(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 	}
 

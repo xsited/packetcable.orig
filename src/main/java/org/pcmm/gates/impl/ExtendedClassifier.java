@@ -28,7 +28,7 @@ public class ExtendedClassifier extends PCMMBaseObject implements
 	 * @param sType
 	 * @param sNum
 	 */
-	public ExtendedClassifier(short len, short sType, short sNum) {
+	public ExtendedClassifier(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 		// TODO Auto-generated constructor stub
 	}

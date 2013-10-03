@@ -31,7 +31,7 @@ public class TransactionID extends PCMMBaseObject implements ITransactionID {
 	 * @param sType
 	 * @param sNum
 	 */
-	public TransactionID(short len, short sType, short sNum) {
+	public TransactionID(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 	}
 

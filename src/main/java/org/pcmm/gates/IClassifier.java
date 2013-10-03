@@ -13,8 +13,8 @@ import org.pcmm.base.IPCMMBaseObject;
 public interface IClassifier extends IPCMMBaseObject {
 
 	static final short LENGTH = 24;
-	static final short SNUM = 6;
-	static final short STYPE = 1;
+	static final byte SNUM = 6;
+	static final byte STYPE = 1;
 
 	/**
 	 * IP Destination Address or IPv6 Destination Address is the termination

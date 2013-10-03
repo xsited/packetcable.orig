@@ -6,12 +6,23 @@
 
 package org.umu.cops.prpdp;
 
-import org.umu.cops.stack.*;
-
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import org.umu.cops.stack.COPSClientSI;
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSDeleteMsg;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSPrObjBase;
+import org.umu.cops.stack.COPSReportMsg;
+import org.umu.cops.stack.COPSReportType;
+import org.umu.cops.stack.COPSReqMsg;
+import org.umu.cops.stack.COPSSyncStateMsg;
 
 /**
  * State manager class for provisioning requests, at the PDP side.

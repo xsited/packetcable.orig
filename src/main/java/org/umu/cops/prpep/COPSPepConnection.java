@@ -6,15 +6,26 @@
 
 package org.umu.cops.prpep;
 
-import org.umu.cops.common.COPSDebug;
-import org.umu.cops.stack.*;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import org.umu.cops.common.COPSDebug;
+import org.umu.cops.stack.COPSClientCloseMsg;
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSDecision;
+import org.umu.cops.stack.COPSDecisionMsg;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSKAMsg;
+import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSSyncStateMsg;
+import org.umu.cops.stack.COPSTransceiver;
 
 /**
  * COPSPepConnection represents a PEP-PDP Connection Manager.

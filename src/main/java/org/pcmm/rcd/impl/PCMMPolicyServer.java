@@ -97,8 +97,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 									"CMTS shoud have sent MM version info in Client-Open message");
 						else {
 							// set the version info
-							MMVersionInfo vInfo = new MMVersionInfo();
-							vInfo.setId(opn.getClientSI().getData());
+							MMVersionInfo vInfo = new MMVersionInfo(opn.getClientSI().getData().getData());
 							setVersionInfo(vInfo);
 							logger.info("CMTS sent MMVersion info : major:"
 									+ vInfo.getMajorVersionNB() + "  minor:"

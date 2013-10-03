@@ -1,11 +1,21 @@
 package org.umu.cops.ospep;
 
-import org.umu.cops.stack.*;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Vector;
+
+import org.umu.cops.stack.COPSClientSI;
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSDeleteMsg;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSReason;
+import org.umu.cops.stack.COPSReportMsg;
+import org.umu.cops.stack.COPSReportType;
+import org.umu.cops.stack.COPSReqMsg;
+import org.umu.cops.stack.COPSSyncStateMsg;
 
 /**
  * COPS message transceiver class for outsourcing connections at the PEP side.

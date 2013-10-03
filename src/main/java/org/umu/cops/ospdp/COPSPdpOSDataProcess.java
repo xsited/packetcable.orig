@@ -1,8 +1,8 @@
 package org.umu.cops.ospdp;
 
-import org.umu.cops.stack.COPSError;
-
 import java.util.Vector;
+
+import org.umu.cops.stack.COPSError;
 
 /**
  * Abstract class for implementing policy data processing classes for outsourcing PDPs.

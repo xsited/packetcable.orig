@@ -10,8 +10,8 @@ import org.pcmm.base.IPCMMBaseObject;
  */
 public interface ITransactionID extends IPCMMBaseObject {
 
-	static final short SNUM = 1;
-	static final short STYPE = 1;
+	static final byte SNUM = 1;
+	static final byte STYPE = 1;
 	static final short LENGTH = 8;
 
 	static final short GateSet = 4;

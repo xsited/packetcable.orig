@@ -1,11 +1,17 @@
 package org.umu.cops.ospdp;
 
-import org.umu.cops.stack.*;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Vector;
+
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSDecision;
+import org.umu.cops.stack.COPSDecisionMsg;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSSyncStateMsg;
 
 /**
  * COPS message transceiver class for outsourcing connections at the PDP side.

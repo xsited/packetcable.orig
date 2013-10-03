@@ -6,12 +6,19 @@
 
 package org.umu.cops.prpep;
 
-import org.umu.cops.stack.*;
-
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSDecision;
+import org.umu.cops.stack.COPSDecisionMsg;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSPrObjBase;
+import org.umu.cops.stack.COPSSyncStateMsg;
 
 /**
  * COPSPepReqStateMan manages Request State using Client Handle (RFC 2748 pag. 21)
@@ -32,7 +39,7 @@ import java.util.Vector;
  *   states MUST be unique within the context of a particular TCP
  *   connection and client-type.
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
+ * @author Fï¿½lix Jesï¿½s Garcï¿½a Clemente  (fgarcia@dif.um.es)
  * @version COPSPepReqStateMan.java, v 2.00 2004
  *
  */
