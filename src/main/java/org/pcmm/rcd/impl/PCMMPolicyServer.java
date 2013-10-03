@@ -50,6 +50,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		IPCMMPolicyServer {
 
 	private short transactionID;
+	private int gateID;
 
 	/*
 	 * (non-Javadoc)
@@ -97,7 +98,8 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 									"CMTS shoud have sent MM version info in Client-Open message");
 						else {
 							// set the version info
-							MMVersionInfo vInfo = new MMVersionInfo(opn.getClientSI().getData().getData());
+							MMVersionInfo vInfo = new MMVersionInfo(opn
+									.getClientSI().getData().getData());
 							setVersionInfo(vInfo);
 							logger.info("CMTS sent MMVersion info : major:"
 									+ vInfo.getMajorVersionNB() + "  minor:"
@@ -222,6 +224,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		// waits for the gate-set-ack or error
 		COPSMsg responseMsg = readMessage();
 		if (responseMsg.getHeader().isAReport()) {
+			logger.info("processing received report from CMTS");
 			COPSReportMsg reportMsg = (COPSReportMsg) responseMsg;
 			if (reportMsg.getClientSI().size() == 0) {
 				return false;
@@ -232,9 +235,10 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 					.getData());
 			if (responseGate.getTransactionID() != null
 					&& responseGate.getTransactionID().getGateCommandType() == ITransactionID.GateSetAck) {
+				logger.info("the CMTS has sent a Gate-Set-Ack response");
 				// here CMTS responded that he acknowledged the Gate-Set
 				// TODO do further check of Gate-Set-Ack GateID etc...
-
+				gateID = responseGate.getGateID().getGateID();
 				return true;
 			} else {
 				return false;

@@ -101,6 +101,14 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 				+ size);
 	}
 
+	protected void setByte(byte value, short startPos) {
+		setBytes(new byte[] { value }, startPos);
+	}
+
+	protected byte getByte(short startPos) {
+		return getBytes(startPos, (short) 1)[0];
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

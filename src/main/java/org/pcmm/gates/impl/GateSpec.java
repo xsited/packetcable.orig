@@ -13,29 +13,8 @@ import org.pcmm.gates.ISessionClassID;
  */
 public class GateSpec extends PCMMBaseObject implements IGateSpec {
 
-	private ISessionClassID sessionClassID;
-
-	private Direction direction;
-
-	private short authorizedTimer;
-
-	private short committedRecoveryTimer;
-
-	private short committedTimer;
-
-	private short reservedTimer;
-
-	private byte dscpTOSMask;
-
-	private DSCPTOS dscpTOSOverride;
-
 	public GateSpec() {
 		super(LENGTH, STYPE, SNUM);
-		authorizedTimer = 0;
-		committedRecoveryTimer = 0;
-		committedTimer = 0;
-		reservedTimer = 0;
-		dscpTOSMask = (byte) 0;
 	}
 
 	public GateSpec(byte[] data) {
@@ -44,82 +23,84 @@ public class GateSpec extends PCMMBaseObject implements IGateSpec {
 
 	@Override
 	public ISessionClassID getSessionClassID() {
-		return sessionClassID;
+		return new SessionClassID(getByte((short) 3));
 	}
 
 	@Override
 	public void setSessionClassID(ISessionClassID id) {
-		this.sessionClassID = id;
+		setByte(id.toSingleByte(), (short) 3);
 	}
 
 	@Override
 	public Direction getDirection() {
-		return direction;
+		return Direction.valueOf(getByte((short) 0));
 	}
 
 	@Override
 	public void setDirection(Direction direction) {
-		this.direction = direction;
+		setByte(direction.getValue(), (short) 0);
 	}
 
 	@Override
-	public short getAuthorizedTimer() {
-		return authorizedTimer;
+	public short getTimerT1() {
+		return getShort((short) 4);
 	}
 
 	@Override
-	public void setAuthorizedTimer(short authTimer) {
-		this.authorizedTimer = authTimer;
+	public void setTimerT1(short authTimer) {
+		setShort(authTimer, (short) 4);
 	}
 
 	@Override
-	public short getReservedTimer() {
-		return reservedTimer;
+	public short getTimerT2() {
+		return getShort((short) 6);
 	}
 
 	@Override
-	public void setReservedTimer(short timer) {
-		this.reservedTimer = timer;
+	public void setTimerT2(short timer) {
+		setShort(timer, (short) 6);
+
 	}
 
 	@Override
-	public short getCommittedTimer() {
-		return committedTimer;
+	public short getTimerT3() {
+		return getShort((short) 8);
 	}
 
 	@Override
-	public void setCommittedTimer(short t) {
-		this.committedTimer = t;
+	public void setTimerT3(short t) {
+		setShort(t, (short) 8);
+
 	}
 
 	@Override
-	public short getCommittedRecoveryTimer() {
-		return this.committedRecoveryTimer;
+	public short getTimerT4() {
+		return getShort((short) 10);
 	}
 
 	@Override
-	public void setCommittedRecoveryTimer(short t) {
-		this.committedRecoveryTimer = t;
+	public void setTimerT4(short t) {
+		setShort(t, (short) 10);
 	}
 
 	@Override
 	public void setDSCP_TOSOverwrite(DSCPTOS dscpTos) {
-		this.dscpTOSOverride = dscpTos;
+		setByte(dscpTos.getValue(), (short) 1);
 	}
 
 	@Override
 	public DSCPTOS getDSCP_TOSOverwrite() {
-		return dscpTOSOverride;
+		return DSCPTOS.valueOf(getByte((short) 1));
 	}
 
 	@Override
 	public byte getDSCP_TOSMask() {
-		return dscpTOSMask;
+		return getByte((short) 2);
 	}
 
 	@Override
 	public void setDSCP_TOSMask(byte dscp_tos_mask) {
-		this.dscpTOSMask = dscp_tos_mask;
+		setByte(dscp_tos_mask, (short) 2);
 	}
 
 }

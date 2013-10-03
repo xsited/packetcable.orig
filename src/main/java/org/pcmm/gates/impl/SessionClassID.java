@@ -14,11 +14,15 @@ public class SessionClassID implements ISessionClassID {
 	private byte priority;
 	private byte preemption;
 
+	// TODO check this;
+	private byte session;
+
 	public SessionClassID() {
 		this((byte) 0);
 	}
 
 	public SessionClassID(byte value) {
+		session = value;
 		priority = 0;
 		preemption = 0;
 		priority |= value >> 2;
@@ -73,9 +77,10 @@ public class SessionClassID implements ISessionClassID {
 	 */
 	@Override
 	public byte toSingleByte() {
-		byte ret = 0;
-		ret |= (priority << 2);
-		ret |= (preemption & 0xf);
-		return ret;
+		// byte ret = 0;
+		// ret |= (priority << 2);
+		// ret |= (preemption & 0xf);
+		// return ret;
+		return session;
 	}
 }
