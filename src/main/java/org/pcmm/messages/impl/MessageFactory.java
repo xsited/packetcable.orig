@@ -106,7 +106,6 @@ public class MessageFactory implements IMessageFactory {
 	 * @return
 	 */
 	protected COPSMsg createDECMessage(Properties prop) {
-
 		// ===common part between all gate control messages
 		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC,
 				IPCMMClient.CLIENT_TYPE);
@@ -118,6 +117,7 @@ public class MessageFactory implements IMessageFactory {
 		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
 			decision.setData((COPSData) prop
 					.get(IMessage.MessageProperties.GATE_CONTROL));
+		prop.put(IMessage.MessageProperties.CLIENT_HANDLE, "SOME ID");
 		COPSDecisionMsg msg = new COPSDecisionMsg();
 		try {
 			msg.add(hdr);

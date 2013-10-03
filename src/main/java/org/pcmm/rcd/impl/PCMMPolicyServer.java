@@ -172,7 +172,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateSet);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 
 		IAMID amid = new AMID();
@@ -249,7 +249,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateDelete);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
@@ -266,7 +266,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateInfo);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
@@ -283,7 +283,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.SynchRequest);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}

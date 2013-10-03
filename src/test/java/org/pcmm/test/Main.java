@@ -21,7 +21,7 @@ public class Main {
 		icmts.startServer();
 		IPCMMPolicyServer ps = new PCMMPolicyServer();
 		ps.requestCMTSConnection("localhost");
-		ps.gateSet();
+		//ps.gateSet();
 
 	}
 }
