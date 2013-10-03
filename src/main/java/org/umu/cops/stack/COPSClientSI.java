@@ -34,6 +34,13 @@ public class COPSClientSI extends COPSObjBase
 		_objHdr.setCType(type);
 	}
 
+	public COPSClientSI(byte cnum, byte ctype)
+	{
+		_objHdr = new COPSObjHeader();
+		_objHdr.setCNum(cnum);
+		_objHdr.setCType(ctype);
+	}
+
 	/**
 	 Parse the data and create a ClientSI object
 	 */

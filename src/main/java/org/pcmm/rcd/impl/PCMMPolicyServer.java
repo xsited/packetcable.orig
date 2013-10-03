@@ -3,6 +3,7 @@
  */
 package org.pcmm.rcd.impl;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -131,6 +132,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 						if (reqMsg.getHeader().isARequest()) {
 							logger.info("Received REQ message form CMTS");
 							// end connection attempts
+/*
 							COPSPdpDataProcess processor = null;
 							COPSPdpConnection copsPdpConnection = new COPSPdpConnection(
 									opn.getPepId(), getSocket(), processor);
@@ -138,6 +140,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 									.setKaTimer(((COPSClientAcceptMsg) catMsg)
 											.getKATimer().getTimerVal());
 							new Thread(copsPdpConnection).start();
+*/
 							endNegotiation = true;
 						} else
 							throw new COPSException("Can't understand request");
@@ -172,7 +175,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateSet);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+                	: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 
 		IAMID amid = new AMID();
@@ -183,13 +186,13 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		subscriberID.setSourceIPAddress(getSocket().getLocalAddress());
 
 		IGateSpec gateSpec = new GateSpec();
-		gateSpec.setDirection(Direction.DOWNSTREAM);
+		gateSpec.setDirection(Direction.UPSTREAM);
 		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
 
 		ITrafficProfile trafficProfile = new DOCSISServiceClassNameTrafficProfile();
-		trafficProfile.setEnvelop((byte) 0x111);
+		trafficProfile.setEnvelop((byte) 0x0);
 		((DOCSISServiceClassNameTrafficProfile) trafficProfile)
-				.setServiceClassName("S_down");
+				.setServiceClassName("S_up");
 
 		IClassifier classifier = new Classifier();
 		classifier.setProtocol("tcp");
@@ -208,11 +211,20 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		byte[] data = gate.getData();
 		prop.put(IMessage.MessageProperties.GATE_CONTROL, new COPSData(data, 0,
 				data.length));
+		prop.put(IMessage.MessageProperties.CLIENT_HANDLE, 0);
 		COPSMsg dec = MessageFactory.getInstance().create(
 				COPSHeader.COPS_OP_DEC, prop);
+                      try {
+		dec.dump(System.out);
+		dec.writeData(getSocket());
+                        } catch (IOException unae) {
+                        }
+
+
 
 		// sends the gate-set
-		sendRequest(dec);
+		//sendRequest(dec);
+		
 		// waits for the gate-set-ack or error
 		COPSMsg responseMsg = readMessage();
 		if (responseMsg.getHeader().isAReport()) {
@@ -249,7 +261,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateDelete);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+                	: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
@@ -266,7 +278,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateInfo);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+                	: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
@@ -283,7 +295,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.SynchRequest);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-				: trID.getTransactionIdentifier());
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}

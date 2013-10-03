@@ -3,6 +3,7 @@
  */
 package org.pcmm.messages.impl;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -42,6 +43,7 @@ import org.umu.cops.stack.COPSReqMsg;
  * 
  */
 public class MessageFactory implements IMessageFactory {
+	public static final short KA_TIMER_VALUE = 360;
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
@@ -127,6 +129,13 @@ public class MessageFactory implements IMessageFactory {
 						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
 			msg.add(handle);
 			msg.addDecision(decision, context);
+	
+			try {
+			msg.dump(System.out);
+			} catch (IOException unae) {
+			}
+
+
 		} catch (COPSException e) {
 			logger.severe(e.getMessage());
 		}
@@ -190,10 +199,10 @@ public class MessageFactory implements IMessageFactory {
 		COPSKATimer katimer = null;
 		COPSAcctTimer acctTimer = null;
 		if (prop.get(IMessage.MessageProperties.KA_TIMER) != null)
-			katimer = new COPSKATimer(
-					(Short) prop.get(IMessage.MessageProperties.KA_TIMER));
+			katimer = new COPSKATimer((short)KA_TIMER_VALUE);
+			//		(Short) prop.get(IMessage.MessageProperties.KA_TIMER));
 		else
-			katimer = new COPSKATimer();
+			katimer = new COPSKATimer((short)KA_TIMER_VALUE);
 		if (prop.get(IMessage.MessageProperties.ACCEPT_TIMER) != null)
 			acctTimer = new COPSAcctTimer(
 					(Short) prop.get(IMessage.MessageProperties.ACCEPT_TIMER));
