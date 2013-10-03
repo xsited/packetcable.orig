@@ -32,6 +32,7 @@ public class COPSDecision extends COPSObjBase {
 	public final static byte DEC_REMOVE = 2;
 	
 	// Flags
+	public final static byte F_REQERROR = 0x1;
 	public final static byte F_REQSTATE = 0x2;
 	
 	protected COPSObjHeader _objHdr;
