@@ -159,7 +159,7 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * 
 	 * @return time in ms;
 	 */
-	short getAuthorizedTimer();
+	short getTimerT1();
 
 	/**
 	 * sets the authorized timer
@@ -167,7 +167,7 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * @param authTimer
 	 *            : authorized timer
 	 */
-	void setAuthorizedTimer(short authTimer);
+	void setTimerT1(short authTimer);
 
 	/**
 	 * Reserved Timer limits the amount of time the reservation must remain
@@ -175,14 +175,14 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * 
 	 * @return time in ms;
 	 */
-	short getReservedTimer();
+	short getTimerT2();
 
 	/**
 	 * sets the reserved timer.
 	 * 
 	 * @param timer
 	 */
-	void setReservedTimer(short timer);
+	void setTimerT2(short timer);
 
 	/**
 	 * Committed Timer limits the amount of time a committed service flow may
@@ -190,7 +190,7 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * 
 	 * @return time in ms;
 	 */
-	short getCommittedTimer();
+	short getTimerT3();
 
 	/**
 	 * sets the committed timer.
@@ -198,7 +198,7 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * @param t
 	 *            timer
 	 */
-	void setCommittedTimer(short t);
+	void setTimerT3(short t);
 
 	/**
 	 * Committed Recovery Timer limits the amount of time that a committed
@@ -207,7 +207,7 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * 
 	 * @return time in ms;
 	 */
-	short getCommittedRecoveryTimer();
+	short getTimerT4();
 
 	/**
 	 * sets the Committed Recovery Timer.
@@ -215,7 +215,7 @@ public interface IGateSpec extends IPCMMBaseObject {
 	 * @param t
 	 *            timer
 	 */
-	void setCommittedRecoveryTimer(short t);
+	void setTimerT4(short t);
 
 	/**
 	 * 

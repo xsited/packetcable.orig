@@ -39,18 +39,16 @@ public class PCMMGateReq implements IPCMMGate {
 	}
 
 	public PCMMGateReq(byte[] data) {
-		short len, sNum, sType, offset;
-		len = sNum = sType = offset = 0;
+		short len, offset;
+		byte sNum, sType;
+		len = offset = 0;
+		sNum = sType = (byte) 0;
 		while (offset + 5 < data.length) {
 			len = 0;
 			len |= ((short) data[offset]) << 8;
 			len |= ((short) data[offset + 1]) & 0xFF;
-			sNum = 0;
-			sNum |= ((short) data[offset + 2]) << 8;
-			sNum |= ((short) data[offset + 3]) & 0xFF;
-			sType = 0;
-			sType |= ((short) data[offset + 4]) << 8;
-			sType |= ((short) data[offset + 5]) & 0xFF;
+			sNum = data[offset + 2];
+			sType = data[offset + 3];
 			switch (sNum) {
 			case IGateID.SNUM:
 				setGateID(new GateID(Arrays.copyOfRange(data, offset, len)));
@@ -78,7 +76,8 @@ public class PCMMGateReq implements IPCMMGate {
 						len)));
 				break;
 			default:
-				throw new IllegalArgumentException("unhandled Object");
+				System.out.println("unhandled Object skept : S-NUM=" + sNum
+						+ "  S-TYPE=" + sType + "  LEN=" + len);
 			}
 			offset += len;
 		}
