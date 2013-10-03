@@ -108,7 +108,6 @@ public class MessageFactory implements IMessageFactory {
 	 * @return
 	 */
 	protected COPSMsg createDECMessage(Properties prop) {
-
 		// ===common part between all gate control messages
 		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC,
 				IPCMMClient.CLIENT_TYPE);
@@ -120,6 +119,7 @@ public class MessageFactory implements IMessageFactory {
 		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
 			decision.setData((COPSData) prop
 					.get(IMessage.MessageProperties.GATE_CONTROL));
+		prop.put(IMessage.MessageProperties.CLIENT_HANDLE, "SOME ID");
 		COPSDecisionMsg msg = new COPSDecisionMsg();
 		try {
 			msg.add(hdr);
@@ -129,12 +129,11 @@ public class MessageFactory implements IMessageFactory {
 						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
 			msg.add(handle);
 			msg.addDecision(decision, context);
-	
+
 			try {
-			msg.dump(System.out);
+				msg.dump(System.out);
 			} catch (IOException unae) {
 			}
-
 
 		} catch (COPSException e) {
 			logger.severe(e.getMessage());
@@ -165,8 +164,9 @@ public class MessageFactory implements IMessageFactory {
 					.get(MessageProperties.MM_MINOR_VERSION_INFO);
 		// Mandatory MM version.
 		COPSClientSI clientSI = new COPSClientSI((byte) 1);
-		clientSI.setData(new MMVersionInfo((short) majorVersion,
-				(short) minorVersion).getCopsData());
+		byte[] versionInfo = new MMVersionInfo(majorVersion, minorVersion)
+				.getAsBinaryArray();
+		clientSI.setData(new COPSData(versionInfo, 0, versionInfo.length));
 		COPSClientOpenMsg msg = new COPSClientOpenMsg();
 		try {
 			COPSData d = null;
@@ -199,10 +199,10 @@ public class MessageFactory implements IMessageFactory {
 		COPSKATimer katimer = null;
 		COPSAcctTimer acctTimer = null;
 		if (prop.get(IMessage.MessageProperties.KA_TIMER) != null)
-			katimer = new COPSKATimer((short)KA_TIMER_VALUE);
-			//		(Short) prop.get(IMessage.MessageProperties.KA_TIMER));
+			katimer = new COPSKATimer((short) KA_TIMER_VALUE);
+		// (Short) prop.get(IMessage.MessageProperties.KA_TIMER));
 		else
-			katimer = new COPSKATimer((short)KA_TIMER_VALUE);
+			katimer = new COPSKATimer((short) KA_TIMER_VALUE);
 		if (prop.get(IMessage.MessageProperties.ACCEPT_TIMER) != null)
 			acctTimer = new COPSAcctTimer(
 					(Short) prop.get(IMessage.MessageProperties.ACCEPT_TIMER));

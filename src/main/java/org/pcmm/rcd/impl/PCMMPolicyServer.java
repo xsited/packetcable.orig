@@ -30,9 +30,6 @@ import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMPolicyServer;
 import org.pcmm.state.IState;
-import org.umu.cops.prpdp.COPSPdpConnection;
-import org.umu.cops.prpdp.COPSPdpDataProcess;
-import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
 import org.umu.cops.stack.COPSClientOpenMsg;
 import org.umu.cops.stack.COPSClientSI;
@@ -100,8 +97,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 									"CMTS shoud have sent MM version info in Client-Open message");
 						else {
 							// set the version info
-							MMVersionInfo vInfo = new MMVersionInfo();
-							vInfo.setId(opn.getClientSI().getData());
+							MMVersionInfo vInfo = new MMVersionInfo(opn.getClientSI().getData().getData());
 							setVersionInfo(vInfo);
 							logger.info("CMTS sent MMVersion info : major:"
 									+ vInfo.getMajorVersionNB() + "  minor:"
@@ -132,15 +128,15 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 						if (reqMsg.getHeader().isARequest()) {
 							logger.info("Received REQ message form CMTS");
 							// end connection attempts
-/*
-							COPSPdpDataProcess processor = null;
-							COPSPdpConnection copsPdpConnection = new COPSPdpConnection(
-									opn.getPepId(), getSocket(), processor);
-							copsPdpConnection
-									.setKaTimer(((COPSClientAcceptMsg) catMsg)
-											.getKATimer().getTimerVal());
-							new Thread(copsPdpConnection).start();
-*/
+							/*
+							 * COPSPdpDataProcess processor = null;
+							 * COPSPdpConnection copsPdpConnection = new
+							 * COPSPdpConnection( opn.getPepId(), getSocket(),
+							 * processor); copsPdpConnection
+							 * .setKaTimer(((COPSClientAcceptMsg) catMsg)
+							 * .getKATimer().getTimerVal()); new
+							 * Thread(copsPdpConnection).start();
+							 */
 							endNegotiation = true;
 						} else
 							throw new COPSException("Can't understand request");
@@ -175,7 +171,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateSet);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-                	: transactionID);
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 
 		IAMID amid = new AMID();
@@ -214,17 +210,15 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		prop.put(IMessage.MessageProperties.CLIENT_HANDLE, 0);
 		COPSMsg dec = MessageFactory.getInstance().create(
 				COPSHeader.COPS_OP_DEC, prop);
-                      try {
-		dec.dump(System.out);
-		dec.writeData(getSocket());
-                        } catch (IOException unae) {
-                        }
-
-
+		try {
+			dec.dump(System.out);
+			dec.writeData(getSocket());
+		} catch (IOException unae) {
+		}
 
 		// sends the gate-set
-		//sendRequest(dec);
-		
+		// sendRequest(dec);
+
 		// waits for the gate-set-ack or error
 		COPSMsg responseMsg = readMessage();
 		if (responseMsg.getHeader().isAReport()) {
@@ -261,7 +255,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateDelete);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-                	: transactionID);
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}
@@ -278,7 +272,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		ITransactionID trID = new TransactionID();
 		trID.setGateCommandType(ITransactionID.GateInfo);
 		transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode())
-                	: transactionID);
+				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
 	}

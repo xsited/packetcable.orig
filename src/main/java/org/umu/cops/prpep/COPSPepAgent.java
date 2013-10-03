@@ -6,13 +6,24 @@
 
 package org.umu.cops.prpep;
 
-import org.umu.cops.stack.*;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Hashtable;
+
+import org.umu.cops.stack.COPSAcctTimer;
+import org.umu.cops.stack.COPSClientAcceptMsg;
+import org.umu.cops.stack.COPSClientCloseMsg;
+import org.umu.cops.stack.COPSClientOpenMsg;
+import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSKATimer;
+import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSPepId;
+import org.umu.cops.stack.COPSTransceiver;
 
 /**
  * This is a provisioning COPS PEP. Responsible for making

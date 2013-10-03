@@ -6,12 +6,21 @@
 
 package org.umu.cops.prpdp;
 
-import org.umu.cops.stack.*;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSDecision;
+import org.umu.cops.stack.COPSDecisionMsg;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSPrEPD;
+import org.umu.cops.stack.COPSPrID;
+import org.umu.cops.stack.COPSSyncStateMsg;
 
 /**
  * COPS message transceiver class for provisioning connections at the PDP side.

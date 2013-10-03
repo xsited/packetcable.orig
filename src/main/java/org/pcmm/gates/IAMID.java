@@ -33,8 +33,8 @@ import org.pcmm.base.IPCMMBaseObject;
 public interface IAMID extends IPCMMBaseObject {
 
 	static final short LENGTH = 8;
-	static final short SNUM = 2;
-	static final short STYPE = 1;
+	static final byte SNUM = 2;
+	static final byte STYPE = 1;
 
 	void setApplicationType(short type);
 

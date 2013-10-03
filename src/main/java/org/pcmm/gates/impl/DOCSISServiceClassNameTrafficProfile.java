@@ -7,17 +7,14 @@ import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.ITrafficProfile;
 
 /**
- * @author riadh
+ * @author rhadjamor@gmail.com
  * 
  */
 public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 		implements ITrafficProfile {
 
-	public static final short STYPE = 2;
-	public static final short LENGTH = 24;
-
-	private byte envelop;
-	private String serviceClassName;
+	public static final byte STYPE = 2;
+	public static final short LENGTH = 12;
 
 	/**
 	 * 
@@ -38,8 +35,7 @@ public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 	 * @param sType
 	 * @param sNum
 	 */
-	public DOCSISServiceClassNameTrafficProfile(short len, short sType,
-			short sNum) {
+	public DOCSISServiceClassNameTrafficProfile(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 		setEnvelop((byte) 0x111);
 	}
@@ -48,7 +44,7 @@ public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 	 * @return the serviceClassName
 	 */
 	public String getServiceClassName() {
-		return serviceClassName;
+		return new String(getBytes((short) 4, (short) 4));
 	}
 
 	/**
@@ -56,7 +52,7 @@ public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 	 *            the serviceClassName to set
 	 */
 	public void setServiceClassName(String serviceClassName) {
-		this.serviceClassName = serviceClassName;
+		setBytes(serviceClassName.getBytes(), (short) 4);
 	}
 
 	/*
@@ -66,7 +62,7 @@ public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 	 */
 	@Override
 	public byte getEnvelop() {
-		return envelop;
+		return getBytes((short) 0, (short) 1)[0];
 	}
 
 	/*
@@ -76,6 +72,6 @@ public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 	 */
 	@Override
 	public void setEnvelop(byte en) {
-		envelop = en;
+		setBytes(new byte[] { en }, (short) 0);
 	}
 }

@@ -38,7 +38,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 * @param sType
 	 * @param sNum
 	 */
-	public Classifier(short len, short sType, short sNum) {
+	public Classifier(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 	}
 
@@ -50,7 +50,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	@Override
 	public InetAddress getDestinationIPAddress() {
 		try {
-			return Inet4Address.getByAddress(getBytes((short) 6, (short) 4));
+			return Inet4Address.getByAddress(getBytes((short) 8, (short) 4));
 		} catch (UnknownHostException e) {
 			return null;
 		}
@@ -64,7 +64,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public void setDestinationIPAddress(InetAddress address) {
-		setBytes(address.getAddress(), (short) 6);
+		setBytes(address.getAddress(), (short) 8);
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public short getDestinationPort() {
-		return getShort((short) 12);
+		return getShort((short) 14);
 	}
 
 	/*
@@ -84,7 +84,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public void setDestinationPort(short p) {
-		setShort(p, (short) 12);
+		setShort(p, (short) 14);
 	}
 
 	/*
@@ -95,7 +95,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	@Override
 	public InetAddress getSourceIPAddress() {
 		try {
-			return Inet4Address.getByAddress(getBytes((short) 2, (short) 4));
+			return Inet4Address.getByAddress(getBytes((short) 4, (short) 4));
 		} catch (UnknownHostException e) {
 			return null;
 		}
@@ -108,7 +108,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public void setSourceIPAddress(InetAddress a) {
-		setBytes(a.getAddress(), (short) 2);
+		setBytes(a.getAddress(), (short) 4);
 	}
 
 	/*
@@ -118,7 +118,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public short getSourcePort() {
-		return getShort((short) 10);
+		return getShort((short) 12);
 	}
 
 	/*
@@ -128,7 +128,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public void setSourcePort(short p) {
-		setShort(p, (short) 10);
+		setShort(p, (short) 12);
 
 	}
 
@@ -159,7 +159,7 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public byte getPriority() {
-		return getBytes((short) 14, (short) 1)[0];
+		return getBytes((short) 16, (short) 1)[0];
 	}
 
 	/*
@@ -169,28 +169,28 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 */
 	@Override
 	public void setPriority(byte p) {
-		setBytes(new byte[] { p }, (short) 14);
+		setBytes(new byte[] { p }, (short) 16);
 	}
 
 	@Override
 	public byte getDSCPTOS() {
-		return getBytes((short) 0, (short) 1)[0];
+		return getBytes((short) 2, (short) 1)[0];
 	}
 
 	@Override
 	public void setDSCPTOS(byte v) {
-		setBytes(new byte[] { v }, (short) 0);
+		setBytes(new byte[] { v }, (short) 2);
 
 	}
 
 	@Override
 	public byte getDSCPTOSMask() {
-		return getBytes((short) 1, (short) 1)[0];
+		return getBytes((short) 3, (short) 1)[0];
 	}
 
 	@Override
 	public void setDSCPTOSMask(byte v) {
-		setBytes(new byte[] { v }, (short) 1);
+		setBytes(new byte[] { v }, (short) 3);
 
 	}
 

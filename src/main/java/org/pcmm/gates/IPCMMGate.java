@@ -1,7 +1,5 @@
 package org.pcmm.gates;
 
-import org.umu.cops.stack.COPSData;
-import org.umu.cops.stack.COPSHeader;
 
 /**
  * <p>

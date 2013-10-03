@@ -35,7 +35,7 @@ public class SubscriberID extends PCMMBaseObject implements ISubscriberID {
 	 * @param sType
 	 * @param sNum
 	 */
-	public SubscriberID(short len, short sType, short sNum) {
+	public SubscriberID(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
 	}
 

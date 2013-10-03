@@ -16,8 +16,8 @@ import org.pcmm.base.IPCMMBaseObject;
  */
 public interface IGateSpec extends IPCMMBaseObject {
 
-	static final short SNUM = 5;
-	static final short STYPE = 1;
+	static final byte SNUM = 5;
+	static final byte STYPE = 1;
 	static final short LENGTH = 16;
 
 	/**
