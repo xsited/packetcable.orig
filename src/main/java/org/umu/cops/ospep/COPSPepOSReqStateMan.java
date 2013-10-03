@@ -1,9 +1,13 @@
 package org.umu.cops.ospep;
 
-import org.umu.cops.stack.*;
-
 import java.net.Socket;
 import java.util.Vector;
+
+import org.umu.cops.stack.COPSData;
+import org.umu.cops.stack.COPSDecisionMsg;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSHandle;
+import org.umu.cops.stack.COPSSyncStateMsg;
 
 /**
  * State manager class for outsourcing requests, at the PEP side.

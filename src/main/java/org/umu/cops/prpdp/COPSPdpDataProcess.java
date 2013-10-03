@@ -6,9 +6,9 @@
 
 package org.umu.cops.prpdp;
 
-import org.umu.cops.stack.COPSError;
-
 import java.util.Hashtable;
+
+import org.umu.cops.stack.COPSError;
 
 /**
  * Abstract class for implementing policy data processing classes for provisioning PDPs.

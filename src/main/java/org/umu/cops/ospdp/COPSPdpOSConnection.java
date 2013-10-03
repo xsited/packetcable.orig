@@ -1,13 +1,25 @@
 package org.umu.cops.ospdp;
 
-import org.umu.cops.common.COPSDebug;
-import org.umu.cops.stack.*;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import org.umu.cops.common.COPSDebug;
+import org.umu.cops.stack.COPSClientCloseMsg;
+import org.umu.cops.stack.COPSContext;
+import org.umu.cops.stack.COPSDeleteMsg;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSException;
+import org.umu.cops.stack.COPSHeader;
+import org.umu.cops.stack.COPSKAMsg;
+import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSPepId;
+import org.umu.cops.stack.COPSReportMsg;
+import org.umu.cops.stack.COPSReqMsg;
+import org.umu.cops.stack.COPSSyncStateMsg;
+import org.umu.cops.stack.COPSTransceiver;
 
 /**
  * Class for managing an outsourcing connection at the PDP side.

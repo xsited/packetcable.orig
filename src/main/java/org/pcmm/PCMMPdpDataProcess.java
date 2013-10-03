@@ -6,12 +6,12 @@
 
 package org.pcmm;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import org.umu.cops.prpdp.COPSPdpDataProcess;
 import org.umu.cops.prpdp.COPSPdpReqStateMan;
 import org.umu.cops.stack.COPSError;
-
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 public class PCMMPdpDataProcess extends COPSPdpDataProcess
 {

@@ -3,32 +3,45 @@
  */
 package org.pcmm.base.impl;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Arrays;
 
 import org.pcmm.base.IPCMMBaseObject;
 import org.umu.cops.stack.COPSData;
 
 /**
- * @author riadh
+ * @author rhadjamor@gmail.com
  * 
  */
 public class PCMMBaseObject /* extends COPSPrObjBase */implements
 		IPCMMBaseObject {
 
-	private short sType;
-	private short sNum;
+	private byte sType;
+	private byte sNum;
 	private short len;
 	private COPSData copsData;
+	private COPSData pad;
+	protected final short offset = (short) 4;
 
 	public PCMMBaseObject(byte[] data) {
 		parse(data);
 	}
 
-	public PCMMBaseObject(short len, short sType, short sNum) {
-		setLength(len);
-		setSType(sType);
-		setSNum(sNum);
-		copsData = new COPSData(new byte[len], 0, len);
+	public PCMMBaseObject(short len, byte sType, byte sNum) {
+		this.len = (len);
+		this.sType = (sType);
+		this.sNum = (sNum);
+		byte[] array = new byte[len - offset];
+		Arrays.fill(array, (byte) 0);
+		setData(new COPSData(array, 0, array.length));
+	}
+
+	protected COPSData getPadding(int len) {
+		byte[] padBuf = new byte[len];
+		Arrays.fill(padBuf, (byte) 0);
+		COPSData d = new COPSData(padBuf, 0, len);
+		return d;
 	}
 
 	protected void parse(byte[] data) {
@@ -37,14 +50,8 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 		len = 0;
 		len |= ((short) data[0]) << 8;
 		len |= ((short) data[1]) & 0xFF;
-		sNum = 0;
-		sNum |= ((short) data[2]) << 8;
-		sNum |= ((short) data[3]) & 0xFF;
-		/*
-		 * sType = 0; sType |= ((short) data[4]) << 8; sType |= ((short)
-		 * data[5]) & 0xFF;
-		 */
-		short offset = (short) 4;
+		sNum = data[2];
+		sType = data[3];
 		copsData = new COPSData(data, offset, data.length - offset);
 	}
 
@@ -97,10 +104,10 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.pcmm.base.IPCMMBaseObject#setSType(short)
+	 * @see org.pcmm.base.IPCMMBaseObject#setSType(byte)
 	 */
 	@Override
-	public void setSType(short stype) {
+	public void setSType(byte stype) {
 		this.sType = stype;
 
 	}
@@ -111,17 +118,17 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	 * @see org.pcmm.base.IPCMMBaseObject#getSType()
 	 */
 	@Override
-	public short getSType() {
+	public byte getSType() {
 		return sType;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.pcmm.base.IPCMMBaseObject#setSNum(short)
+	 * @see org.pcmm.base.IPCMMBaseObject#setSNum(byte)
 	 */
 	@Override
-	public void setSNum(short snum) {
+	public void setSNum(byte snum) {
 		this.sNum = snum;
 	}
 
@@ -131,7 +138,7 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	 * @see org.pcmm.base.IPCMMBaseObject#getSNum()
 	 */
 	@Override
-	public short getSNum() {
+	public byte getSNum() {
 		return sNum;
 	}
 
@@ -152,7 +159,7 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	 */
 	@Override
 	public short getLength() {
-		return len;
+		return (short) (len + (pad != null ? pad.length() : 0));
 	}
 
 	/*
@@ -162,10 +169,12 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	 */
 	@Override
 	public void setData(COPSData data) {
-		byte[] d = Arrays.copyOf(data.getData(), len);
-		if (data.getData().length < len)
-			Arrays.fill(d, data.getData().length, len, (byte) 0);
-		this.copsData = new COPSData(d, 0, len);
+		this.copsData = data;
+		if (data.length() % offset != 0) {
+			int padLen = offset - (data.length() % offset);
+			pad = getPadding(padLen);
+		}
+		len = (short) (data.length() + offset);
 	}
 
 	/*
@@ -181,6 +190,16 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.pcmm.base.IPCMMBaseObject#writeData(java.net.Socket)
+	 */
+	public void writeData(Socket id) throws IOException {
+		byte[] data = getAsBinaryArray();
+		id.getOutputStream().write(data, 0, data.length);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.base.IPCMMBaseObject#getAsBinaryArray()
 	 */
 	@Override
@@ -188,13 +207,13 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 		byte[] array = new byte[getLength()];
 		array[0] = (byte) (len >> 8);
 		array[1] = (byte) len;
-		array[2] = (byte) (sNum >> 8);
-		array[3] = (byte) sNum;
-		/*
-		 * array[2] = (byte) (sType >> 8); array[3] = (byte) sType;
-		 */
-		System.arraycopy(getData().getData(), 0, array, 4,
-				getData().length() - 4);
+		array[2] = sNum;
+		array[3] = sType;
+		System.arraycopy(getData().getData(), 0, array, offset, getData()
+				.length());
+		if (pad != null)
+			System.arraycopy(pad.getData(), 0, array, offset
+					+ getData().length(), pad.length());
 		return array;
 	}
 }

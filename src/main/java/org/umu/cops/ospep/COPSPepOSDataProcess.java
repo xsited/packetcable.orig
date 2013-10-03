@@ -1,9 +1,9 @@
 package org.umu.cops.ospep;
 
+import java.util.Vector;
+
 import org.umu.cops.stack.COPSDecisionMsg;
 import org.umu.cops.stack.COPSError;
-
-import java.util.Vector;
 
 /**
  * Abstract class for implementing policy data processing classes for outsourcing PEPs.
