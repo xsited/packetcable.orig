@@ -1,26 +1,64 @@
 package org.pcmm.gates;
 
+import java.net.InetAddress;
+
 public interface IExtendedClassifier extends IClassifier {
-	
+
 	static final short LENGTH = 40;
 	static final byte SNUM = 6;
 	static final byte STYPE = 2;
 
-	int getIPSourceMask();
+	void setIPSourceMask(InetAddress a);
 
-	int getIPDestinationMask();
+	void setIPDestinationMask(InetAddress m);
 
-	int getSourcePortStart();
+	void setSourcePortStart(short p);
 
-	int getSourcePortEnd();
+	void setSourcePortEnd(short p);
 
-	int getDestinationPortStart();
+	void setDestinationPortStart(short p);
 
-	int getDestinationPortEnd();
+	void setDestinationPortEnd(short p);
 
-	int getClassifierID();
+	void setClassifierID(short p);
 
-	int getActivationState();
+	/**
+	 * <pre>
+	 * 0x00 Inactive
+	 * 0x01 Active
+	 * </pre>
+	 * 
+	 * @param s
+	 */
+	void setActivationState(byte s);
 
-	int getAction();
+	/**
+	 * <pre>
+	 * 0x00 Add classifier
+	 * 0x01 Replace classifier 
+	 * 0x02 Delete classifier 
+	 * 0x03 No change
+	 * </pre>
+	 * 
+	 * @param a
+	 */
+	void setAction(byte a);
+
+	InetAddress getIPSourceMask();
+
+	InetAddress getIPDestinationMask();
+
+	short getSourcePortStart();
+
+	short getSourcePortEnd();
+
+	short getDestinationPortStart();
+
+	short getDestinationPortEnd();
+
+	short getClassifierID();
+
+	byte getActivationState();
+
+	byte getAction();
 }

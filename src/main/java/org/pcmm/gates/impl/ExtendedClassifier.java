@@ -4,23 +4,27 @@
 package org.pcmm.gates.impl;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.IExtendedClassifier;
 
 /**
  * @author RH030971
- *
+ * 
  */
 public class ExtendedClassifier extends PCMMBaseObject implements
 		IExtendedClassifier {
+
+	public ExtendedClassifier() {
+		this(LENGTH, STYPE, SNUM);
+	}
 
 	/**
 	 * @param data
 	 */
 	public ExtendedClassifier(byte[] data) {
 		super(data);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -30,220 +34,315 @@ public class ExtendedClassifier extends PCMMBaseObject implements
 	 */
 	public ExtendedClassifier(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
-		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#getDestinationIPAddress()
 	 */
 	@Override
 	public InetAddress getDestinationIPAddress() {
-		// TODO Auto-generated method stub
+		try {
+			return InetAddress.getByAddress(getBytes((short) 12, (short) 4));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.pcmm.gates.IClassifier#setDestinationIPAddress(java.net.InetAddress)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.pcmm.gates.IClassifier#setDestinationIPAddress(java.net.InetAddress)
 	 */
 	@Override
 	public void setDestinationIPAddress(InetAddress address) {
-		// TODO Auto-generated method stub
-
+		setBytes(address.getAddress(), (short) 12);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#getDestinationPort()
 	 */
 	@Override
 	public short getDestinationPort() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getShort((short) 24);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#setDestinationPort(short)
 	 */
 	@Override
 	public void setDestinationPort(short p) {
-		// TODO Auto-generated method stub
-
+		setShort(p, (short) 24);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#getSourceIPAddress()
 	 */
 	@Override
 	public InetAddress getSourceIPAddress() {
-		// TODO Auto-generated method stub
+		try {
+			return InetAddress.getByAddress(getBytes((short) 4, (short) 4));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#setSourceIPAddress(java.net.InetAddress)
 	 */
 	@Override
 	public void setSourceIPAddress(InetAddress a) {
-		// TODO Auto-generated method stub
-
+		setBytes(a.getAddress(), (short) 4);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#getSourcePort()
 	 */
 	@Override
 	public short getSourcePort() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getShort((short) 20);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#setSourcePort(short)
 	 */
 	@Override
 	public void setSourcePort(short p) {
-		// TODO Auto-generated method stub
-
+		setShort(p, (short) 20);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#getProtocol()
 	 */
 	@Override
-	public String getProtocol() {
-		// TODO Auto-generated method stub
-		return null;
+	public short getProtocol() {
+		return getShort((short) 0);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.pcmm.gates.IClassifier#setProtocol(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pcmm.gates.IClassifier#setProtocol(short)
 	 */
 	@Override
-	public void setProtocol(String p) {
-		// TODO Auto-generated method stub
-
+	public void setProtocol(short p) {
+		setShort(p, (short) 0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#getPriority()
 	 */
 	@Override
 	public byte getPriority() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getByte((short) 30);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IClassifier#setPriority(byte)
 	 */
 	@Override
 	public void setPriority(byte p) {
-		// TODO Auto-generated method stub
-
+		setByte(p, (short) 30);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getIPSourceMask()
 	 */
 	@Override
-	public int getIPSourceMask() {
-		// TODO Auto-generated method stub
-		return 0;
+	public InetAddress getIPSourceMask() {
+		try {
+			return InetAddress.getByAddress(getBytes((short) 8, (short) 4));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.pcmm.gates.IExtendedClassifier#setIPSourceMask(java.net.InetAddress)
+	 */
+	@Override
+	public void setIPSourceMask(InetAddress a) {
+		setBytes(a.getAddress(), (short) 8);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getIPDestinationMask()
 	 */
 	@Override
-	public int getIPDestinationMask() {
-		// TODO Auto-generated method stub
-		return 0;
+	public InetAddress getIPDestinationMask() {
+		try {
+			return InetAddress.getByAddress(getBytes((short) 16, (short) 4));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.pcmm.gates.IExtendedClassifier#setIPDestinationMask(java.net.InetAddress
+	 * )
+	 */
+	@Override
+	public void setIPDestinationMask(InetAddress m) {
+		setBytes(m.getAddress(), (short) 16);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getSourcePortStart()
 	 */
 	@Override
-	public int getSourcePortStart() {
-		// TODO Auto-generated method stub
-		return 0;
+	public short getSourcePortStart() {
+		return getShort((short) 20);
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void setSourcePortStart(short p) {
+		setShort(p, (short) 20);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getSourcePortEnd()
 	 */
 	@Override
-	public int getSourcePortEnd() {
-		// TODO Auto-generated method stub
-		return 0;
+	public short getSourcePortEnd() {
+		return getShort((short) 22);
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void setSourcePortEnd(short p) {
+		setShort(p, (short) 22);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getDestinationPortStart()
 	 */
 	@Override
-	public int getDestinationPortStart() {
-		// TODO Auto-generated method stub
-		return 0;
+	public short getDestinationPortStart() {
+		return getShort((short) 24);
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void setDestinationPortStart(short p) {
+		setShort(p, (short) 24);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getDestinationPortEnd()
 	 */
 	@Override
-	public int getDestinationPortEnd() {
-		// TODO Auto-generated method stub
-		return 0;
+	public short getDestinationPortEnd() {
+		return getShort((short) 26);
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void setDestinationPortEnd(short p) {
+		setShort(p, (short) 26);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getClassifierID()
 	 */
 	@Override
-	public int getClassifierID() {
-		// TODO Auto-generated method stub
-		return 0;
+	public short getClassifierID() {
+		return getShort((short) 28);
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void setClassifierID(short p) {
+		setShort(p, (short) 28);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getActivationState()
 	 */
 	@Override
-	public int getActivationState() {
-		// TODO Auto-generated method stub
-		return 0;
+	public byte getActivationState() {
+		return getByte((short) 31);
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void setActivationState(byte s) {
+		setByte(s, (short) 31);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pcmm.gates.IExtendedClassifier#getAction()
 	 */
 	@Override
-	public int getAction() {
-		// TODO Auto-generated method stub
-		return 0;
+	public byte getAction() {
+		return getByte((short) 32);
+	}
+
+	@Override
+	public void setAction(byte a) {
+		setByte(a, (short) 32);
 	}
 
 	@Override
 	public byte getDSCPTOS() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getByte((short) 2);
 	}
 
 	@Override
 	public void setDSCPTOS(byte v) {
-		// TODO Auto-generated method stub
-		
+		setByte(v, (short) 2);
 	}
 
 	@Override
 	public byte getDSCPTOSMask() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getByte((short) 3);
 	}
 
 	@Override
 	public void setDSCPTOSMask(byte v) {
-		// TODO Auto-generated method stub
-		
+		setByte(v, (short) 3);
 	}
 
 }
