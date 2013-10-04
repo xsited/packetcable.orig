@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.pcmm.gates.IAMID;
-import org.pcmm.gates.IClassifier;
+import org.pcmm.gates.IExtendedClassifier;
 import org.pcmm.gates.IGateSpec;
 import org.pcmm.gates.IGateSpec.DSCPTOS;
 import org.pcmm.gates.IGateSpec.Direction;
@@ -19,8 +19,8 @@ import org.pcmm.gates.ISubscriberID;
 import org.pcmm.gates.ITrafficProfile;
 import org.pcmm.gates.ITransactionID;
 import org.pcmm.gates.impl.AMID;
-import org.pcmm.gates.impl.Classifier;
 import org.pcmm.gates.impl.DOCSISServiceClassNameTrafficProfile;
+import org.pcmm.gates.impl.ExtendedClassifier;
 import org.pcmm.gates.impl.GateSpec;
 import org.pcmm.gates.impl.PCMMGateReq;
 import org.pcmm.gates.impl.SubscriberID;
@@ -30,6 +30,9 @@ import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMPolicyServer;
 import org.pcmm.state.IState;
+import org.umu.cops.prpdp.COPSPdpConnection;
+import org.umu.cops.prpdp.COPSPdpDataProcess;
+import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
 import org.umu.cops.stack.COPSClientOpenMsg;
 import org.umu.cops.stack.COPSClientSI;
@@ -49,7 +52,10 @@ import org.umu.cops.stack.COPSReportMsg;
 public class PCMMPolicyServer extends AbstractPCMMClient implements
 		IPCMMPolicyServer {
 
+	private static final short MAX_PORT_NB = (short) 65535;
+	private static final String DEFAULT_IP_MASK = "255.255.255.0";
 	private short transactionID;
+	private short classifierID;
 	private int gateID;
 
 	/*
@@ -130,15 +136,15 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 						if (reqMsg.getHeader().isARequest()) {
 							logger.info("Received REQ message form CMTS");
 							// end connection attempts
-							/*
-							 * COPSPdpDataProcess processor = null;
-							 * COPSPdpConnection copsPdpConnection = new
-							 * COPSPdpConnection( opn.getPepId(), getSocket(),
-							 * processor); copsPdpConnection
-							 * .setKaTimer(((COPSClientAcceptMsg) catMsg)
-							 * .getKATimer().getTimerVal()); new
-							 * Thread(copsPdpConnection).start();
-							 */
+
+							COPSPdpDataProcess processor = null;
+							COPSPdpConnection copsPdpConnection = new COPSPdpConnection(
+									opn.getPepId(), getSocket(), processor);
+							copsPdpConnection
+									.setKaTimer(((COPSClientAcceptMsg) catMsg)
+											.getKATimer().getTimerVal());
+							new Thread(copsPdpConnection).start();
+
 							endNegotiation = true;
 						} else
 							throw new COPSException("Can't understand request");
@@ -192,12 +198,30 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		((DOCSISServiceClassNameTrafficProfile) trafficProfile)
 				.setServiceClassName("S_up");
 
-		IClassifier classifier = new Classifier();
-		classifier.setProtocol("tcp");
+		IExtendedClassifier classifier = new ExtendedClassifier();
+		// tcp => 6
+		classifier.setProtocol((short) 6);
 		classifier.setSourceIPAddress(getSocket().getLocalAddress());
 		classifier.setDestinationIPAddress(getSocket().getInetAddress());
-		classifier.setSourcePort((short) getSocket().getLocalPort());
-		classifier.setDestinationPort((short) getSocket().getPort());
+		try {
+			classifier.setIPSourceMask(InetAddress.getByName(DEFAULT_IP_MASK));
+			classifier.setIPDestinationMask(InetAddress
+					.getByName(DEFAULT_IP_MASK));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+		classifier.setSourcePortStart((short) 0);
+		classifier.setSourcePortEnd((short) MAX_PORT_NB);
+		classifier.setDestinationPortStart((short) 0);
+		classifier.setDestinationPortEnd((short) MAX_PORT_NB);
+		// check if we have a stored value of classifierID else we just create
+		// one
+		classifier.setClassifierID((short) (classifierID == 0 ? Math.random()
+				* hashCode() : classifierID));
+
+		classifier.setActivationState((byte) 0);
+		classifier.setAction((byte) 0);
 
 		gate.setTransactionID(trID);
 		gate.setAMID(amid);

@@ -16,9 +16,6 @@ import org.pcmm.gates.IClassifier;
  */
 public class Classifier extends PCMMBaseObject implements IClassifier {
 
-	// TODO change this
-	private String protocol = "TCP";
-
 	/**
 	 * 
 	 */
@@ -138,18 +135,18 @@ public class Classifier extends PCMMBaseObject implements IClassifier {
 	 * @see org.pcmm.gates.IClassifier#getProtocol()
 	 */
 	@Override
-	public String getProtocol() {
-		return protocol;
+	public short getProtocol() {
+		return getShort((short) 0);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.pcmm.gates.IClassifier#setProtocol(java.lang.String)
+	 * @see org.pcmm.gates.IClassifier#setProtocol(short)
 	 */
 	@Override
-	public void setProtocol(String p) {
-		protocol = p;
+	public void setProtocol(short p) {
+		setShort(p, (short) 0);
 	}
 
 	/*

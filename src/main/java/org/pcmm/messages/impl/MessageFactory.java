@@ -116,11 +116,12 @@ public class MessageFactory implements IMessageFactory {
 		COPSDecision decision = new COPSDecision();
 		// TODO add property to set this
 		decision.setCmdCode(COPSDecision.DEC_INSTALL);
-		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
-			decision.setData((COPSData) prop
-					.get(IMessage.MessageProperties.GATE_CONTROL));
 		prop.put(IMessage.MessageProperties.CLIENT_HANDLE, "SOME ID");
-		COPSDecisionMsg msg = new COPSDecisionMsg();
+		COPSDecisionMsgEX msg = new COPSDecisionMsgEX();
+		COPSClientSI si = new COPSClientSI((byte) 4);
+		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
+			si.setData((COPSData) prop
+					.get(IMessage.MessageProperties.GATE_CONTROL));
 		try {
 			msg.add(hdr);
 			COPSHandle handle = new COPSHandle();
@@ -129,7 +130,7 @@ public class MessageFactory implements IMessageFactory {
 						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
 			msg.add(handle);
 			msg.addDecision(decision, context);
-
+			msg.add(si);
 			try {
 				msg.dump(System.out);
 			} catch (IOException unae) {
