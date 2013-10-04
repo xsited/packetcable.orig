@@ -258,8 +258,9 @@ public class PCMMGateReq implements IPCMMGate {
 
 	private byte[] fill(byte[] array, IPCMMBaseObject obj) {
 		byte[] a = obj.getAsBinaryArray();
-		array = Arrays.copyOf(array, array.length + a.length);
-		System.arraycopy(a, 0, array, 0, a.length);
+		int offset = array.length;
+		array = Arrays.copyOf(array, offset + a.length);
+		System.arraycopy(a, 0, array, offset, a.length);
 		return array;
 	}
 }

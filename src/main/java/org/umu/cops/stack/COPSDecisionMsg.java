@@ -28,6 +28,7 @@ public class COPSDecisionMsg extends COPSMsg {
 	private Hashtable _decisions;
 	private COPSIntegrity _integrity;
 	private COPSContext _decContext;
+	private COPSClientSI _decSI;
     
 	///
 	public COPSDecisionMsg() {
@@ -36,6 +37,7 @@ public class COPSDecisionMsg extends COPSMsg {
 		_decisions = new Hashtable(20);
         _integrity = null;
         _decContext = null;
+        _decSI = null;
 	}
 
 	/** Checks the sanity of COPS message and throw an
@@ -55,6 +57,7 @@ public class COPSDecisionMsg extends COPSMsg {
         _error = null;
         _integrity = null;
         _decContext = null;
+        _decSI = null;
 			
     	parse(data);
 	}
@@ -251,6 +254,24 @@ public class COPSDecisionMsg extends COPSMsg {
 		_integrity = integrity;
 		setMsgLength();
 	}
+	/**
+	 * Add clientSI object
+	 *
+	 * @param    integrity           a  COPSIntegrity
+	 *
+	 * @throws   COPSException
+	 *
+	 */
+	public void add (COPSClientSI clientSI)  throws COPSException {
+		if (clientSI == null)
+			throw new COPSException ("Null clientSI");
+/*
+		if (!integrity.isMessageIntegrity())
+			throw new COPSException ("Error Integrity");
+*/
+		_decSI = clientSI;
+		setMsgLength();
+	}
 	
 	/**
 	 * Writes data to given socket
@@ -280,6 +301,7 @@ public class COPSDecisionMsg extends COPSMsg {
 			}
 		}
 
+		if (_decSI != null) _decSI.writeData(id);
 		if (_integrity != null) _integrity.writeData(id);
 	}
 	
@@ -386,7 +408,10 @@ public class COPSDecisionMsg extends COPSMsg {
 				len += decision.getDataLength();
 			}
 		}
-
+		if (_decSI != null)
+		{
+			len += _decSI.getDataLength();
+		}
 		if (_integrity != null)
 		{
 			len += _integrity.getDataLength();
@@ -423,7 +448,10 @@ public class COPSDecisionMsg extends COPSMsg {
 				decision.dump(os);
 			}
 		}
-
+		if (_decSI != null)
+		{
+			_decSI.dump(os);
+		}
 		if (_integrity != null)
 		{
 			_integrity.dump(os);
