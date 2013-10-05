@@ -42,7 +42,7 @@ public interface IClassifier extends IPCMMBaseObject {
 	void setSourceIPAddress(InetAddress a);
 
 	short getSourcePort();
-	
+
 	void setSourcePort(short p);
 
 	/**
@@ -52,9 +52,13 @@ public interface IClassifier extends IPCMMBaseObject {
 	 * 
 	 * @return the protocol.
 	 */
-	String getProtocol();
-	
-	void setProtocol(String p);
+	short getProtocol();
+
+	/**
+	 * @see <a href="http://www.iana.org/assignments/protocol-numbers/protocol-numbers.txt">protocols</a>
+	 * @param p
+	 */
+	void setProtocol(short p);
 
 	/**
 	 * Priority may be used to distinguish between multiple classifiers that
@@ -72,14 +76,13 @@ public interface IClassifier extends IPCMMBaseObject {
 	 *            priority
 	 */
 	void setPriority(byte p);
-	
-	
+
 	byte getDSCPTOS();
-	
+
 	void setDSCPTOS(byte v);
-	
+
 	byte getDSCPTOSMask();
-	
+
 	void setDSCPTOSMask(byte v);
 
 	// DSCP/TOS Field
