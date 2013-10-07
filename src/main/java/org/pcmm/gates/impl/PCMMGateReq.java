@@ -247,11 +247,11 @@ public class PCMMGateReq implements IPCMMGate {
 		if (getGateSpec() != null) {
 			array = fill(array, getGateSpec());
 		}
-		if (getClassifier() != null) {
-			array = fill(array, getClassifier());
-		}
 		if (getTrafficProfile() != null) {
 			array = fill(array, getTrafficProfile());
+		}
+		if (getClassifier() != null) {
+			array = fill(array, getClassifier());
 		}
 		return array;
 	}

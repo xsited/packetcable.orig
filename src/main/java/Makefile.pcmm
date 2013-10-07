@@ -59,6 +59,7 @@ SOURCES = \
 	org/pcmm/PCMMPdpAgent.java \
 	org/pcmm/PCMMPdpDataProcess.java \
 	org/pcmm/PCMMPepAgent.java \
+	org/pcmm/PCMMPdpMsgSender.java \
 	org/pcmm/rcd/ICMTS.java \
 	org/pcmm/rcd/impl/AbstractPCMMClient.java \
 	org/pcmm/rcd/impl/AbstractPCMMServer.java \
@@ -114,7 +115,7 @@ default: classes jar
 classes: $(SOURCES:.java=.class)
 
 jar:
-	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class
+	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class org/pcmm/messages/impl/*.class
 
 tar:
 	tar czpf $(TARBALL) $(SOURCES) Makefile

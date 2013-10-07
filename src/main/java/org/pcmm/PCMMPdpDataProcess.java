@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2004 University of Murcia.  All rights reserved.
- * --------------------------------------------------------------
- * For more information, please see <http://www.umu.euro6ix.org/>.
+ *
  */
 
 package org.pcmm;
@@ -50,6 +48,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
     public void setClientData(COPSPdpReqStateMan man, Hashtable reqSIs) {
 
         System.out.println(getClass().getName() + ": " + "Request Info");
+/*
         for (Enumeration e = reqSIs.keys() ; e.hasMoreElements() ;) {
             String strprid = (String) e.nextElement();
             String strepd = (String) reqSIs.get(strprid);
@@ -67,6 +66,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
         String prid = new String("<XPath>");
         String epd = new String("<?xml this is an XML policy>");
         installPolicy.put(prid, epd);
+*/
     }
 
     /**
@@ -78,6 +78,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
     public void failReport(COPSPdpReqStateMan man, Hashtable reportSIs) {
 
         System.out.println(getClass().getName()+ ": " + "Fail Report notified.");
+/*
 
         System.out.println(getClass().getName() + ": " + "Report Info");
         for (Enumeration e = reportSIs.keys() ; e.hasMoreElements() ;) {
@@ -89,6 +90,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
             System.out.println(getClass().getName()+ ": " + "PRID: " + strprid);
             System.out.println(getClass().getName()+ ": " + "EPD: " + strepd);
         }
+*/
     }
 
     /**
@@ -100,6 +102,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
     public void successReport(COPSPdpReqStateMan man, Hashtable reportSIs) {
         System.out.println(getClass().getName()+ ": " + "Success Report notified.");
 
+/*
         System.out.println(getClass().getName()+ ": " + "Report Info");
         for (Enumeration e = reportSIs.keys() ; e.hasMoreElements() ;) {
             String strprid = (String) e.nextElement();
@@ -110,6 +113,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
             System.out.println(getClass().getName()+ ": " + "PRID: " + strprid);
             System.out.println(getClass().getName()+ ": " + "EPD: " + strepd);
         }
+*/
 
     }
 
@@ -122,6 +126,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
     public void acctReport(COPSPdpReqStateMan man, Hashtable reportSIs) {
         System.out.println(getClass().getName()+ ": " + "Acct Report notified.");
 
+/*
         System.out.println(getClass().getName()+ ": " + "Report Info");
         for (Enumeration e = reportSIs.keys() ; e.hasMoreElements() ;) {
             String strprid = (String) e.nextElement();
@@ -132,6 +137,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
             System.out.println(getClass().getName()+ ": " + "PRID: " + strprid);
             System.out.println(getClass().getName()+ ": " + "EPD: " + strepd);
         }
+*/
     }
 
     /**
