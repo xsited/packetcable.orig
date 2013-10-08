@@ -68,7 +68,7 @@ public class PCMMGateReq implements IPCMMGate {
 				setGateSpec(new GateSpec(Arrays.copyOfRange(data, offset, len)));
 				break;
 			case ITrafficProfile.SNUM:
-				setTrafficProfile(new DOCSISServiceClassNameTrafficProfile(
+				setTrafficProfile(new BestEffortService(
 						Arrays.copyOfRange(data, offset, len)));
 				break;
 			case IClassifier.SNUM:
