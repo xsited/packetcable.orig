@@ -29,6 +29,7 @@ import org.umu.cops.prpdp.COPSPdpException;
 import org.pcmm.PCMMGlobalConfig;
 import org.pcmm.gates.IAMID;
 import org.pcmm.gates.IClassifier;
+import org.pcmm.gates.IExtendedClassifier;
 import org.pcmm.gates.IGateSpec;
 import org.pcmm.gates.IGateSpec.DSCPTOS;
 import org.pcmm.gates.IGateSpec.Direction;
@@ -38,6 +39,7 @@ import org.pcmm.gates.ITrafficProfile;
 import org.pcmm.gates.ITransactionID;
 import org.pcmm.gates.impl.AMID;
 import org.pcmm.gates.impl.Classifier;
+import org.pcmm.gates.impl.ExtendedClassifier;
 import org.pcmm.gates.impl.DOCSISServiceClassNameTrafficProfile;
 import org.pcmm.gates.impl.GateSpec;
 import org.pcmm.gates.impl.PCMMGateReq;
@@ -125,6 +127,164 @@ public class PCMMPdpMsgSender {
         return _transactionID;
     }
 
+    /**
+     * Sends a PCMM GateSet COPS Decision message
+     * @param
+     * @throws COPSPdpException
+     */
+    public void sendGateSetBestEffortWithExtendedClassifier()
+    throws COPSPdpException {
+        /* Example of an UNSOLICITED decision
+         * <Gate Control Command> =
+         *     <COPS Common Header> <Client Handle> <Context>
+         *     <Decision Flags> <ClientSI Data>
+         * <ClientSI Data> = <Gate-Set> | <Gate-Info> | <Gate-Delete> |
+         *                   <PDP-Config> | <Synch-Request> | <Msg-Receipt>
+                 * <Gate-Set> = <Decision Header> <TransactionID> <AMID> <SubscriberID>
+         *              [<GateID>] <GateSpec> <Traffic Profile> <classifier>
+         * 		[<classifier...>] [<Event Generation Info>]
+             *              [<Volume-Based Usage Limit>] [<Time-Based Usage Limit>]
+         *	        [<Opaque Data>] [<UserID>]
+         */
+        // Common Header with the same ClientType as the request
+
+        COPSHeader hdr = new COPSHeader (COPSHeader.COPS_OP_DEC, getClientType());
+
+        // Client Handle with the same clientHandle as the request
+        COPSHandle handle = new COPSHandle();
+        COPSDecisionMsg decisionMsg = new COPSDecisionMsg();
+
+        IPCMMGate gate = new PCMMGateReq();
+        ITransactionID trID = new TransactionID();
+
+        IAMID amid = new AMID();
+        ISubscriberID subscriberID = new SubscriberID();
+        IGateSpec gateSpec = new GateSpec();
+        IClassifier classifier = new Classifier();
+        IExtendedClassifier eclassifier = new ExtendedClassifier();
+
+        ITrafficProfile trafficProfile = new DOCSISServiceClassNameTrafficProfile();
+
+        // new pcmm specific clientsi
+        COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte)4);
+
+        handle.setId(getClientHandle().getId());
+
+
+
+        // set transaction ID to gate set
+        trID.setGateCommandType(ITransactionID.GateSet);
+        _transactionID = (short) (_transactionID == 0 ? (short) (Math.random() * hashCode()) : _transactionID);
+        trID.setTransactionIdentifier(_transactionID);
+
+
+        amid.setApplicationType((short) 0);
+        amid.setApplicationMgrTag((short) 0);
+        gateSpec.setDirection(Direction.UPSTREAM);
+        gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
+        gateSpec.setTimerT1( PCMMGlobalConfig.GateT1 );
+        gateSpec.setTimerT2( PCMMGlobalConfig.GateT2 );
+        gateSpec.setTimerT3( PCMMGlobalConfig.GateT3 );
+        gateSpec.setTimerT4( PCMMGlobalConfig.GateT4 );
+
+	// XXX - I believe I am using this incorrectly.
+        // trafficProfile.setEnvelop((byte)PCMMGlobalConfig.BETransmissionPolicy);
+        trafficProfile.setEnvelop((byte)0x111);
+/*
+        ((DOCSISServiceClassNameTrafficProfile) trafficProfile)
+        .setServiceClassName("S_up");
+*/
+
+	// if the version major is less than 4 we need to use Classifier
+	if (true) {
+        eclassifier.setProtocol((short)6);
+        try {
+            InetAddress subIP = InetAddress.getByName(PCMMGlobalConfig.SubscriberID);
+            InetAddress srcIP = InetAddress.getByName(PCMMGlobalConfig.srcIP);
+            InetAddress dstIP = InetAddress.getByName(PCMMGlobalConfig.dstIP);
+            InetAddress mask = InetAddress.getByName("0.0.0.0");
+            subscriberID.setSourceIPAddress(subIP);
+            eclassifier.setSourceIPAddress(srcIP);
+            eclassifier.setDestinationIPAddress(dstIP);
+            eclassifier.setIPDestinationMask(mask);
+            eclassifier.setIPSourceMask(mask);
+        } catch (UnknownHostException unae) {
+            System.out.println("Error getByName"+unae.getMessage());
+        }
+	/* XXX - Possible implementation ?
+        eclassifier.setSourcePort(PCMMGlobalConfig.srcPort);
+        eclassifier.setDestinationPort(PCMMGlobalConfig.dstPort);
+	*/ 
+        eclassifier.setSourcePortStart(PCMMGlobalConfig.srcPort);
+        eclassifier.setSourcePortEnd(PCMMGlobalConfig.srcPort);
+        eclassifier.setDestinationPortStart(PCMMGlobalConfig.dstPort);
+        eclassifier.setDestinationPortEnd(PCMMGlobalConfig.dstPort);
+        eclassifier.setActivationState((byte)0x01);
+	/* XXX what is this?
+        eclassifier.setClassifierID((short)0x01);
+	*/
+        eclassifier.setAction((byte)0x00);
+        eclassifier.setPriority((byte)63);
+		
+	} else { 
+        classifier.setProtocol((short)6);
+        try {
+            InetAddress subIP = InetAddress.getByName(PCMMGlobalConfig.SubscriberID);
+            InetAddress srcIP = InetAddress.getByName(PCMMGlobalConfig.srcIP);
+            InetAddress dstIP = InetAddress.getByName(PCMMGlobalConfig.dstIP);
+            subscriberID.setSourceIPAddress(subIP);
+            classifier.setSourceIPAddress(srcIP);
+            classifier.setDestinationIPAddress(dstIP);
+        } catch (UnknownHostException unae) {
+            System.out.println("Error getByName"+unae.getMessage());
+        }
+        classifier.setSourcePort(PCMMGlobalConfig.srcPort);
+        classifier.setDestinationPort(PCMMGlobalConfig.dstPort);
+	}
+
+        gate.setTransactionID(trID);
+        gate.setAMID(amid);
+        gate.setSubscriberID(subscriberID);
+        gate.setGateSpec(gateSpec);
+        gate.setTrafficProfile(trafficProfile);
+        gate.setClassifier(classifier);
+
+        byte[] data = gate.getData();
+
+        // new pcmm specific clientsi
+        clientSD.setData(new COPSData(data, 0, data.length));
+        try {
+            decisionMsg.add(hdr);
+            decisionMsg.add(handle);
+            // Decisions (no flags supplied)
+            //  <Context>
+            COPSContext cntxt = new COPSContext(COPSContext.CONFIG, (short) 0);
+            COPSDecision install = new COPSDecision();
+            install.setCmdCode(COPSDecision.DEC_INSTALL);
+            install.setFlags(COPSDecision.F_REQERROR);
+            decisionMsg.addDecision(install, cntxt);
+            decisionMsg.add(clientSD);		// setting up the gate
+            try {
+                decisionMsg.dump(System.out);
+            } catch (IOException unae) {
+                System.out.println("Error dumping "+unae.getMessage());
+            }
+
+        } catch (COPSException e) {
+            System.out.println("Error making Msg"+e.getMessage());
+        }
+
+        //** Send the GateSet Decision
+        //**
+        try {
+            decisionMsg.writeData(_sock);
+        } catch (IOException e) {
+            System.out.println("Failed to send the decision, reason: " + e.getMessage());
+        }
+
+
+    }
+
 
     /**
      * Sends a PCMM GateSet COPS Decision message
@@ -191,7 +351,6 @@ public class PCMMPdpMsgSender {
 
         trafficProfile.setEnvelop((byte)PCMMGlobalConfig.BETransmissionPolicy);
 /*
-	Recommended not setting as there is no matching name configured on the CMTS
         ((DOCSISServiceClassNameTrafficProfile) trafficProfile)
         .setServiceClassName("S_up");
 */
@@ -283,15 +442,11 @@ public class PCMMPdpMsgSender {
         ISubscriberID subscriberID = new SubscriberID();
         IGateSpec gateSpec = new GateSpec();
 
-        ITrafficProfile trafficProfile = new DOCSISServiceClassNameTrafficProfile();
 
         // new pcmm specific clientsi
         COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte)4);
 
         handle.setId(getClientHandle().getId());
-
-
-
 
         // set transaction ID to gate set
         trID.setGateCommandType(ITransactionID.GateSet);
@@ -301,17 +456,10 @@ public class PCMMPdpMsgSender {
 
         amid.setApplicationType((short) 0);
         amid.setApplicationMgrTag((short) 0);
-        gateSpec.setDirection(Direction.UPSTREAM);
-        gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
-
-        trafficProfile.setEnvelop((byte) 0x0);
-        ((DOCSISServiceClassNameTrafficProfile) trafficProfile)
-        .setServiceClassName("S_up");
 
         gate.setTransactionID(trID);
         gate.setAMID(amid);
         gate.setSubscriberID(subscriberID);
-        gate.setGateSpec(gateSpec);
 
 	// XXX - GateID
         byte[] data = gate.getData();
