@@ -37,7 +37,7 @@ public class DOCSISServiceClassNameTrafficProfile extends PCMMBaseObject
 	 */
 	public DOCSISServiceClassNameTrafficProfile(short len, byte sType, byte sNum) {
 		super(len, sType, sNum);
-		setEnvelop((byte) 0x111);
+		setEnvelop((byte) 0x7);
 	}
 
 	/**

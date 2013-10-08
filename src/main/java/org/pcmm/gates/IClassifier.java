@@ -16,6 +16,34 @@ public interface IClassifier extends IPCMMBaseObject {
 	static final byte SNUM = 6;
 	static final byte STYPE = 1;
 
+	static enum Protocol {
+		/*ICMP((short) 1), IGMP((short) 2), */
+		TCP((short) 6), UDP((short) 17);
+
+		Protocol(short v) {
+			this.value = v;
+		}
+		
+		public static Protocol valueOf(short v){
+			switch (v) {
+			/*case 1:
+				return ICMP;
+			case 2:
+				return IGMP;
+				*/
+			case 6:
+				return TCP;
+			default:
+				return UDP;
+			}
+		}
+		private short value;
+
+		public short getValue() {
+			return value;
+		}
+	}
+
 	/**
 	 * IP Destination Address or IPv6 Destination Address is the termination
 	 * point for the IP flow
@@ -52,13 +80,14 @@ public interface IClassifier extends IPCMMBaseObject {
 	 * 
 	 * @return the protocol.
 	 */
-	short getProtocol();
+	Protocol getProtocol();
 
 	/**
-	 * @see <a href="http://www.iana.org/assignments/protocol-numbers/protocol-numbers.txt">protocols</a>
+	 * @see <a
+	 *      href="http://www.iana.org/assignments/protocol-numbers/protocol-numbers.txt">protocols</a>
 	 * @param p
 	 */
-	void setProtocol(short p);
+	void setProtocol(Protocol p);
 
 	/**
 	 * Priority may be used to distinguish between multiple classifiers that
