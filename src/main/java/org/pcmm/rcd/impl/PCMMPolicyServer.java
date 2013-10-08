@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.pcmm.gates.IAMID;
+import org.pcmm.gates.IClassifier;
 import org.pcmm.gates.IExtendedClassifier;
 import org.pcmm.gates.IGateSpec;
 import org.pcmm.gates.IGateSpec.DSCPTOS;
@@ -19,6 +20,7 @@ import org.pcmm.gates.ISubscriberID;
 import org.pcmm.gates.ITrafficProfile;
 import org.pcmm.gates.ITransactionID;
 import org.pcmm.gates.impl.AMID;
+import org.pcmm.gates.impl.BestEffortService;
 import org.pcmm.gates.impl.DOCSISServiceClassNameTrafficProfile;
 import org.pcmm.gates.impl.ExtendedClassifier;
 import org.pcmm.gates.impl.GateSpec;
@@ -193,14 +195,16 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		gateSpec.setDirection(Direction.UPSTREAM);
 		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
 
-		ITrafficProfile trafficProfile = new DOCSISServiceClassNameTrafficProfile();
-		trafficProfile.setEnvelop((byte) 0x0);
-		((DOCSISServiceClassNameTrafficProfile) trafficProfile)
-				.setServiceClassName("S_up");
+		// Authorized
+		ITrafficProfile trafficProfile = new BestEffortService(BestEffortService.DEFAULT_ENVELOP);
+		((BestEffortService) trafficProfile)
+				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
+		((BestEffortService) trafficProfile)
+				.setMaximumTrafficBurst(BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
 
 		IExtendedClassifier classifier = new ExtendedClassifier();
 		// tcp => 6
-		classifier.setProtocol((short) 6);
+		classifier.setProtocol(IClassifier.Protocol.TCP);
 		classifier.setSourceIPAddress(getSocket().getLocalAddress());
 		classifier.setDestinationIPAddress(getSocket().getInetAddress());
 		try {
