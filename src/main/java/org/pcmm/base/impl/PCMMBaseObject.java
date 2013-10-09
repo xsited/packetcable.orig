@@ -44,6 +44,22 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 		return d;
 	}
 
+	/**
+	 * Add head padding to the specified byte array filled with zeros 
+	 * 
+	 * @param off
+	 *            offset
+	 * @param array
+	 *            input array
+	 * @return byte array
+	 */
+	protected byte[] headPadding(int off, byte[] array) {
+		byte[] returnArray = new byte[array.length + off];
+		Arrays.fill(returnArray, (byte) 0);
+		System.arraycopy(array, 0, returnArray, off, array.length);
+		return returnArray;
+	}
+
 	protected void parse(byte[] data) {
 		if (data == null || data.length == 0)
 			throw new IllegalArgumentException("data could not be null");
