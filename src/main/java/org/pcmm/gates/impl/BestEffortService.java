@@ -15,7 +15,7 @@ import org.umu.cops.stack.COPSData;
  */
 public class BestEffortService extends PCMMBaseObject implements
 		ITrafficProfile {
-	public static final byte STYPE = 2;
+	public static final byte STYPE = 3;
 	// 60, 112, 164
 	public static final short LENGTH = 60;
 
@@ -33,6 +33,7 @@ public class BestEffortService extends PCMMBaseObject implements
 	public BestEffortService(byte e) {
 		super((short) (e == 1 ? LENGTH : (e == 7 ? 164 : 112)), STYPE, SNUM);
 		setTrafficPriority(DEFAULT_TRAFFIC_PRIORITY);
+		setEnvelop(e);
 	}
 
 	public BestEffortService(byte[] bytes) {
