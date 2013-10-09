@@ -127,7 +127,8 @@ public class Test {
 		PCMMPdpMsgSender pcmm_sender =
 			 new PCMMPdpMsgSender (PCMMDef.C_PCMM, pcmm_pdp.getClientHandle(), pcmm_pdp.getSocket());
                 try {
-		    pcmm_sender.sendGateSet();
+		    //pcmm_sender.sendGateSet();
+		    pcmm_sender.sendGateSetBestEffortWithExtendedClassifier();
                 } catch (COPSPdpException e) {
                     System.out.println("Failed to sendGateSet, reason: " + e.getMessage());
                 }

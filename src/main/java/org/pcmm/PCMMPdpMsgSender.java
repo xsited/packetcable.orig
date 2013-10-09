@@ -75,6 +75,7 @@ public class PCMMPdpMsgSender {
      *
      */
 	protected short _transactionID;
+	protected short _classifierID;
 
 	/**
 	 * Creates a PCMMPdpMsgSender
@@ -93,6 +94,7 @@ public class PCMMPdpMsgSender {
 		_clientType = clientType;
 
 		_transactionID = 0;
+		_classifierID = 0;
 		_sock = sock;
 	}
 
@@ -102,6 +104,7 @@ public class PCMMPdpMsgSender {
 		_handle = clientHandle;
 		_clientType = clientType;
 		_transactionID = tID;
+		_classifierID = 0;
 		_sock = sock;
 	}
 
@@ -180,8 +183,7 @@ public class PCMMPdpMsgSender {
 		
 		
 		// new pcmm specific clientsi
-		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,
-				(byte) 4);
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
 
 		handle.setId(getClientHandle().getId());
 
@@ -191,8 +193,8 @@ public class PCMMPdpMsgSender {
 				: _transactionID);
 		trID.setTransactionIdentifier(_transactionID);
 
-		amid.setApplicationType((short) 0);
-		amid.setApplicationMgrTag((short) 0);
+		amid.setApplicationType((short) 1);
+		amid.setApplicationMgrTag((short) 1);
 		gateSpec.setDirection(Direction.UPSTREAM);
 		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
 		gateSpec.setTimerT1(PCMMGlobalConfig.GateT1);
@@ -200,15 +202,6 @@ public class PCMMPdpMsgSender {
 		gateSpec.setTimerT3(PCMMGlobalConfig.GateT3);
 		gateSpec.setTimerT4(PCMMGlobalConfig.GateT4);
 
-		// XXX - I believe I am using this incorrectly.
-		// trafficProfile.setEnvelop((byte)PCMMGlobalConfig.BETransmissionPolicy);
-		// XXX no need to set the envelop here it's set in the constructor
-		// trafficProfile.setEnvelop((byte) 0x111);
-
-		/*
-		 * ((DOCSISServiceClassNameTrafficProfile) trafficProfile)
-		 * .setServiceClassName("S_up");
-		 */
 
 		// if the version major is less than 4 we need to use Classifier
 		if (true) {
@@ -229,19 +222,18 @@ public class PCMMPdpMsgSender {
 			} catch (UnknownHostException unae) {
 				System.out.println("Error getByName" + unae.getMessage());
 			}
-			/*
-			 * XXX - Possible implementation ?
-			 * eclassifier.setSourcePort(PCMMGlobalConfig.srcPort);
-			 * eclassifier.setDestinationPort(PCMMGlobalConfig.dstPort);
-			 */
 			eclassifier.setSourcePortStart(PCMMGlobalConfig.srcPort);
 			eclassifier.setSourcePortEnd(PCMMGlobalConfig.srcPort);
 			eclassifier.setDestinationPortStart(PCMMGlobalConfig.dstPort);
 			eclassifier.setDestinationPortEnd(PCMMGlobalConfig.dstPort);
 			eclassifier.setActivationState((byte) 0x01);
-			/*
-			 * XXX what is this? eclassifier.setClassifierID((short)0x01);
-			 */
+			// check if we have a stored value of classifierID else we just create
+			// one
+			// eclassifier.setClassifierID((short) 0x01);
+			eclassifier.setClassifierID((short) (_classifierID == 0 ? Math.random()
+				* hashCode() : _classifierID));
+
+
 			eclassifier.setAction((byte) 0x00);
 			eclassifier.setPriority((byte) 63);
 
@@ -269,7 +261,7 @@ public class PCMMPdpMsgSender {
 		gate.setSubscriberID(subscriberID);
 		gate.setGateSpec(gateSpec);
 		gate.setTrafficProfile(trafficProfile);
-		gate.setClassifier(classifier);
+		gate.setClassifier(eclassifier);
 
 		byte[] data = gate.getData();
 
@@ -350,8 +342,7 @@ public class PCMMPdpMsgSender {
 				.setRequestTransmissionPolicy(PCMMGlobalConfig.BETransmissionPolicy);
 
 		// new pcmm specific clientsi
-		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,
-				(byte) 4);
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
 
 		handle.setId(getClientHandle().getId());
 		// byte[] content = "1234".getBytes();
@@ -364,8 +355,8 @@ public class PCMMPdpMsgSender {
 				: _transactionID);
 		trID.setTransactionIdentifier(_transactionID);
 
-		amid.setApplicationType((short) 0);
-		amid.setApplicationMgrTag((short) 0);
+		amid.setApplicationType((short) 1);
+		amid.setApplicationMgrTag((short) 1);
 		gateSpec.setDirection(Direction.UPSTREAM);
 		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
 		gateSpec.setTimerT1(PCMMGlobalConfig.GateT1);
