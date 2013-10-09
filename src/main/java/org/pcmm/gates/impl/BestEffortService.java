@@ -16,10 +16,11 @@ import org.umu.cops.stack.COPSData;
 public class BestEffortService extends PCMMBaseObject implements
 		ITrafficProfile {
 	public static final byte STYPE = 3;
-	// 60, 112, 164
-	public static final short LENGTH = 60;
+	// XXX -> 60=0x3C, 112 = 0x70, 164=0xA4
+	// Length = 44=0x2C, 80=0x50 or 116=0x74
+	public static final short LENGTH = 44;
 
-	public static final byte DEFAULT_TRAFFIC_PRIORITY = 5;
+	public static final byte DEFAULT_TRAFFIC_PRIORITY = 0;
 	// Authorized
 	public static final byte DEFAULT_ENVELOP = 0x1;
 
@@ -31,7 +32,7 @@ public class BestEffortService extends PCMMBaseObject implements
 	 *            envelop
 	 */
 	public BestEffortService(byte e) {
-		super((short) (e == 1 ? LENGTH : (e == 7 ? 164 : 112)), STYPE, SNUM);
+		super((short) (e == 1 ? LENGTH : (e == 7 ? 116 : 80)), STYPE, SNUM);
 		setTrafficPriority(DEFAULT_TRAFFIC_PRIORITY);
 		setEnvelop(e);
 	}
@@ -42,7 +43,7 @@ public class BestEffortService extends PCMMBaseObject implements
 
 	@Override
 	public void setEnvelop(byte e) {
-		setLength((short) (e == 1 ? LENGTH : (e == 7 ? 164 : 112)));
+		setLength((short) (e == 1 ? LENGTH : (e == 7 ? 116 : 80)));
 		// reset cops data to fit the new length
 		byte[] array = new byte[getLength() - offset];
 		Arrays.fill(array, (byte) 0);

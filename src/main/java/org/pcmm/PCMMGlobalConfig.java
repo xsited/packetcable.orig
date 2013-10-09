@@ -23,12 +23,14 @@ public class PCMMGlobalConfig {
 	// Authorization renew timer
 	public static short GateT2 = 300;
 	// Reservation life timer
-	public static short GateT3 = 60;
+	public static short GateT3 = 0;
 	// Reservation renew timer
-	public static short GateT4 = 30;
+	public static short GateT4 = 0;
 
+	// XXX - A new home for some of these @ org.pcmm.gates.impl.BestEffortService
 	public static int UGSTransmissionPolicy = 0x037F;
 	public static int BETransmissionPolicy = 0x0;
+	public static int BETrafficPriority = 0x0;
 
 	// Temporary Configure Items For Demo or Lacking Design
 	public static int DefaultLowBestEffortTrafficRate = 500000;
@@ -41,8 +43,8 @@ public class PCMMGlobalConfig {
 	public static String dstIP = "10.32.0.234";
 	public static String srcIP = "10.32.215.143";
 	public static String DefautRadius = "192.168.50.2";
-	public static short srcPort = 0;
-	public static short dstPort = 8081;
+	public static short srcPort = 8081;
+	public static short dstPort = 0;
 }
 
 /*

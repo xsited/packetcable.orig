@@ -179,6 +179,8 @@ public class PCMMPdpMsgSender {
 				.setMaximumTrafficBurst(BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
 		((BestEffortService) trafficProfile)
 				.setRequestTransmissionPolicy(PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile)
+				.setMaximumSustainedTrafficRate(PCMMGlobalConfig.DefaultBestEffortTrafficRate);
 		
 		
 		
@@ -203,7 +205,7 @@ public class PCMMPdpMsgSender {
 		gateSpec.setTimerT4(PCMMGlobalConfig.GateT4);
 
 
-		// if the version major is less than 4 we need to use Classifier
+		// XXX - if the version major is less than 4 we need to use Classifier
 		if (true) {
 			eclassifier.setProtocol(IClassifier.Protocol.TCP);
 			try {
@@ -232,6 +234,9 @@ public class PCMMPdpMsgSender {
 			// eclassifier.setClassifierID((short) 0x01);
 			eclassifier.setClassifierID((short) (_classifierID == 0 ? Math.random()
 				* hashCode() : _classifierID));
+			// XXX - testie
+			eclassifier.setClassifierID((short) 1);
+
 
 
 			eclassifier.setAction((byte) 0x00);
