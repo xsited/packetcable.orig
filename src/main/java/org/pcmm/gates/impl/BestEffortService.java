@@ -40,6 +40,7 @@ public class BestEffortService extends PCMMBaseObject implements
 	 */
 	public BestEffortService(byte e) {
 		super((short) (e == 1 ? LENGTH : (e == 7 ? 116 : 80)), STYPE, SNUM);
+		setEnvelop(e);
 		authorizedEnvelop = new BEEnvelop();
 		if (e > 1) {
 			reservedEnvelop = new BEEnvelop();
