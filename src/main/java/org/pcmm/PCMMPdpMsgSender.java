@@ -171,21 +171,24 @@ public class PCMMPdpMsgSender {
 		IExtendedClassifier eclassifier = new ExtendedClassifier();
 
 		// XXX check if other values should be provided
+		//
 		ITrafficProfile trafficProfile = new BestEffortService(
-				BestEffortService.DEFAULT_ENVELOP);
-		((BestEffortService) trafficProfile)
+				/* (byte) 7 */BestEffortService.DEFAULT_ENVELOP);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
 				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
-		((BestEffortService) trafficProfile)
-				.setMaximumTrafficBurst(BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
-		((BestEffortService) trafficProfile)
-				.setRequestTransmissionPolicy(PCMMGlobalConfig.BETransmissionPolicy);
-		((BestEffortService) trafficProfile)
-				.setMaximumSustainedTrafficRate(PCMMGlobalConfig.DefaultBestEffortTrafficRate);
-		
-		
-		
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setMaximumSustainedTrafficRate(
+						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
 		// new pcmm specific clientsi
-		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,
+				(byte) 4);
 
 		handle.setId(getClientHandle().getId());
 
@@ -203,7 +206,6 @@ public class PCMMPdpMsgSender {
 		gateSpec.setTimerT2(PCMMGlobalConfig.GateT2);
 		gateSpec.setTimerT3(PCMMGlobalConfig.GateT3);
 		gateSpec.setTimerT4(PCMMGlobalConfig.GateT4);
-
 
 		// XXX - if the version major is less than 4 we need to use Classifier
 		if (true) {
@@ -229,15 +231,14 @@ public class PCMMPdpMsgSender {
 			eclassifier.setDestinationPortStart(PCMMGlobalConfig.dstPort);
 			eclassifier.setDestinationPortEnd(PCMMGlobalConfig.dstPort);
 			eclassifier.setActivationState((byte) 0x01);
-			// check if we have a stored value of classifierID else we just create
+			// check if we have a stored value of classifierID else we just
+			// create
 			// one
 			// eclassifier.setClassifierID((short) 0x01);
-			eclassifier.setClassifierID((short) (_classifierID == 0 ? Math.random()
-				* hashCode() : _classifierID));
+			eclassifier.setClassifierID((short) (_classifierID == 0 ? Math
+					.random() * hashCode() : _classifierID));
 			// XXX - testie
 			eclassifier.setClassifierID((short) 1);
-
-
 
 			eclassifier.setAction((byte) 0x00);
 			eclassifier.setPriority((byte) 63);
@@ -339,15 +340,18 @@ public class PCMMPdpMsgSender {
 		// XXX check if other values should be provided
 		ITrafficProfile trafficProfile = new BestEffortService(
 				BestEffortService.DEFAULT_ENVELOP);
-		((BestEffortService) trafficProfile)
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
 				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
-		((BestEffortService) trafficProfile)
-				.setMaximumTrafficBurst(BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
-		((BestEffortService) trafficProfile)
-				.setRequestTransmissionPolicy(PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
 
 		// new pcmm specific clientsi
-		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,
+				(byte) 4);
 
 		handle.setId(getClientHandle().getId());
 		// byte[] content = "1234".getBytes();

@@ -5,6 +5,7 @@ package org.pcmm.gates.impl;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
 import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.ITrafficProfile;
 import org.umu.cops.stack.COPSData;
@@ -15,7 +16,7 @@ import org.umu.cops.stack.COPSData;
  */
 public class BestEffortService extends PCMMBaseObject implements
 		ITrafficProfile {
-	public static final byte STYPE = 3;
+	public static final byte STYPE = 1;
 	// XXX -> 60=0x3C, 112 = 0x70, 164=0xA4
 	// Length = 44=0x2C, 80=0x50 or 116=0x74
 	public static final short LENGTH = 44;
@@ -26,6 +27,12 @@ public class BestEffortService extends PCMMBaseObject implements
 
 	public static final int DEFAULT_MAX_TRAFFIC_BURST = 1522;
 
+	private BEEnvelop authorizedEnvelop;
+
+	private BEEnvelop reservedEnvelop;
+
+	private BEEnvelop committedEnvelop;
+
 	/**
 	 * 
 	 * @param e
@@ -33,12 +40,27 @@ public class BestEffortService extends PCMMBaseObject implements
 	 */
 	public BestEffortService(byte e) {
 		super((short) (e == 1 ? LENGTH : (e == 7 ? 116 : 80)), STYPE, SNUM);
-		setTrafficPriority(DEFAULT_TRAFFIC_PRIORITY);
 		setEnvelop(e);
+		authorizedEnvelop = new BEEnvelop();
+		if (e > 1) {
+			reservedEnvelop = new BEEnvelop();
+			if (e == 7)
+				committedEnvelop = new BEEnvelop();
+		}
 	}
 
 	public BestEffortService(byte[] bytes) {
 		super(bytes);
+		byte e = getEnvelop();
+		authorizedEnvelop = new BEEnvelop(headPadding(offset,
+				Arrays.copyOfRange(bytes, 8, LENGTH)));
+		if (e > 1) {
+			reservedEnvelop = new BEEnvelop(headPadding(offset,
+					Arrays.copyOfRange(bytes, LENGTH, 80)));
+			if (e == 7)
+				committedEnvelop = new BEEnvelop(headPadding(offset,
+						Arrays.copyOfRange(bytes, 80, 116)));
+		}
 	}
 
 	@Override
@@ -56,117 +78,145 @@ public class BestEffortService extends PCMMBaseObject implements
 		return getByte((short) 0);
 	}
 
-	public void setTrafficPriority(byte p) {
-		setByte(p, (short) 4);
+	public BEEnvelop getAuthorizedEnvelop() {
+		return authorizedEnvelop;
 	}
 
-	public byte getTrafficPriority() {
-		return getByte((short) 4);
+	public BEEnvelop getReservedEnvelop() {
+		return reservedEnvelop;
 	}
 
-	//
-	public void setRequestTransmissionPolicy(int p) {
-		setInt(p, (short) 8);
+	public BEEnvelop getCommittedEnvelop() {
+		return committedEnvelop;
 	}
 
-	public int getRequestTransmissionPolicy() {
-		return getInt((short) 8);
+	@Override
+	public byte[] getAsBinaryArray() {
+		byte[] returnBuffer = super.getAsBinaryArray();
+
+		{// fill buffer with the Authorized Envelop
+			byte[] authEnv = Arrays.copyOfRange(getAuthorizedEnvelop()
+					.getAsBinaryArray(), offset, BEEnvelop.LENGHT);
+			// offset + 4 since the Envelop data begin from byte nb 8
+			System.arraycopy(authEnv, 0, returnBuffer, offset + 4,
+					authEnv.length);
+		}
+		if (getReservedEnvelop() != null) {
+			byte[] reservedEnv = Arrays.copyOfRange(getReservedEnvelop()
+					.getAsBinaryArray(), offset, BEEnvelop.LENGHT);
+			System.arraycopy(reservedEnv, 0, returnBuffer, LENGTH,
+					reservedEnv.length);
+		}
+		if (getCommittedEnvelop() != null) {
+			byte[] commitEnv = Arrays.copyOfRange(getCommittedEnvelop()
+					.getAsBinaryArray(), offset, BEEnvelop.LENGHT);
+			System.arraycopy(commitEnv, 0, returnBuffer, LENGTH + 36,
+					commitEnv.length);
+		}
+		return returnBuffer;
 	}
 
-	public int getMaximumSustainedTrafficRate() {
-		return getInt((short) 12);
-	}
+	/**
+	 * 
+	 * @author rhadjamor@gmail.com
+	 * 
+	 */
+	public static class BEEnvelop extends PCMMBaseObject {
+		// basically we need 36 bytes but since PCMMBasedObject needs 4 bytes
+		// more we allocate 40 bytes and then subtract them when setting BE
+		// data.
+		private final static short LENGHT = 40;
 
-	public void setMaximumSustainedTrafficRate(int p) {
-		setInt(p, (short) 12);
-	}
+		protected BEEnvelop() {
+			super(LENGHT, (byte) 0, (byte) 0);
+			setTrafficPriority(DEFAULT_TRAFFIC_PRIORITY);
+		}
 
-	public int getMaximumTrafficBurst() {
-		return getInt((short) 16);
-	}
+		protected BEEnvelop(byte[] buffer) {
+			super(buffer);
+		}
 
-	public void setMaximumTrafficBurst(int p) {
-		setInt(p, (short) 16);
-	}
+		public void setTrafficPriority(byte p) {
+			setByte(p, (short) 0);
+		}
 
-	public int getMinimumReservedTrafficRate() {
-		return getInt((short) 20);
-	}
+		public byte getTrafficPriority() {
+			return getByte((short) 0);
+		}
 
-	public void setMinimumReservedTrafficRate(int p) {
-		setInt(p, (short) 20);
-	}
+		//
+		public void setRequestTransmissionPolicy(int p) {
+			setInt(p, (short) 4);
+		}
 
-	public short getAssumedMinimumReservedTrafficRatePacketSize() {
-		return getShort((short) 24);
-	}
+		public int getRequestTransmissionPolicy() {
+			return getInt((short) 4);
+		}
 
-	public void setAssumedMinimumReservedTrafficRatePacketSize(short p) {
-		setShort(p, (short) 24);
-	}
+		public int getMaximumSustainedTrafficRate() {
+			return getInt((short) 8);
+		}
 
-	public short getMaximumConcatenatedBurst() {
-		return getShort((short) 26);
-	}
+		public void setMaximumSustainedTrafficRate(int p) {
+			setInt(p, (short) 8);
+		}
 
-	public void setMaximumConcatenatedBurst(short p) {
-		setShort(p, (short) 26);
-	}
+		public int getMaximumTrafficBurst() {
+			return getInt((short) 12);
+		}
 
-	public int getUpstreamPeakTrafficRate() {
-		return getInt((short) 28);
-	}
+		public void setMaximumTrafficBurst(int p) {
+			setInt(p, (short) 12);
+		}
 
-	public void setUpstreamPeakTrafficRate(int p) {
-		setInt(p, (short) 28);
-	}
+		public int getMinimumReservedTrafficRate() {
+			return getInt((short) 16);
+		}
 
-	public int getRequiredAttributeMask() {
-		return getInt((short) 32);
-	}
+		public void setMinimumReservedTrafficRate(int p) {
+			setInt(p, (short) 16);
+		}
 
-	public void setRequiredAttributeMask(int p) {
-		setInt(p, (short) 32);
-	}
+		public short getAssumedMinimumReservedTrafficRatePacketSize() {
+			return getShort((short) 20);
+		}
 
-	public int getForbiddenAttributeMask() {
-		return getInt((short) 36);
-	}
+		public void setAssumedMinimumReservedTrafficRatePacketSize(short p) {
+			setShort(p, (short) 20);
+		}
 
-	public void setForbiddenAttributeMask(int p) {
-		setInt(p, (short) 36);
-	}
+		public short getMaximumConcatenatedBurst() {
+			return getShort((short) 22);
+		}
 
-	public int getAttributeAggregationRuleMask() {
-		return getInt((short) 40);
-	}
+		public void setMaximumConcatenatedBurst(short p) {
+			setShort(p, (short) 22);
+		}
 
-	public void setAttributeAggregationRuleMask(int p) {
-		setInt(p, (short) 40);
-	}
+		public int getRequiredAttributeMask() {
+			return getInt((short) 24);
+		}
 
-	public int getMinimumBuffer() {
-		return getInt((short) 44);
-	}
+		public void setRequiredAttributeMask(int p) {
+			setInt(p, (short) 24);
+		}
 
-	public void setMinimumBuffer(int p) {
-		setInt(p, (short) 44);
-	}
+		public int getForbiddenAttributeMask() {
+			return getInt((short) 28);
+		}
 
-	public int getTargetBuffer() {
-		return getInt((short) 48);
-	}
+		public void setForbiddenAttributeMask(int p) {
+			setInt(p, (short) 28);
+		}
 
-	public void setTargetBuffer(int p) {
-		setInt(p, (short) 48);
-	}
+		public int getAttributeAggregationRuleMask() {
+			return getInt((short) 32);
+		}
 
-	public int getMaximumBuffer() {
-		return getInt((short) 52);
-	}
+		public void setAttributeAggregationRuleMask(int p) {
+			setInt(p, (short) 32);
+		}
 
-	public void setMaximumBuffer(int p) {
-		setInt(p, (short) 52);
 	}
 
 }
