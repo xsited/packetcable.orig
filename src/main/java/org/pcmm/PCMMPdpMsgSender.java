@@ -173,7 +173,7 @@ public class PCMMPdpMsgSender {
 		// XXX check if other values should be provided
 		//
 		ITrafficProfile trafficProfile = new BestEffortService(
-				/* (byte) 7 */BestEffortService.DEFAULT_ENVELOP);
+				(byte) 7); //BestEffortService.DEFAULT_ENVELOP);
 		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
 				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
 		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
@@ -185,6 +185,33 @@ public class PCMMPdpMsgSender {
 		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
 				.setMaximumSustainedTrafficRate(
 						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setMaximumSustainedTrafficRate(
+						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
+
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setMaximumSustainedTrafficRate(
+						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
+
 
 		// new pcmm specific clientsi
 		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,

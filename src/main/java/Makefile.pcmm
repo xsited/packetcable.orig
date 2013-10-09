@@ -116,7 +116,7 @@ default: classes jar
 classes: $(SOURCES:.java=.class)
 
 jar:
-	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class org/pcmm/messages/impl/*.class
+	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class org/pcmm/messages/impl/*.class org/pcmm/gates/impl/*.class
 
 tar:
 	tar czpf $(TARBALL) $(SOURCES) Makefile

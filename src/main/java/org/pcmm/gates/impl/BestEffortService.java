@@ -16,7 +16,7 @@ import org.umu.cops.stack.COPSData;
  */
 public class BestEffortService extends PCMMBaseObject implements
 		ITrafficProfile {
-	public static final byte STYPE = 1;
+	public static final byte STYPE = 3;
 	// XXX -> 60=0x3C, 112 = 0x70, 164=0xA4
 	// Length = 44=0x2C, 80=0x50 or 116=0x74
 	public static final short LENGTH = 44;
@@ -25,7 +25,7 @@ public class BestEffortService extends PCMMBaseObject implements
 	// Authorized
 	public static final byte DEFAULT_ENVELOP = 0x1;
 
-	public static final int DEFAULT_MAX_TRAFFIC_BURST = 1522;
+	public static final int DEFAULT_MAX_TRAFFIC_BURST = 3044;
 
 	private BEEnvelop authorizedEnvelop;
 
