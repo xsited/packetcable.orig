@@ -196,11 +196,13 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
 
 		// Authorized
-		ITrafficProfile trafficProfile = new BestEffortService(BestEffortService.DEFAULT_ENVELOP);
-		((BestEffortService) trafficProfile)
+		ITrafficProfile trafficProfile = new BestEffortService(
+				BestEffortService.DEFAULT_ENVELOP);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
 				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
-		((BestEffortService) trafficProfile)
-				.setMaximumTrafficBurst(BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
 
 		IExtendedClassifier classifier = new ExtendedClassifier();
 		// tcp => 6
