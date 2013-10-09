@@ -18,7 +18,7 @@ public interface IClassifier extends IPCMMBaseObject {
 
 	static enum Protocol {
 		/*ICMP((short) 1), IGMP((short) 2), */
-		TCP((short) 6), UDP((short) 17);
+		NONE((short)0), TCP((short) 6), UDP((short) 17);
 
 		Protocol(short v) {
 			this.value = v;
@@ -26,6 +26,8 @@ public interface IClassifier extends IPCMMBaseObject {
 		
 		public static Protocol valueOf(short v){
 			switch (v) {
+			case 0:
+				return NONE;
 			/*case 1:
 				return ICMP;
 			case 2:

@@ -236,7 +236,8 @@ public class PCMMPdpMsgSender {
 
 		// XXX - if the version major is less than 4 we need to use Classifier
 		if (true) {
-			eclassifier.setProtocol(IClassifier.Protocol.TCP);
+			eclassifier.setProtocol(IClassifier.Protocol.NONE);
+			//eclassifier.setProtocol(IClassifier.Protocol.TCP);
 			try {
 				InetAddress subIP = InetAddress
 						.getByName(PCMMGlobalConfig.SubscriberID);
@@ -268,7 +269,7 @@ public class PCMMPdpMsgSender {
 			eclassifier.setClassifierID((short) 1);
 
 			eclassifier.setAction((byte) 0x00);
-			eclassifier.setPriority((byte) 63);
+			eclassifier.setPriority((byte) 0x45);
 
 		} else {
 			classifier.setProtocol(IClassifier.Protocol.TCP);
