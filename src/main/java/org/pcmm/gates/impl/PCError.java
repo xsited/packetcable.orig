@@ -40,8 +40,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#setErrorCode(int)
 	 */
 	@Override
-	public void setErrorCode(int ErrorCode) {
-		setInt(ErrorCode, (short) 0);
+	public void setErrorCode(short ErrorCode) {
+		setShort(ErrorCode, (short) 0);
 	}
 
 	/*
@@ -50,8 +50,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#getErrorCode()
 	 */
 	@Override
-	public int getErrorCode() {
-		return getInt((short) 0);
+	public short getErrorCode() {
+		return getShort((short) 0);
 	}
 
 	/*
@@ -60,8 +60,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#setErrorSubcode(int)
 	 */
 	@Override
-	public void setErrorSubcode(int ErrorSubcode) {
-		setInt(ErrorSubcode, (short) 2);
+	public void setErrorSubcode(short ErrorSubcode) {
+		setShort(ErrorSubcode, (short) 2);
 	}
 
 	/*
@@ -70,8 +70,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#getErrorCode()
 	 */
 	@Override
-	public int getErrorSubcode() {
-		return getInt((short) 2);
+	public short getErrorSubcode() {
+		return getShort((short) 2);
 	}
 	// toString ????
 	/*
@@ -80,9 +80,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#getDescription()
 	 */
 	@Override
-	public String getDescription(int ErrorCode, int ErrorSubcode) {
+	public String getDescription(short ErrorCode, short ErrorSubcode) {
 		String hex = Integer.toHexString(ErrorSubcode & 0xFFFF);
 		return "Error Code: " + ErrorCode + " Error Subcode : " + hex; // + Description;
-
 	}
 }
