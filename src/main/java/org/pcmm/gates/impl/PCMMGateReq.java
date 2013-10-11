@@ -10,6 +10,7 @@ import org.pcmm.gates.IAMID;
 import org.pcmm.gates.IClassifier;
 import org.pcmm.gates.IGateID;
 import org.pcmm.gates.IGateSpec;
+import org.pcmm.gates.IPCError;
 import org.pcmm.gates.IPCMMGate;
 import org.pcmm.gates.ISubscriberID;
 import org.pcmm.gates.ITrafficProfile;
@@ -29,6 +30,7 @@ public class PCMMGateReq implements IPCMMGate {
 	private boolean multicast;
 	private IGateID gateID;
 	private IAMID iamid;
+	private IPCError error;
 	private ISubscriberID subscriberID;
 	private ITransactionID transactionID;
 	private IGateSpec gateSpec;
@@ -49,31 +51,31 @@ public class PCMMGateReq implements IPCMMGate {
 			len |= ((short) data[offset + 1]) & 0xFF;
 			sNum = data[offset + 2];
 			sType = data[offset + 3];
+			byte[] dataBuffer = Arrays.copyOfRange(data, offset, offset + len);
 			switch (sNum) {
 			case IGateID.SNUM:
-				setGateID(new GateID(Arrays.copyOfRange(data, offset, len)));
+				setGateID(new GateID(dataBuffer));
 				break;
 			case IAMID.SNUM:
-				setAMID(new AMID(Arrays.copyOfRange(data, offset, len)));
+				setAMID(new AMID(dataBuffer));
 				break;
 			case ISubscriberID.SNUM:
-				setSubscriberID(new SubscriberID(Arrays.copyOfRange(data,
-						offset, len)));
+				setSubscriberID(new SubscriberID(dataBuffer));
 				break;
 			case ITransactionID.SNUM:
-				setTransactionID(new TransactionID(Arrays.copyOfRange(data,
-						offset, len)));
+				setTransactionID(new TransactionID(dataBuffer));
 				break;
 			case IGateSpec.SNUM:
-				setGateSpec(new GateSpec(Arrays.copyOfRange(data, offset, len)));
+				setGateSpec(new GateSpec(dataBuffer));
 				break;
 			case ITrafficProfile.SNUM:
-				setTrafficProfile(new BestEffortService(
-						Arrays.copyOfRange(data, offset, len)));
+				setTrafficProfile(new BestEffortService(dataBuffer));
 				break;
 			case IClassifier.SNUM:
-				setClassifier(new Classifier(Arrays.copyOfRange(data, offset,
-						len)));
+				setClassifier(new Classifier(dataBuffer));
+				break;
+			case IPCError.SNUM:
+				error = new PCError(dataBuffer);
 				break;
 			default:
 				System.out.println("unhandled Object skept : S-NUM=" + sNum
@@ -226,6 +228,14 @@ public class PCMMGateReq implements IPCMMGate {
 	@Override
 	public ITransactionID getTransactionID() {
 		return transactionID;
+	}
+
+	public IPCError getError() {
+		return error;
+	}
+
+	public void setError(IPCError error) {
+		this.error = error;
 	}
 
 	@Override

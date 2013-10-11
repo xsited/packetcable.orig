@@ -263,6 +263,9 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 					.elementAt(0);
 			IPCMMGate responseGate = new PCMMGateReq(clientSI.getData()
 					.getData());
+			if (((PCMMGateReq) responseGate).getError() != null) {
+
+			}
 			if (responseGate.getTransactionID() != null
 					&& responseGate.getTransactionID().getGateCommandType() == ITransactionID.GateSetAck) {
 				logger.info("the CMTS has sent a Gate-Set-Ack response");
