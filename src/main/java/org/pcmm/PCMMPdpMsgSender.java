@@ -24,6 +24,11 @@ import org.umu.cops.stack.COPSObjHeader;
 import org.umu.cops.stack.COPSSyncStateMsg;
 import org.umu.cops.prpdp.COPSPdpException;
 
+//temp
+import org.umu.cops.stack.COPSReportMsg;
+import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSTransceiver;
+
 //pcmm
 import org.pcmm.PCMMGlobalConfig;
 import org.pcmm.gates.IAMID;
@@ -76,6 +81,8 @@ public class PCMMPdpMsgSender {
      */
 	protected short _transactionID;
 	protected short _classifierID;
+	// XXX - this does not need to be here
+	protected int _gateID;
 
 	/**
 	 * Creates a PCMMPdpMsgSender
@@ -184,7 +191,8 @@ public class PCMMPdpMsgSender {
 						PCMMGlobalConfig.BETransmissionPolicy);
 		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
 				.setMaximumSustainedTrafficRate(
-						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+						PCMMGlobalConfig.DefaultLowBestEffortTrafficRate );
+					//	PCMMGlobalConfig.DefaultBestEffortTrafficRate);
 
 		((BestEffortService) trafficProfile).getReservedEnvelop()
 				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
@@ -196,7 +204,8 @@ public class PCMMPdpMsgSender {
 						PCMMGlobalConfig.BETransmissionPolicy);
 		((BestEffortService) trafficProfile).getReservedEnvelop()
 				.setMaximumSustainedTrafficRate(
-						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+						PCMMGlobalConfig.DefaultLowBestEffortTrafficRate );
+					//	PCMMGlobalConfig.DefaultBestEffortTrafficRate);
 
 
 		((BestEffortService) trafficProfile).getCommittedEnvelop()
@@ -209,7 +218,8 @@ public class PCMMPdpMsgSender {
 						PCMMGlobalConfig.BETransmissionPolicy);
 		((BestEffortService) trafficProfile).getCommittedEnvelop()
 				.setMaximumSustainedTrafficRate(
-						PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+						PCMMGlobalConfig.DefaultLowBestEffortTrafficRate );
+					//	PCMMGlobalConfig.DefaultBestEffortTrafficRate);
 
 
 
@@ -236,8 +246,8 @@ public class PCMMPdpMsgSender {
 
 		// XXX - if the version major is less than 4 we need to use Classifier
 		if (true) {
-			eclassifier.setProtocol(IClassifier.Protocol.NONE);
-			//eclassifier.setProtocol(IClassifier.Protocol.TCP);
+			//eclassifier.setProtocol(IClassifier.Protocol.NONE);
+			eclassifier.setProtocol(IClassifier.Protocol.TCP);
 			try {
 				InetAddress subIP = InetAddress
 						.getByName(PCMMGlobalConfig.SubscriberID);
@@ -266,10 +276,12 @@ public class PCMMPdpMsgSender {
 			eclassifier.setClassifierID((short) (_classifierID == 0 ? Math
 					.random() * hashCode() : _classifierID));
 			// XXX - testie
-			eclassifier.setClassifierID((short) 1);
+			// eclassifier.setClassifierID((short) 1);
 
 			eclassifier.setAction((byte) 0x00);
-			eclassifier.setPriority((byte) 0x45);
+			// XXX - temp default until Gate Modify is hacked in
+			// eclassifier.setPriority(PCMMGlobalConfig.EClassifierPriority);
+			eclassifier.setPriority((byte) 65);
 
 		} else {
 			classifier.setProtocol(IClassifier.Protocol.TCP);
@@ -312,11 +324,13 @@ public class PCMMPdpMsgSender {
 			install.setFlags(COPSDecision.F_REQERROR);
 			decisionMsg.addDecision(install, cntxt);
 			decisionMsg.add(clientSD); // setting up the gate
+/*
 			try {
 				decisionMsg.dump(System.out);
 			} catch (IOException unae) {
 				System.out.println("Error dumping " + unae.getMessage());
 			}
+*/
 
 		} catch (COPSException e) {
 			System.out.println("Error making Msg" + e.getMessage());
@@ -332,6 +346,39 @@ public class PCMMPdpMsgSender {
 		}
 
 	}
+
+
+	public boolean handleGateReport(Socket socket) throws COPSPdpException {
+        try {
+		// waits for the gate-set-ack or error
+                COPSMsg responseMsg = COPSTransceiver.receiveMsg(socket);
+		if (responseMsg.getHeader().isAReport()) {
+			System.out.println("processing received report from CMTS");
+			COPSReportMsg reportMsg = (COPSReportMsg) responseMsg;
+			if (reportMsg.getClientSI().size() == 0) {
+				return false;
+			}
+			COPSClientSI clientSI = (COPSClientSI) reportMsg.getClientSI()
+					.elementAt(0);
+			IPCMMGate responseGate = new PCMMGateReq(clientSI.getData()
+					.getData());
+			if (responseGate.getTransactionID() != null
+					&& responseGate.getTransactionID().getGateCommandType() == ITransactionID.GateSetAck) {
+				System.out.println("the CMTS has sent a Gate-Set-Ack response");
+				// here CMTS responded that he acknowledged the Gate-Set
+				// TODO do further check of Gate-Set-Ack GateID etc...
+				_gateID = responseGate.getGateID().getGateID();
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+        } catch (Exception e) { // COPSException, IOException
+            throw new COPSPdpException("Error COPSTransceiver.receiveMsg");
+        }
+	}
+	
 
 	/**
 	 * Sends a PCMM GateSet COPS Decision message
@@ -662,5 +709,11 @@ public class PCMMPdpMsgSender {
 					"Failed to send the sync state request, reason: "
 							+ e.getMessage());
 		}
+	}
+	// XXX - Temp
+	public void sendSyncRequestState() throws COPSPdpException {
+	}
+	// XXX - Temp
+	public void sendDeleteRequestState() throws COPSPdpException {
 	}
 }

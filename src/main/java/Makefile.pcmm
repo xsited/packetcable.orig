@@ -91,6 +91,10 @@ SOURCES = \
 	org/pcmm/rcd/IPCMMServer.java \
 	org/pcmm/utils/PCMMError.java \
 	org/pcmm/gates/impl/BestEffortService.java \
+	org/pcmm/gates/IPCError.java \
+	org/pcmm/gates/impl/PCError.java \
+	org/pcmm/PCMMPdpConnection.java  \
+	org/pcmm/PCMMPdpReqStateMan.java \
 	org/pcmm/utils/PCMMLogger.java 
 
 

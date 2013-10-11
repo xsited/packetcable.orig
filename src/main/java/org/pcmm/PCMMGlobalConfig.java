@@ -31,6 +31,7 @@ public class PCMMGlobalConfig {
 	public static int UGSTransmissionPolicy = 0x037F;
 	public static int BETransmissionPolicy = 0x0;
 	public static int BETrafficPriority = 0x0;
+	public static byte EClassifierPriority = 0x45;
 
 	// Temporary Configure Items For Demo or Lacking Design
 	public static int DefaultLowBestEffortTrafficRate = 500000;
