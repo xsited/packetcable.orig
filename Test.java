@@ -8,20 +8,21 @@ import java.util.List;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 // jcops
 import org.umu.cops.common.*;
 import org.umu.cops.stack.*;
+import org.umu.cops.prpdp.COPSPdpException;
+
+//pcmm
 import org.pcmm.PCMMDef;
 import org.pcmm.PCMMPdpAgent;
 import org.pcmm.PCMMPdpDataProcess;
 import org.pcmm.rcd.IPCMMPolicyServer;
 import org.pcmm.rcd.impl.PCMMPolicyServer;
-import org.umu.cops.prpdp.COPSPdpException;
 
 
-import java.util.Scanner;
-//pcmm
 import org.pcmm.PCMMGlobalConfig;
 import org.pcmm.gates.IAMID;
 import org.pcmm.gates.IClassifier;
@@ -44,6 +45,7 @@ import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.state.IState;
 import org.pcmm.PCMMPdpMsgSender;
+import org.pcmm.PCMMPdpAgent;
 
 
 
@@ -134,128 +136,6 @@ public class Test {
                 }
 		break;
 	    case 10:
-/*
-                try  {
-                    pcmm_pdp.connect( PCMMGlobalConfig.DefaultCMTS, 3918);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-*/
-
-                /* Example of an UNSOLICITED decision
-                 * <Gate Control Command> =
-                 *     <COPS Common Header> <Client Handle> <Context>
-                 *     <Decision Flags> <ClientSI Data>
-                 * <ClientSI Data> = <Gate-Set> | <Gate-Info> | <Gate-Delete> |
-                 *                   <PDP-Config> | <Synch-Request> | <Msg-Receipt>
-                         * <Gate-Set> = <Decision Header> <TransactionID> <AMID> <SubscriberID>
-                 *              [<GateID>] <GateSpec> <Traffic Profile> <classifier>
-                 * 		[<classifier...>] [<Event Generation Info>]
-                     *              [<Volume-Based Usage Limit>] [<Time-Based Usage Limit>]
-                 *	        [<Opaque Data>] [<UserID>]
-                // Common Header with the same ClientType as the request
-                COPSHeader hdr = new COPSHeader (COPSHeader.COPS_OP_DEC, PCMMDef.C_PCMM);
-
-                // Client Handle with the same clientHandle as the request
-                COPSHandle handle = new COPSHandle();
-                COPSDecisionMsg decisionMsg = new COPSDecisionMsg();
-
-                IPCMMGate gate = new PCMMGateReq();
-                ITransactionID trID = new TransactionID();
-
-                IAMID amid = new AMID();
-                ISubscriberID subscriberID = new SubscriberID();
-                IGateSpec gateSpec = new GateSpec();
-                IClassifier classifier = new Classifier();
-
-                ITrafficProfile trafficProfile = new DOCSISServiceClassNameTrafficProfile();
-
-                // new pcmm specific clientsi
-                COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte)4);
-
-
-
-
-                handle.setId(new COPSData("0"));; // getClientHandle().getId());
-
-
-
-
-                // set transaction ID to gate set
-                trID.setGateCommandType(ITransactionID.GateSet);
-                // transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode()) : transactionID);
-                trID.setTransactionIdentifier(transactionID);
-
-
-                amid.setApplicationType((short) 0);
-                amid.setApplicationMgrTag((short) 0);
-                gateSpec.setDirection(Direction.UPSTREAM);
-                gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
-                gateSpec.setTimerT1( PCMMGlobalConfig.GateT1 );
-                gateSpec.setTimerT2( PCMMGlobalConfig.GateT2 );
-                gateSpec.setTimerT3( PCMMGlobalConfig.GateT3 );
-                gateSpec.setTimerT4( PCMMGlobalConfig.GateT4 );
-
-                trafficProfile.setEnvelop((byte) 0x0);
-                ((DOCSISServiceClassNameTrafficProfile) trafficProfile)
-                .setServiceClassName("S_up");
-
-                classifier.setProtocol((short)6);
-                try {
-                    InetAddress subIP = InetAddress.getByName("10.32.104.2");
-                    InetAddress srcIP = InetAddress.getByName("10.32.0.208");
-                    InetAddress dstIP = InetAddress.getByName("10.32.154.2");
-                    subscriberID.setSourceIPAddress(subIP);
-                    classifier.setSourceIPAddress(srcIP);
-                    classifier.setDestinationIPAddress(dstIP);
-                } catch (UnknownHostException unae) {
-                    System.out.println("Error getByName"+unae.getMessage());
-                }
-                classifier.setSourcePort((short) 0);
-                classifier.setDestinationPort((short) 8081);
-
-                gate.setTransactionID(trID);
-                gate.setAMID(amid);
-                gate.setSubscriberID(subscriberID);
-                gate.setGateSpec(gateSpec);
-                gate.setTrafficProfile(trafficProfile);
-                gate.setClassifier(classifier);
-                data = gate.getData();
-
-                // new pcmm specific clientsi
-                clientSD.setData(new COPSData(data, 0, data.length));
-
-                try {
-                    decisionMsg.add(hdr);
-                    decisionMsg.add(handle);
-                    // Decisions (no flags supplied)
-                    //  <Context>
-                    COPSContext cntxt = new COPSContext(COPSContext.CONFIG, (short) 0);
-                    COPSDecision install = new COPSDecision();
-                    install.setCmdCode(COPSDecision.DEC_INSTALL);
-                    install.setFlags(COPSDecision.F_REQERROR);
-                    decisionMsg.addDecision(install, cntxt);
-                    decisionMsg.add(clientSD);		// setting up the gate
-                    try {
-                        decisionMsg.dump(System.out);
-                    } catch (IOException unae) {
-                        System.out.println("Error dumping "+unae.getMessage());
-                    }
-
-                } catch (COPSException e) {
-                    System.out.println("Error making Msg"+e.getMessage());
-                }
-
-                //** Send the decision
-                //**
-                try {
-                    decisionMsg.writeData(pcmm_pdp.getSocket());
-                    //decisionMsg.writeData(socket_id);
-                } catch (IOException e) {
-                    System.out.println("Failed to send the decision, reason: " + e.getMessage());
-                }
-
-                 */
                 break;
             case 3:
                 System.out.println("Toggle Flow");
@@ -307,6 +187,11 @@ public class Test {
                 break;
             case 0:
                 quit = true;
+/*
+        	if (lpdp.isConnected()) lpdp.disconnect();
+        	if (lpdp.isConnected()) rpdp.disconnect();
+        	if (lpdp.isConnected()) pcmm_pdp.disconnect();
+*/
                 break;
             default:
                 System.out.println("Invalid choice.");

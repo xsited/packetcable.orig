@@ -14,7 +14,6 @@ import org.umu.cops.common.COPSDebug;
 import org.umu.cops.ospep.COPSPepException;
 import org.umu.cops.prpdp.COPSPdpAgent;
 import org.umu.cops.prpdp.COPSPdpConnection;
-import org.umu.cops.prpdp.COPSPdpDataProcess;
 import org.umu.cops.prpdp.COPSPdpException;
 import org.umu.cops.stack.COPSAcctTimer;
 import org.umu.cops.stack.COPSClientAcceptMsg;
@@ -30,8 +29,10 @@ import org.umu.cops.stack.COPSTransceiver;
 import org.umu.cops.stack.COPSHandle;
 import org.umu.cops.stack.COPSReqMsg;
 
+// import org.umu.cops.prpdp.COPSPdpDataProcess;
 
 import org.pcmm.objects.MMVersionInfo;
+import org.pcmm.PCMMPdpDataProcess;
 
 
 /**
@@ -56,7 +57,7 @@ public class PCMMPdpAgent extends COPSPdpAgent {
     /**
      * Policy data processing object
      */
-    private COPSPdpDataProcess _process;
+    private PCMMPdpDataProcess _process;
     private MMVersionInfo _mminfo;
     private COPSHandle _handle;
     private short _transactionID;
@@ -69,7 +70,7 @@ public class PCMMPdpAgent extends COPSPdpAgent {
      * @param process
      *            Object to perform policy data processing
      */
-    public PCMMPdpAgent(short clientType, COPSPdpDataProcess process) {
+    public PCMMPdpAgent(short clientType, PCMMPdpDataProcess process) {
         this(clientType, null, WELL_KNOWN_PDP_PORT, process);
     }
 
@@ -85,9 +86,8 @@ public class PCMMPdpAgent extends COPSPdpAgent {
      * @param process
      *            Object to perform policy data processing
      */
-    public PCMMPdpAgent(short clientType, String psHost, int psPort,
-                        COPSPdpDataProcess process) {
-        super(psPort, clientType, process);
+    public PCMMPdpAgent(short clientType, String psHost, int psPort, PCMMPdpDataProcess process) {
+        super(psPort, clientType, null);
         this._process = process;
         this.psHost = psHost;
     }
@@ -257,7 +257,7 @@ public class PCMMPdpAgent extends COPSPdpAgent {
         if (getAcctTimer() != 0)
             acceptMsg.add(acctTimer);
         acceptMsg.writeData(conn);
-        // We're waiting for an message
+        // XXX - handleRequestMsg
         try {
             COPSDebug.err(getClass().getName(), "PDP COPSTransceiver.receiveMsg ");
             COPSMsg rmsg = COPSTransceiver.receiveMsg(socket);
@@ -281,14 +281,8 @@ public class PCMMPdpAgent extends COPSPdpAgent {
             } else {
                 // Request
                 if (rmsg.getHeader().isARequest()) {
-                    System.out.println("*Received Open REQ message from CMTS");
     		    COPSReqMsg rMsg = (COPSReqMsg) rmsg;
-                    System.out.println("Processed REQ message 1");
 		    _handle = rMsg.getClientHandle();
-                    System.out.println("Processed REQ message 2");
-
-			
-
                 } else
                     throw new COPSException("Can't understand request");
 
@@ -298,10 +292,22 @@ public class PCMMPdpAgent extends COPSPdpAgent {
         }
 
         COPSDebug.err(getClass().getName(), "PDPCOPSConnection");
-        COPSPdpConnection pdpConn = new COPSPdpConnection(pepId, conn, _process);
+        PCMMPdpConnection pdpConn = new PCMMPdpConnection(pepId, conn, _process);
         pdpConn.setKaTimer((short)360); //getKaTimer());
         if (getAcctTimer() != 0)
             pdpConn.setAccTimer(getAcctTimer());
+
+        // XXX - handleRequestMsg
+	// XXX - check handle is valid
+        PCMMPdpReqStateMan man = new PCMMPdpReqStateMan(getClientType(), _handle.getId().str());
+	pdpConn.getReqStateMans().put(_handle.getId().str(),man);
+        man.setDataProcess(_process);
+        try {
+           man.initRequestState(conn);
+        } catch (COPSPdpException unae) {
+        }
+        // XXX - End handleRequestMsg
+
         COPSDebug.err(getClass().getName(), "PDP Thread(pdpConn).start");
         new Thread(pdpConn).start();
         getConnectionMap().put(pepId.getData().str(), pdpConn);
@@ -355,7 +361,7 @@ public class PCMMPdpAgent extends COPSPdpAgent {
     /**
      * @return the _process
      */
-    public COPSPdpDataProcess getProcess() {
+    public PCMMPdpDataProcess getProcess() {
         return _process;
     }
 
@@ -363,7 +369,7 @@ public class PCMMPdpAgent extends COPSPdpAgent {
      * @param _process
      *            the _process to set
      */
-    public void setProcess(COPSPdpDataProcess _process) {
+    public void setProcess(PCMMPdpDataProcess _process) {
         this._process = _process;
     }
 

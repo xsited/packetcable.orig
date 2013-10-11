@@ -1,5 +1,4 @@
 /*
- *
  */
 
 package org.pcmm;
@@ -7,11 +6,13 @@ package org.pcmm;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.umu.cops.prpdp.COPSPdpDataProcess;
-import org.umu.cops.prpdp.COPSPdpReqStateMan;
+// import org.umu.cops.prpdp.COPSPdpDataProcess;
 import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSClientSI;
+import org.umu.cops.stack.COPSReportMsg;
+import org.pcmm.PCMMPdpReqStateMan;
 
-public class PCMMPdpDataProcess extends COPSPdpDataProcess
+public class PCMMPdpDataProcess // extends COPSPdpDataProcess
 {
 	private Hashtable installPolicy;
 	private Hashtable removePolicy;
@@ -25,7 +26,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @return
      */
-	public Hashtable getRemovePolicy(COPSPdpReqStateMan man) {
+	public Hashtable getRemovePolicy(PCMMPdpReqStateMan man) {
 		return removePolicy;
 	}
 
@@ -35,7 +36,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @return
      */
-	public Hashtable getInstallPolicy(COPSPdpReqStateMan man) {
+	public Hashtable getInstallPolicy(PCMMPdpReqStateMan man) {
 		return installPolicy;
 	}
 
@@ -45,7 +46,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @param reqSIs
      */
-    public void setClientData(COPSPdpReqStateMan man, Hashtable reqSIs) {
+    public void setClientData(PCMMPdpReqStateMan man, Hashtable reqSIs) {
 
         System.out.println(getClass().getName() + ": " + "Request Info");
 /*
@@ -75,7 +76,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @param reportSIs
      */
-    public void failReport(COPSPdpReqStateMan man, Hashtable reportSIs) {
+    public void failReport(PCMMPdpReqStateMan man, Hashtable reportSIs) {
 
         System.out.println(getClass().getName()+ ": " + "Fail Report notified.");
 /*
@@ -99,7 +100,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @param reportSIs
      */
-    public void successReport(COPSPdpReqStateMan man, Hashtable reportSIs) {
+    public void successReport(PCMMPdpReqStateMan man, Hashtable reportSIs) {
         System.out.println(getClass().getName()+ ": " + "Success Report notified.");
 
 /*
@@ -123,7 +124,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @param reportSIs
      */
-    public void acctReport(COPSPdpReqStateMan man, Hashtable reportSIs) {
+    public void acctReport(PCMMPdpReqStateMan man, Hashtable reportSIs) {
         System.out.println(getClass().getName()+ ": " + "Acct Report notified.");
 
 /*
@@ -145,7 +146,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      *
      * @param man
      */
-    public void notifyNoAcctReport(COPSPdpReqStateMan man) {
+    public void notifyNoAcctReport(PCMMPdpReqStateMan man) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -154,7 +155,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      *
      * @param man
      */
-    public void notifyNoKAliveReceived(COPSPdpReqStateMan man) {
+    public void notifyNoKAliveReceived(PCMMPdpReqStateMan man) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -164,7 +165,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      * @param man
      * @param error
      */
-    public void notifyClosedConnection(COPSPdpReqStateMan man, COPSError error) {
+    public void notifyClosedConnection(PCMMPdpReqStateMan man, COPSError error) {
         System.out.println(getClass().getName() + ": " + "Connection was closed by PEP");
     }
 
@@ -173,7 +174,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      *
      * @param man
      */
-    public void notifyDeleteRequestState(COPSPdpReqStateMan man) {
+    public void notifyDeleteRequestState(PCMMPdpReqStateMan man) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -182,7 +183,7 @@ public class PCMMPdpDataProcess extends COPSPdpDataProcess
      *
      * @param man
      */
-    public void closeRequestState(COPSPdpReqStateMan man) {
+    public void closeRequestState(PCMMPdpReqStateMan man) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 }
