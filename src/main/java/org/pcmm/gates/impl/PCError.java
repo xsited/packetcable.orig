@@ -4,6 +4,7 @@
 package org.pcmm.gates.impl;
 
 import java.lang.Integer;
+
 import org.pcmm.base.impl.PCMMBaseObject;
 import org.pcmm.gates.IPCError;
 
@@ -16,6 +17,12 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 */
 	public PCError() {
 		this(LENGTH, STYPE, SNUM);
+	}
+
+	public PCError(short errorCode, short subErrCode) {
+		this();
+		setErrorCode(errorCode);
+		setErrorSubcode(subErrCode);
 	}
 
 	/**
@@ -40,8 +47,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#setErrorCode(int)
 	 */
 	@Override
-	public void setErrorCode(short ErrorCode) {
-		setShort(ErrorCode, (short) 0);
+	public void setErrorCode(short errorCode) {
+		setShort(errorCode, (short) 0);
 	}
 
 	/*
@@ -60,8 +67,8 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	 * @see org.pcmm.gates.IPCError#setErrorSubcode(int)
 	 */
 	@Override
-	public void setErrorSubcode(short ErrorSubcode) {
-		setShort(ErrorSubcode, (short) 2);
+	public void setErrorSubcode(short errorSubcode) {
+		setShort(errorSubcode, (short) 2);
 	}
 
 	/*
@@ -73,15 +80,21 @@ public class PCError extends PCMMBaseObject implements IPCError {
 	public short getErrorSubcode() {
 		return getShort((short) 2);
 	}
-	// toString ????
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.pcmm.gates.IPCError#getDescription()
 	 */
 	@Override
-	public String getDescription(short ErrorCode, short ErrorSubcode) {
-		String hex = Integer.toHexString(ErrorSubcode & 0xFFFF);
-		return "Error Code: " + ErrorCode + " Error Subcode : " + hex; // + Description;
+	public String getDescription() {
+		String hex = Integer.toHexString(getErrorSubcode() & 0xFFFF);
+		return "Error Code: " + getErrorCode() + " Error Subcode : " + hex
+				+ "  " + Description.valueOf(getErrorCode());
+	}
+
+	@Override
+	public String toString() {
+		return getDescription();
 	}
 }
