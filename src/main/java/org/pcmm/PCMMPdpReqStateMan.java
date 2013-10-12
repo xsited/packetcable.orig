@@ -6,7 +6,6 @@ package org.pcmm;
 
 import java.io.*; 
 import java.util.UUID.*;
-
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -39,6 +38,7 @@ import org.pcmm.gates.impl.GateID;
 import org.pcmm.gates.impl.SubscriberID;
 import org.pcmm.gates.impl.TransactionID;
 import org.pcmm.gates.impl.PCError;
+import org.pcmm.utils.PCMMUtils;
 
 
 
@@ -204,83 +204,7 @@ public class PCMMPdpReqStateMan {
         _status = ST_INIT;
     }
 
-    public void WriteBinaryDump (String rootFileName, byte [] buffer)
-    {
-	// Make this Unique
-        String fileName = rootFileName + java.util.UUID.randomUUID() +  ".bin";
-        try {
-            FileOutputStream outputStream =
-                new FileOutputStream(fileName);
-
-            // write() writes as many bytes from the buffer
-            // as the length of the buffer. You can also
-            // use
-            // write(buffer, offset, length)
-            // if you want to write a specific number of
-            // bytes, or only part of the buffer.
-            outputStream.write(buffer);
-
-            // Always close files.
-            outputStream.close();		
-
-            System.out.println("Wrote " + buffer.length + 
-                " bytes");
-        }
-        catch(IOException ex) {
-            System.out.println(
-                "Error writing file '"
-                + fileName + "'");
-            // Or we could just do this:
-            // ex.printStackTrace();
-        }
-    }
-
-    public byte[]  ReadBinaryDump (String fileName)
-    {
-        // The name of the file to open.
-        // String fileName = "COPSReportMessage.txt";
-
-        try {          
-	    // Use this for reading the data.
-            byte[] buffer = new byte[1000];
-		
-            FileInputStream inputStream = 
-                new FileInputStream(fileName);
-
-            // read fills buffer with data and returns
-            // the number of bytes read (which of course
-            // may be less than the buffer size, but
-            // it will never be more).
-            int total = 0;
-            int nRead = 0;
-            while((nRead = inputStream.read(buffer)) != -1) {
-                // Convert to String so we can display it.
-                // Of course you wouldn't want to do this with
-                // a 'real' binary file.
-                System.out.println(new String(buffer));
-                total += nRead;
-            }	
-
-            // Always close files.
-            inputStream.close();		
-
-            System.out.println("Read " + total + " bytes");
-	    return buffer;
-        }
-        catch(FileNotFoundException ex) {
-            System.out.println(
-                "Unable to open file '" + 
-                fileName + "'");				
-        }
-        catch(IOException ex) {
-            System.out.println(
-                "Error reading file '" 
-                + fileName + "'");					
-            // Or we could just do this: 
-            // ex.printStackTrace();
-        }
-	return null;
-    }
+   
 
 	/**
 	 * Processes a COPS request
@@ -395,7 +319,7 @@ public class PCMMPdpReqStateMan {
 
 		byte[] data = Arrays.copyOfRange(myclientSI.getData().getData(), 0,
 				myclientSI.getData().getData().length );
-		WriteBinaryDump("COPSReportClientSI", myclientSI.getData().getData());
+		PCMMUtils.WriteBinaryDump("COPSReportClientSI", myclientSI.getData().getData());
 		byte[] temp;
 		short len, offset;
 		byte sNum, sType;
