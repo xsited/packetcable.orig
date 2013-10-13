@@ -46,6 +46,20 @@ public class PCMMGlobalConfig {
 	public static String DefautRadius = "192.168.50.2";
 	public static short srcPort = 8081;
 	public static short dstPort = 0;
+	public static int GateID1 = 0;
+	public static int GateID2 = 0;
+	public static void setGateID1(int n) {
+		GateID1 = n;
+	}
+	public static int getGateID1() {
+		return GateID1;
+	}
+	public static void setGateID2(int n) {
+		GateID2 = n;
+	}
+	public static int getGateID2() {
+		return GateID2;
+	}
 }
 
 /*

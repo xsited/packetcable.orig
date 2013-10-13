@@ -1,5 +1,5 @@
 /**
- * 
+ @header@
  */
 package org.pcmm.gates.impl;
 
@@ -21,9 +21,6 @@ import org.pcmm.gates.ITransactionID;
  * <Gate-set>=<Decision Header><TransactionID><AMID> <SubscriberID> [<GateI>]
  * <GateSpec> <Traffic Profile> <classifier>
  * </p>
- * 
- * @author rhadjamor@gmail.com
- * 
  */
 public class PCMMGateReq implements IPCMMGate {
 

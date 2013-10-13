@@ -1,4 +1,5 @@
-/*
+/**
+ @header@
  */
 
 package org.pcmm;
@@ -41,6 +42,8 @@ import org.pcmm.gates.IPCMMGate;
 import org.pcmm.gates.ISubscriberID;
 import org.pcmm.gates.ITrafficProfile;
 import org.pcmm.gates.ITransactionID;
+import org.pcmm.gates.IGateID;
+import org.pcmm.gates.impl.GateID;
 import org.pcmm.gates.impl.AMID;
 import org.pcmm.gates.impl.BestEffortService;
 import org.pcmm.gates.impl.Classifier;
@@ -54,7 +57,18 @@ import org.pcmm.messages.IMessage;
 import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.state.IState;
-
+/*
+ * Example of an UNSOLICITED decision 
+ * 
+ * <Gate Control Command> = <COPS Common Header> <Client Handle> <Context> <Decision Flags> <ClientSI Data> 
+ *
+ * <ClientSI Data> = <Gate-Set> | <Gate-Info> | <Gate-Delete> |
+ *                   <PDP-Config> | <Synch-Request> | <Msg-Receipt> 
+ * <Gate-Set>      = <Decision Header> <TransactionID> <AMID> <SubscriberID> [<GateID>] <GateSpec>
+ *                   <Traffic Profile> <classifier> [<classifier...>] [<Event Generation Info>] 
+ *                   [<Volume-Based Usage Limit>] [<Time-Based Usage Limit>][<Opaque Data>] [<UserID>]
+ */
+		
 /**
  * COPS message transceiver class for provisioning connections at the PDP side.
  */
@@ -142,6 +156,265 @@ public class PCMMPdpMsgSender {
 		return _transactionID;
 	}
 
+	
+	/**
+	 * Sends a PCMM GateSet COPS Decision message
+	 * 
+	 * @param
+	 * @throws COPSPdpException
+	 */
+	public void sendGateSet(IPCMMGate gate)
+			throws COPSPdpException {
+		// Common Header with the same ClientType as the request
+
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC, getClientType());
+
+		// Client Handle with the same clientHandle as the request
+		COPSHandle handle = new COPSHandle();
+		COPSDecisionMsg decisionMsg = new COPSDecisionMsg();
+
+		// new pcmm specific clientsi
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
+		byte[] data = gate.getData();
+		clientSD.setData(new COPSData(data, 0, data.length));
+		try {
+			decisionMsg.add(hdr);
+			decisionMsg.add(handle);
+			// Decisions (no flags supplied)
+			// <Context>
+			COPSContext cntxt = new COPSContext(COPSContext.CONFIG, (short) 0);
+			COPSDecision install = new COPSDecision();
+			install.setCmdCode(COPSDecision.DEC_INSTALL);
+			install.setFlags(COPSDecision.F_REQERROR);
+			decisionMsg.addDecision(install, cntxt);
+			decisionMsg.add(clientSD); // setting up the gate
+/*
+			try {
+				decisionMsg.dump(System.out);
+			} catch (IOException unae) {
+				System.out.println("Error dumping " + unae.getMessage());
+			}
+*/
+
+		} catch (COPSException e) {
+			System.out.println("Error making Msg" + e.getMessage());
+		}
+
+		// ** Send the GateSet Decision
+		// **
+		try {
+			decisionMsg.writeData(_sock);
+		} catch (IOException e) {
+			System.out.println("Failed to send the decision, reason: "
+					+ e.getMessage());
+		}
+
+	}
+
+	/**
+	 * Sends a PCMM GateSet COPS Decision message
+	 * 
+	 * @param
+	 * @throws COPSPdpException
+	 */
+	public void sendGateSetDemo(int num)
+			throws COPSPdpException {
+
+		// Common Header with the same ClientType as the request
+
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC, getClientType());
+
+		// Client Handle with the same clientHandle as the request
+		COPSHandle handle = new COPSHandle();
+		COPSDecisionMsg decisionMsg = new COPSDecisionMsg();
+
+		IPCMMGate gate = new PCMMGateReq();
+		ITransactionID trID = new TransactionID();
+
+		IAMID amid = new AMID();
+		ISubscriberID subscriberID = new SubscriberID();
+		IGateSpec gateSpec = new GateSpec();
+		IClassifier classifier = new Classifier();
+		IExtendedClassifier eclassifier = new ExtendedClassifier();
+		int TrafficRate = 0;
+
+		// XXX check if other values should be provided
+		//
+		if (num == 1)
+			TrafficRate = 	PCMMGlobalConfig.DefaultBestEffortTrafficRate;
+		else
+			TrafficRate = 	PCMMGlobalConfig.DefaultLowBestEffortTrafficRate;
+			
+		ITrafficProfile trafficProfile = new BestEffortService(
+				(byte) 7); //BestEffortService.DEFAULT_ENVELOP);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getAuthorizedEnvelop()
+				.setMaximumSustainedTrafficRate(
+						TrafficRate);
+				        //	PCMMGlobalConfig.DefaultLowBestEffortTrafficRate );
+					//	PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getReservedEnvelop()
+				.setMaximumSustainedTrafficRate(
+						TrafficRate);
+				        //	PCMMGlobalConfig.DefaultLowBestEffortTrafficRate );
+					//	PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
+
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setTrafficPriority(BestEffortService.DEFAULT_TRAFFIC_PRIORITY);
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setMaximumTrafficBurst(
+						BestEffortService.DEFAULT_MAX_TRAFFIC_BURST);
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setRequestTransmissionPolicy(
+						PCMMGlobalConfig.BETransmissionPolicy);
+		((BestEffortService) trafficProfile).getCommittedEnvelop()
+				.setMaximumSustainedTrafficRate(
+						TrafficRate);
+				        //	PCMMGlobalConfig.DefaultLowBestEffortTrafficRate );
+					//	PCMMGlobalConfig.DefaultBestEffortTrafficRate);
+
+
+
+		// new pcmm specific clientsi
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,
+				(byte) 4);
+
+		handle.setId(getClientHandle().getId());
+
+		// set transaction ID to gate set
+		trID.setGateCommandType(ITransactionID.GateSet);
+		_transactionID = (short) (_transactionID == 0 ? (short) (Math.random() * hashCode())
+				: _transactionID);
+		trID.setTransactionIdentifier(_transactionID);
+
+		amid.setApplicationType((short) 1);
+		amid.setApplicationMgrTag((short) 1);
+		gateSpec.setDirection(Direction.UPSTREAM);
+		gateSpec.setDSCP_TOSOverwrite(DSCPTOS.OVERRIDE);
+		gateSpec.setTimerT1(PCMMGlobalConfig.GateT1);
+		gateSpec.setTimerT2(PCMMGlobalConfig.GateT2);
+		gateSpec.setTimerT3(PCMMGlobalConfig.GateT3);
+		gateSpec.setTimerT4(PCMMGlobalConfig.GateT4);
+
+		// XXX - if the version major is less than 4 we need to use Classifier
+		if (true) {
+			//eclassifier.setProtocol(IClassifier.Protocol.NONE);
+			eclassifier.setProtocol(IClassifier.Protocol.TCP);
+			try {
+				InetAddress subIP = InetAddress
+						.getByName(PCMMGlobalConfig.SubscriberID);
+				InetAddress srcIP = InetAddress
+						.getByName(PCMMGlobalConfig.srcIP);
+				InetAddress dstIP = InetAddress
+						.getByName(PCMMGlobalConfig.dstIP);
+				InetAddress mask = InetAddress.getByName("0.0.0.0");
+				subscriberID.setSourceIPAddress(subIP);
+				eclassifier.setSourceIPAddress(srcIP);
+				eclassifier.setDestinationIPAddress(dstIP);
+				eclassifier.setIPDestinationMask(mask);
+				eclassifier.setIPSourceMask(mask);
+			} catch (UnknownHostException unae) {
+				System.out.println("Error getByName" + unae.getMessage());
+			}
+			eclassifier.setSourcePortStart(PCMMGlobalConfig.srcPort);
+			eclassifier.setSourcePortEnd(PCMMGlobalConfig.srcPort);
+			eclassifier.setDestinationPortStart(PCMMGlobalConfig.dstPort);
+			eclassifier.setDestinationPortEnd(PCMMGlobalConfig.dstPort);
+			eclassifier.setActivationState((byte) 0x01);
+			// check if we have a stored value of classifierID else we just
+			// create
+			// one
+			// eclassifier.setClassifierID((short) 0x01);
+			eclassifier.setClassifierID((short) (_classifierID == 0 ? Math
+					.random() * hashCode() : _classifierID));
+			// XXX - testie
+			// eclassifier.setClassifierID((short) 1);
+
+			eclassifier.setAction((byte) 0x00);
+			// XXX - temp default until Gate Modify is hacked in
+			// eclassifier.setPriority(PCMMGlobalConfig.EClassifierPriority);
+			eclassifier.setPriority((byte) 65);
+
+		} else {
+			classifier.setProtocol(IClassifier.Protocol.TCP);
+			try {
+				InetAddress subIP = InetAddress
+						.getByName(PCMMGlobalConfig.SubscriberID);
+				InetAddress srcIP = InetAddress
+						.getByName(PCMMGlobalConfig.srcIP);
+				InetAddress dstIP = InetAddress
+						.getByName(PCMMGlobalConfig.dstIP);
+				subscriberID.setSourceIPAddress(subIP);
+				classifier.setSourceIPAddress(srcIP);
+				classifier.setDestinationIPAddress(dstIP);
+			} catch (UnknownHostException unae) {
+				System.out.println("Error getByName" + unae.getMessage());
+			}
+			classifier.setSourcePort(PCMMGlobalConfig.srcPort);
+			classifier.setDestinationPort(PCMMGlobalConfig.dstPort);
+		}
+
+		gate.setTransactionID(trID);
+		gate.setAMID(amid);
+		gate.setSubscriberID(subscriberID);
+		gate.setGateSpec(gateSpec);
+		gate.setTrafficProfile(trafficProfile);
+		gate.setClassifier(eclassifier);
+
+		byte[] data = gate.getData();
+
+		// new pcmm specific clientsi
+		clientSD.setData(new COPSData(data, 0, data.length));
+		try {
+			decisionMsg.add(hdr);
+			decisionMsg.add(handle);
+			// Decisions (no flags supplied)
+			// <Context>
+			COPSContext cntxt = new COPSContext(COPSContext.CONFIG, (short) 0);
+			COPSDecision install = new COPSDecision();
+			install.setCmdCode(COPSDecision.DEC_INSTALL);
+			install.setFlags(COPSDecision.F_REQERROR);
+			decisionMsg.addDecision(install, cntxt);
+			decisionMsg.add(clientSD); // setting up the gate
+/*
+			try {
+				decisionMsg.dump(System.out);
+			} catch (IOException unae) {
+				System.out.println("Error dumping " + unae.getMessage());
+			}
+*/
+
+		} catch (COPSException e) {
+			System.out.println("Error making Msg" + e.getMessage());
+		}
+
+		// ** Send the GateSet Decision
+		// **
+		try {
+			decisionMsg.writeData(_sock);
+		} catch (IOException e) {
+			System.out.println("Failed to send the decision, reason: "
+					+ e.getMessage());
+		}
+
+	}
 	/**
 	 * Sends a PCMM GateSet COPS Decision message
 	 * 
@@ -150,16 +423,6 @@ public class PCMMPdpMsgSender {
 	 */
 	public void sendGateSetBestEffortWithExtendedClassifier()
 			throws COPSPdpException {
-		/*
-		 * Example of an UNSOLICITED decision <Gate Control Command> = <COPS
-		 * Common Header> <Client Handle> <Context> <Decision Flags> <ClientSI
-		 * Data> <ClientSI Data> = <Gate-Set> | <Gate-Info> | <Gate-Delete> |
-		 * <PDP-Config> | <Synch-Request> | <Msg-Receipt> <Gate-Set> = <Decision
-		 * Header> <TransactionID> <AMID> <SubscriberID> [<GateID>] <GateSpec>
-		 * <Traffic Profile> <classifier> [<classifier...>] [<Event Generation
-		 * Info>] [<Volume-Based Usage Limit>] [<Time-Based Usage Limit>]
-		 * [<Opaque Data>] [<UserID>]
-		 */
 		// Common Header with the same ClientType as the request
 
 		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC, getClientType());
@@ -387,16 +650,6 @@ public class PCMMPdpMsgSender {
 	 * @throws COPSPdpException
 	 */
 	public void sendGateSet() throws COPSPdpException {
-		/*
-		 * Example of an UNSOLICITED decision <Gate Control Command> = <COPS
-		 * Common Header> <Client Handle> <Context> <Decision Flags> <ClientSI
-		 * Data> <ClientSI Data> = <Gate-Set> | <Gate-Info> | <Gate-Delete> |
-		 * <PDP-Config> | <Synch-Request> | <Msg-Receipt> <Gate-Set> = <Decision
-		 * Header> <TransactionID> <AMID> <SubscriberID> [<GateID>] <GateSpec>
-		 * <Traffic Profile> <classifier> [<classifier...>] [<Event Generation
-		 * Info>] [<Volume-Based Usage Limit>] [<Time-Based Usage Limit>]
-		 * [<Opaque Data>] [<UserID>]
-		 */
 		// Common Header with the same ClientType as the request
 
 		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC, getClientType());
@@ -455,8 +708,7 @@ public class PCMMPdpMsgSender {
 
 		classifier.setProtocol(IClassifier.Protocol.TCP);
 		try {
-			InetAddress subIP = InetAddress
-					.getByName(PCMMGlobalConfig.SubscriberID);
+			InetAddress subIP = InetAddress.getByName(PCMMGlobalConfig.SubscriberID);
 			InetAddress srcIP = InetAddress.getByName(PCMMGlobalConfig.srcIP);
 			InetAddress dstIP = InetAddress.getByName(PCMMGlobalConfig.dstIP);
 			subscriberID.setSourceIPAddress(subIP);
@@ -491,11 +743,13 @@ public class PCMMPdpMsgSender {
 			install.setFlags(COPSDecision.F_REQERROR);
 			decisionMsg.addDecision(install, cntxt);
 			decisionMsg.add(clientSD); // setting up the gate
+/*
 			try {
 				decisionMsg.dump(System.out);
 			} catch (IOException unae) {
 				System.out.println("Error dumping " + unae.getMessage());
 			}
+*/
 
 		} catch (COPSException e) {
 			System.out.println("Error making Msg" + e.getMessage());
@@ -517,7 +771,7 @@ public class PCMMPdpMsgSender {
 	 * 
 	 * @throws COPSPdpException
 	 */
-	public void sendGateDelete() throws COPSPdpException {
+	public void sendGateDelete(int gID) throws COPSPdpException {
 		/*
 		 * Example of an UNSOLICITED decision <Gate Control Command> = <COPS
 		 * Common Header> <Client Handle> <Context> <Decision Flags> <ClientSI
@@ -538,25 +792,34 @@ public class PCMMPdpMsgSender {
 		IAMID amid = new AMID();
 		ISubscriberID subscriberID = new SubscriberID();
 		IGateSpec gateSpec = new GateSpec();
+		IGateID gateID = new GateID();
 
 		// new pcmm specific clientsi
-		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC,
-				(byte) 4);
+		COPSClientSI clientSD = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
 
 		handle.setId(getClientHandle().getId());
 
 		// set transaction ID to gate set
-		trID.setGateCommandType(ITransactionID.GateSet);
+		trID.setGateCommandType(ITransactionID.GateDelete);
 		_transactionID = (short) (_transactionID == 0 ? (short) (Math.random() * hashCode())
 				: _transactionID);
 		trID.setTransactionIdentifier(_transactionID);
 
-		amid.setApplicationType((short) 0);
-		amid.setApplicationMgrTag((short) 0);
+		amid.setApplicationType((short) 1);
+		amid.setApplicationMgrTag((short) 1);
+		gateID.setGateID(gID);
+
+		try {
+			InetAddress subIP = InetAddress.getByName(PCMMGlobalConfig.SubscriberID);
+			subscriberID.setSourceIPAddress(subIP);
+		} catch (UnknownHostException unae) {
+			System.out.println("Error getByName" + unae.getMessage());
+		}
 
 		gate.setTransactionID(trID);
 		gate.setAMID(amid);
 		gate.setSubscriberID(subscriberID);
+		gate.setGateID(gateID);
 
 		// XXX - GateID
 		byte[] data = gate.getData();
@@ -575,11 +838,13 @@ public class PCMMPdpMsgSender {
 			install.setFlags(COPSDecision.F_REQERROR);
 			decisionMsg.addDecision(install, cntxt);
 			decisionMsg.add(clientSD); // setting up the gate
+/*
 			try {
 				decisionMsg.dump(System.out);
 			} catch (IOException unae) {
 				System.out.println("Error dumping " + unae.getMessage());
 			}
+*/
 
 		} catch (COPSException e) {
 			System.out.println("Error making Msg" + e.getMessage());

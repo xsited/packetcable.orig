@@ -95,6 +95,7 @@ SOURCES = \
 	org/pcmm/gates/impl/PCError.java \
 	org/pcmm/PCMMPdpConnection.java  \
 	org/pcmm/PCMMPdpReqStateMan.java \
+	org/pcmm/utils/PCMMUtils.java \
 	org/pcmm/utils/PCMMLogger.java 
 
 

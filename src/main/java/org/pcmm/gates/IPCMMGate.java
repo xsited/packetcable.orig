@@ -76,6 +76,8 @@ public interface IPCMMGate {
 
 	void setTransactionID(ITransactionID transactionID);
 
+	void setError(IPCError error);
+
 	ITransactionID getTransactionID();
 
 	/**
@@ -122,6 +124,12 @@ public interface IPCMMGate {
 	 * support the IP flow.
 	 */
 	ITrafficProfile getTrafficProfile();
+
+	/**
+	 * The PacketCable Error object contains information on the type of error that has occurred. 
+	 */
+	IPCError getError();
+
 
 	/**
 	 * 

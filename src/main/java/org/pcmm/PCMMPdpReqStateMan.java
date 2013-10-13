@@ -1,11 +1,13 @@
-/*
- *
+/**
+ @header@
  */
 
 package org.pcmm;
 
+/*
 import java.io.*; 
 import java.util.UUID.*;
+*/
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -27,6 +29,7 @@ import org.umu.cops.stack.COPSReqMsg;
 import org.umu.cops.stack.COPSSyncStateMsg;
 import org.umu.cops.prpdp.COPSPdpException;
 import org.umu.cops.prpdp.COPSPdpDataProcess;
+/*
 import org.pcmm.base.IPCMMBaseObject;
 import org.pcmm.gates.IAMID;
 import org.pcmm.gates.IGateID;
@@ -38,6 +41,9 @@ import org.pcmm.gates.impl.GateID;
 import org.pcmm.gates.impl.SubscriberID;
 import org.pcmm.gates.impl.TransactionID;
 import org.pcmm.gates.impl.PCError;
+*/
+import org.pcmm.gates.IPCMMGate;
+import org.pcmm.gates.impl.PCMMGateReq;
 import org.pcmm.utils.PCMMUtils;
 
 
@@ -307,6 +313,13 @@ public class PCMMPdpReqStateMan {
 
 		// Named ClientSI
 		Vector clientSIs = msg.getClientSI();
+		COPSClientSI myclientSI = (COPSClientSI) msg.getClientSI().elementAt(0);
+		byte[] data = Arrays.copyOfRange(myclientSI.getData().getData(), 0, myclientSI.getData().getData().length );
+		PCMMUtils.WriteBinaryDump("COPSReportClientSI", data);
+		PCMMGateReq gateMsg = new PCMMGateReq(data);
+
+		
+		/*
 	 	IGateID gateID;
 	 	IAMID iamid;
 	 	ISubscriberID subscriberID;
@@ -317,8 +330,7 @@ public class PCMMPdpReqStateMan {
 
 		}
 
-		byte[] data = Arrays.copyOfRange(myclientSI.getData().getData(), 0,
-				myclientSI.getData().getData().length );
+		byte[] data = Arrays.copyOfRange(myclientSI.getData().getData(), 0, myclientSI.getData().getData().length );
 		PCMMUtils.WriteBinaryDump("COPSReportClientSI", myclientSI.getData().getData());
 		byte[] temp;
 		short len, offset;
@@ -367,16 +379,13 @@ public class PCMMPdpReqStateMan {
 			}
                         offset += len;
 		}
-
+		*/
 		Hashtable repSIs = new Hashtable(40);
 		String strobjprid = new String();
 		for (Enumeration e = clientSIs.elements() ; e.hasMoreElements() ;) {
 		 	COPSClientSI clientSI = (COPSClientSI) e.nextElement();
 
 			COPSPrObjBase obj = new COPSPrObjBase(clientSI.getData().getData());
-                       	COPSDebug.err(getClass().getName(),"Object s-num: " + obj.getSNum() + "stype " + obj.getSType());
-                        COPSDebug.err(getClass().getName(),"PRID: " + strobjprid);
-			COPSDebug.err(getClass().getName(),"EPD: " + obj.getData().str());
 			switch (obj.getSNum())
 			{
 				case COPSPrObjBase.PR_PRID:
@@ -399,15 +408,15 @@ public class PCMMPdpReqStateMan {
 		//** the report received
 		if(rtypemsg.isSuccess()) {
             _status = ST_REPORT;
-			_process.successReport(this, repSIs);
+			_process.successReport(this, gateMsg);
 		}
 		else if (rtypemsg.isFailure()) {
             _status = ST_REPORT;
-			_process.failReport(this, repSIs);
+			_process.failReport(this, gateMsg);
 		}
 		else if (rtypemsg.isAccounting()) {
             _status = ST_ACCT;
-			_process.acctReport(this, repSIs);
+			_process.acctReport(this, gateMsg);
 		}
 	}
 
@@ -422,7 +431,7 @@ public class PCMMPdpReqStateMan {
             _process.notifyClosedConnection(this, error);
 
         _status = ST_CCONN;
-    }
+    	}
 
 	/**
 	 * Called when no keep-alive is received
