@@ -1,4 +1,5 @@
-/*
+/**
+ @header@
  */
 
 package org.pcmm;
@@ -11,6 +12,11 @@ import org.umu.cops.stack.COPSError;
 import org.umu.cops.stack.COPSClientSI;
 import org.umu.cops.stack.COPSReportMsg;
 import org.pcmm.PCMMPdpReqStateMan;
+import org.pcmm.gates.IPCMMGate;
+import org.pcmm.gates.impl.PCMMGateReq;
+import org.pcmm.gates.ITransactionID;
+import org.pcmm.PCMMGlobalConfig;
+
 
 public class PCMMPdpDataProcess // extends COPSPdpDataProcess
 {
@@ -76,9 +82,11 @@ public class PCMMPdpDataProcess // extends COPSPdpDataProcess
      * @param man
      * @param reportSIs
      */
-    public void failReport(PCMMPdpReqStateMan man, Hashtable reportSIs) {
+    public void failReport(PCMMPdpReqStateMan man, PCMMGateReq gateMsg) {
 
         System.out.println(getClass().getName()+ ": " + "Fail Report notified.");
+        System.out.println(getClass().getName()+ ": " + gateMsg.getError().toString());
+	
 /*
 
         System.out.println(getClass().getName() + ": " + "Report Info");
@@ -100,8 +108,28 @@ public class PCMMPdpDataProcess // extends COPSPdpDataProcess
      * @param man
      * @param reportSIs
      */
-    public void successReport(PCMMPdpReqStateMan man, Hashtable reportSIs) {
+    public void successReport(PCMMPdpReqStateMan man, PCMMGateReq gateMsg) {
         System.out.println(getClass().getName()+ ": " + "Success Report notified.");
+	
+	if ( gateMsg.getTransactionID().getGateCommandType() == ITransactionID.GateDeleteAck )
+	{
+                System.out.println(getClass().getName()+ ": GateDeleteAck ");
+                System.out.println(getClass().getName()+ ": GateID = " + gateMsg.getGateID().getGateID());
+        	if (gateMsg.getGateID().getGateID() == PCMMGlobalConfig.getGateID1())
+		    PCMMGlobalConfig.setGateID1(0);
+        	if (gateMsg.getGateID().getGateID() == PCMMGlobalConfig.getGateID2())
+		    PCMMGlobalConfig.setGateID2(0);
+		
+	}
+	if ( gateMsg.getTransactionID().getGateCommandType() == ITransactionID.GateSetAck )
+	{
+                System.out.println(getClass().getName()+ ": GateSetAck ");
+                System.out.println(getClass().getName()+ ": GateID = " + gateMsg.getGateID().getGateID());
+        	if (0 == PCMMGlobalConfig.getGateID1())
+		    PCMMGlobalConfig.setGateID1(gateMsg.getGateID().getGateID());
+        	if (0 == PCMMGlobalConfig.getGateID2())
+		    PCMMGlobalConfig.setGateID2(gateMsg.getGateID().getGateID());
+	}
 
 /*
         System.out.println(getClass().getName()+ ": " + "Report Info");
@@ -124,7 +152,7 @@ public class PCMMPdpDataProcess // extends COPSPdpDataProcess
      * @param man
      * @param reportSIs
      */
-    public void acctReport(PCMMPdpReqStateMan man, Hashtable reportSIs) {
+    public void acctReport(PCMMPdpReqStateMan man, PCMMGateReq gateMsg) {
         System.out.println(getClass().getName()+ ": " + "Acct Report notified.");
 
 /*
