@@ -1,3 +1,8 @@
+/**
+ @header@
+ */
+
+
 package org.pcmm.gates;
 
 import java.net.InetAddress;
@@ -5,119 +10,119 @@ import java.net.InetAddress;
 import org.pcmm.base.IPCMMBaseObject;
 
 /**
- * 
- * @author rhadjamor@gmail.com
- * 
- * 
+ *
+ *
+ *
  */
 public interface IClassifier extends IPCMMBaseObject {
 
-	static final short LENGTH = 24;
-	static final byte SNUM = 6;
-	static final byte STYPE = 1;
+    static final short LENGTH = 24;
+    static final byte SNUM = 6;
+    static final byte STYPE = 1;
 
-	static enum Protocol {
-		/*ICMP((short) 1), IGMP((short) 2), */
-		NONE((short)0), TCP((short) 6), UDP((short) 17);
+    static enum Protocol {
+        /*ICMP((short) 1), IGMP((short) 2), */
+        NONE((short)0), TCP((short) 6), UDP((short) 17);
 
-		Protocol(short v) {
-			this.value = v;
-		}
-		
-		public static Protocol valueOf(short v){
-			switch (v) {
-			case 0:
-				return NONE;
-			/*case 1:
-				return ICMP;
-			case 2:
-				return IGMP;
-				*/
-			case 6:
-				return TCP;
-			default:
-				return UDP;
-			}
-		}
-		private short value;
+        Protocol(short v) {
+            this.value = v;
+        }
 
-		public short getValue() {
-			return value;
-		}
-	}
+        public static Protocol valueOf(short v) {
+            switch (v) {
+            case 0:
+                return NONE;
+          /*
+            case 1:
+                return ICMP;
+            case 2:
+                return IGMP;
+          */
+            case 6:
+                return TCP;
+            default:
+                return UDP;
+            }
+        }
+        private short value;
 
-	/**
-	 * IP Destination Address or IPv6 Destination Address is the termination
-	 * point for the IP flow
-	 * 
-	 * @return destination IP address.
-	 */
-	InetAddress getDestinationIPAddress();
+        public short getValue() {
+            return value;
+        }
+    }
 
-	void setDestinationIPAddress(InetAddress address);
+    /**
+     * IP Destination Address or IPv6 Destination Address is the termination
+     * point for the IP flow
+     *
+     * @return destination IP address.
+     */
+    InetAddress getDestinationIPAddress();
 
-	short getDestinationPort();
+    void setDestinationIPAddress(InetAddress address);
 
-	void setDestinationPort(short p);
+    short getDestinationPort();
 
-	/**
-	 * Source IP, IP Source Address, or IPv6 Source Address (in the case of
-	 * Extended Classifier or IPv6 Classifier) is the IP address (as seen at the
-	 * CMTS) of the originator of the IP flow.
-	 * 
-	 * @return source IP address.
-	 */
-	InetAddress getSourceIPAddress();
+    void setDestinationPort(short p);
 
-	void setSourceIPAddress(InetAddress a);
+    /**
+     * Source IP, IP Source Address, or IPv6 Source Address (in the case of
+     * Extended Classifier or IPv6 Classifier) is the IP address (as seen at the
+     * CMTS) of the originator of the IP flow.
+     *
+     * @return source IP address.
+     */
+    InetAddress getSourceIPAddress();
 
-	short getSourcePort();
+    void setSourceIPAddress(InetAddress a);
 
-	void setSourcePort(short p);
+    short getSourcePort();
 
-	/**
-	 * Protocol field, in a legacy Classifier or Extended Classifier, identifies
-	 * the type of protocol (e.g., IP, ICMP, etc.). The Next Header Type field
-	 * serves a similar function in the IPv6 Classifier.
-	 * 
-	 * @return the protocol.
-	 */
-	Protocol getProtocol();
+    void setSourcePort(short p);
 
-	/**
-	 * @see <a
-	 *      href="http://www.iana.org/assignments/protocol-numbers/protocol-numbers.txt">protocols</a>
-	 * @param p
-	 */
-	void setProtocol(Protocol p);
+    /**
+     * Protocol field, in a legacy Classifier or Extended Classifier, identifies
+     * the type of protocol (e.g., IP, ICMP, etc.). The Next Header Type field
+     * serves a similar function in the IPv6 Classifier.
+     *
+     * @return the protocol.
+     */
+    Protocol getProtocol();
 
-	/**
-	 * Priority may be used to distinguish between multiple classifiers that
-	 * match a particular packet. This is typically set to a default value since
-	 * classifiers are generally intended to be unique.
-	 * 
-	 * @return priority.
-	 */
-	byte getPriority();
+    /**
+     * @see <a
+     *      href="http://www.iana.org/assignments/protocol-numbers/protocol-numbers.txt">protocols</a>
+     * @param p
+     */
+    void setProtocol(Protocol p);
 
-	/**
-	 * sets the priority;
-	 * 
-	 * @param p
-	 *            priority
-	 */
-	void setPriority(byte p);
+    /**
+     * Priority may be used to distinguish between multiple classifiers that
+     * match a particular packet. This is typically set to a default value since
+     * classifiers are generally intended to be unique.
+     *
+     * @return priority.
+     */
+    byte getPriority();
 
-	byte getDSCPTOS();
+    /**
+     * sets the priority;
+     *
+     * @param p
+     *            priority
+     */
+    void setPriority(byte p);
 
-	void setDSCPTOS(byte v);
+    byte getDSCPTOS();
 
-	byte getDSCPTOSMask();
+    void setDSCPTOS(byte v);
 
-	void setDSCPTOSMask(byte v);
+    byte getDSCPTOSMask();
 
-	// DSCP/TOS Field
-	// 
-	// DSCP/TOS Mask
+    void setDSCPTOSMask(byte v);
+
+    // DSCP/TOS Field
+    // 
+    // DSCP/TOS Mask
 
 }

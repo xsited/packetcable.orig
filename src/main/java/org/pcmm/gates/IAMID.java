@@ -1,3 +1,8 @@
+/**
+ @header@
+ */
+
+
 package org.pcmm.gates;
 
 import org.pcmm.base.IPCMMBaseObject;
@@ -26,22 +31,21 @@ import org.pcmm.base.IPCMMBaseObject;
  * with multiple Application Manager Tags, and multiple Application Type sets
  * (one for each configured Application Manager Tag).
  * </p>
- * 
- * @author rhadjamor@gmail.com
- * 
+ *
+ *
  */
 public interface IAMID extends IPCMMBaseObject {
 
-	static final short LENGTH = 8;
-	static final byte SNUM = 2;
-	static final byte STYPE = 1;
+    static final short LENGTH = 8;
+    static final byte SNUM = 2;
+    static final byte STYPE = 1;
 
-	void setApplicationType(short type);
+    void setApplicationType(short type);
 
-	short getApplicationType();
+    short getApplicationType();
 
-	void setApplicationMgrTag(short type);
+    void setApplicationMgrTag(short type);
 
-	short getApplicationMgrTag();
+    short getApplicationMgrTag();
 
 }

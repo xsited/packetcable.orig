@@ -1,3 +1,8 @@
+/**
+ @header@
+ */
+
+
 package org.pcmm.scd;
 
 /**
@@ -13,7 +18,6 @@ package org.pcmm.scd;
  * <p>
  * The AS will communicate with a client via a signaling protocol that is
  * outside the scope of this specification. Using this unspecified protocol, the
- * AS authenticates and authorizes client requests based upon Service Control
  * Domain policies. For client requests that pass these checks, the AS
  * determines the particular QoS parameters necessary to deliver the service to
  * the client, based upon its knowledge of the requested service. It then sends
@@ -21,9 +25,8 @@ package org.pcmm.scd;
  * may deny the request based upon additional Service Control Domain policies or
  * may pass the request on to the Policy Server.
  * </p>
- * 
- * @author rhadjamor@gmail.com
- * 
+ *
+ *
  */
 public interface IApplicationServer {
 

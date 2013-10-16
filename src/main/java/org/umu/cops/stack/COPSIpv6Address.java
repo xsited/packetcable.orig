@@ -15,79 +15,76 @@ import java.net.UnknownHostException;
 /**
  * COPS IPv6 Address
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSIpv6Address.java, v 1.00 2003
  *
  */
 public class COPSIpv6Address {
 
     private byte[] _addr;
-	
-	public COPSIpv6Address() {
-		_addr = new byte[16];
-	}
 
-	public COPSIpv6Address(String hostName) throws UnknownHostException
-	{
-		setIpAddress(hostName);
-	}
+    public COPSIpv6Address() {
+        _addr = new byte[16];
+    }
 
-	/**
-	 * Method setIpAddress
-	 *
-	 * @param    hostName            a  String
-	 *
-	 * @throws   UnknownHostException
-	 *
-	 */
-	public void setIpAddress(String hostName) throws UnknownHostException {
-		_addr = InetAddress.getByName(hostName).getAddress();
-	}
+    public COPSIpv6Address(String hostName) throws UnknownHostException {
+        setIpAddress(hostName);
+    }
 
-	/**
-	 * Method getIpName
-	 *
-	 * @return   a String
-	 *
-	 * @throws   UnknownHostException
-	 *
-	 */
-	public String getIpName() throws UnknownHostException {
-		return InetAddress.getByAddress(_addr).getHostName();
-	}
-	
-	/**
-	 * Method parse
-	 *
-	 * @param    dataPtr             a  byte[]
-	 *
-	 */
-	public void parse(byte[] dataPtr) {
-	    new ByteArrayInputStream(dataPtr).read(_addr,0,16);
-	}
+    /**
+     * Method setIpAddress
+     *
+     * @param    hostName            a  String
+     *
+     * @throws   UnknownHostException
+     *
+     */
+    public void setIpAddress(String hostName) throws UnknownHostException {
+        _addr = InetAddress.getByName(hostName).getAddress();
+    }
 
-	/**
-	 * Method getDataLength
-	 *
-	 * @return   a short
-	 *
-	 */
-	public short getDataLength()
-	{
-		return (16);
-	}
+    /**
+     * Method getIpName
+     *
+     * @return   a String
+     *
+     * @throws   UnknownHostException
+     *
+     */
+    public String getIpName() throws UnknownHostException {
+        return InetAddress.getByAddress(_addr).getHostName();
+    }
 
-	/**
-	 * Write data on a given network socket
-	 *
-	 * @param    id                  a  Socket
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void writeData(Socket id) throws IOException {
-		COPSUtil.writeData(id, _addr, 16);
-	}
-	
+    /**
+     * Method parse
+     *
+     * @param    dataPtr             a  byte[]
+     *
+     */
+    public void parse(byte[] dataPtr) {
+        new ByteArrayInputStream(dataPtr).read(_addr,0,16);
+    }
+
+    /**
+     * Method getDataLength
+     *
+     * @return   a short
+     *
+     */
+    public short getDataLength() {
+        return (16);
+    }
+
+    /**
+     * Write data on a given network socket
+     *
+     * @param    id                  a  Socket
+     *
+     * @throws   IOException
+     *
+     */
+    public void writeData(Socket id) throws IOException {
+        COPSUtil.writeData(id, _addr, 16);
+    }
+
 }
 

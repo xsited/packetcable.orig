@@ -1,3 +1,8 @@
+/**
+ @header@
+ */
+
+
 package org.pcmm.rcd;
 
 /**
@@ -30,15 +35,14 @@ package org.pcmm.rcd;
  * The CMTS acts as a a server ( PS should send OPN message to CMTS to initiate
  * communication), and acts as a client for the rest of the exchange process.
  * </p>
- * 
- * @author rhadjamor@gmail.com
- * 
+ *
+ *
  */
 public interface ICMTS extends IPCMMServer {
 
-	// generates a GateID and assigns it to the IPCMMGate.
+    // generates a GateID and assigns it to the IPCMMGate.
 
-	static final short DEFAULT_R_TYPE = (short) 0x08;
-	static final short DEFAULT_M_TYPE = (short) 0;
+    static final short DEFAULT_R_TYPE = (short) 0x08;
+    static final short DEFAULT_M_TYPE = (short) 0;
 
 }

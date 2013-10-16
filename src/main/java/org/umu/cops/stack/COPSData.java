@@ -11,71 +11,68 @@ package org.umu.cops.stack;
 /**
  * COPS Data
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSData.java, v 1.00 2003
  *
  */
 public class COPSData {
-    
-	private byte[] _dataBuf;
-	private int _dLen;
-	
-	public COPSData() {
-		_dataBuf = null;
-		_dLen = 0;
-	}
-	
-	public COPSData(byte[] dPtr, int offset, int dLen) {
-		_dataBuf = new byte[dLen];
-		System.arraycopy(dPtr,offset,_dataBuf,0,dLen);
-		_dLen = dLen;
-	}
 
-	public COPSData(String data) {
-		_dLen = data.getBytes().length;
-		_dataBuf = new byte[_dLen];
-		System.arraycopy(data.getBytes(),0,_dataBuf,0,_dLen);
-	}
+    private byte[] _dataBuf;
+    private int _dLen;
 
-	/**
-	 * Method getData
-	 *
-	 * @return   a byte[]
-	 *
-	 */
-	public byte[] getData()
-	{
-		return _dataBuf;
-	}
+    public COPSData() {
+        _dataBuf = null;
+        _dLen = 0;
+    }
 
-	/**
-	 * Method length
-	 *
-	 * @return   an int
-	 *
-	 */
-	public int length()
-	{
-		return _dLen;
-	}
+    public COPSData(byte[] dPtr, int offset, int dLen) {
+        _dataBuf = new byte[dLen];
+        System.arraycopy(dPtr,offset,_dataBuf,0,dLen);
+        _dLen = dLen;
+    }
 
-	/**
-	 * Method str
-	 *
-	 * @return   a String
-	 *
-	 */
-	public String str() {
-		return new String (_dataBuf);
-	}
+    public COPSData(String data) {
+        _dLen = data.getBytes().length;
+        _dataBuf = new byte[_dLen];
+        System.arraycopy(data.getBytes(),0,_dataBuf,0,_dLen);
+    }
 
-	public String toString() {
-		return str();
-	}
-	
-	public boolean equals(Object obj) {
-		return (((COPSData) obj).toString().equals(str()));
-	}
+    /**
+     * Method getData
+     *
+     * @return   a byte[]
+     *
+     */
+    public byte[] getData() {
+        return _dataBuf;
+    }
+
+    /**
+     * Method length
+     *
+     * @return   an int
+     *
+     */
+    public int length() {
+        return _dLen;
+    }
+
+    /**
+     * Method str
+     *
+     * @return   a String
+     *
+     */
+    public String str() {
+        return new String (_dataBuf);
+    }
+
+    public String toString() {
+        return str();
+    }
+
+    public boolean equals(Object obj) {
+        return (((COPSData) obj).toString().equals(str()));
+    }
 }
 
 
