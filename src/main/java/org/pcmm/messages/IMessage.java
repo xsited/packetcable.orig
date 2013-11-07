@@ -22,16 +22,13 @@ package org.pcmm.messages;
 public interface IMessage {
 
 	public enum MessageProperties {
-		CLIENT_TYPE("Client-Type"), 
-		PEP_ID("Pep-ID"), 
-		KA_TIMER("KA-Timer"), 
-		ACCEPT_TIMER( "Accept-Timer"), 
-		ERR_MESSAGE("Error-Message"), 
-		MM_MAJOR_VERSION_INFO("MM-Major-Version-info"), 
-		MM_MINOR_VERSION_INFO( "MM-Minor-Version-info"), 
-		R_TYPE("R-Type"), M_TYPE("M-Type"), 
-		CLIENT_HANDLE("Client-Handle"), 
-		GATE_CONTROL("Gate-Control");
+		CLIENT_TYPE("Client-Type"), PEP_ID("Pep-ID"), KA_TIMER("KA-Timer"), ACCEPT_TIMER(
+				"Accept-Timer"), ERR_MESSAGE("Error-Message"), ERR_MESSAGE_SUB_CODE(
+				"Error-Message-Code"), MM_MAJOR_VERSION_INFO(
+				"MM-Major-Version-info"), MM_MINOR_VERSION_INFO(
+				"MM-Minor-Version-info"), R_TYPE("R-Type"), M_TYPE("M-Type"), CLIENT_HANDLE(
+				"Client-Handle"), GATE_CONTROL("Gate-Control"), DECISION_TYPE(
+				"Decision-Type"), DECISION_FLAG("Decision-Flag");
 
 		private MessageProperties(String valueString) {
 			this.value = valueString;

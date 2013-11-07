@@ -32,6 +32,7 @@ import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSKAMsg;
 import org.umu.cops.stack.COPSKATimer;
 import org.umu.cops.stack.COPSMsg;
+import org.umu.cops.stack.COPSObjHeader;
 import org.umu.cops.stack.COPSPepId;
 import org.umu.cops.stack.COPSReqMsg;
 
@@ -43,7 +44,11 @@ import org.umu.cops.stack.COPSReqMsg;
  * 
  */
 public class MessageFactory implements IMessageFactory {
-	public static final short KA_TIMER_VALUE = 360;
+
+	/** Default keep-alive timer value (secs) */
+	public static final short KA_TIMER_VALUE = 30;
+	/** Default accounting timer value (secs) */
+	public static final short ACCT_TIMER_VALUE = 0;
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
@@ -108,23 +113,30 @@ public class MessageFactory implements IMessageFactory {
 	 * @return
 	 */
 	protected COPSMsg createDECMessage(Properties prop) {
+		COPSDecisionMsg msg = new COPSDecisionMsg();
 		// ===common part between all gate control messages
 		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC,
 				IPCMMClient.CLIENT_TYPE);
-		// TODO extract constants
-		COPSContext context = new COPSContext((short) 0x08, (short) 0);
+		// handle
+		COPSHandle handle = new COPSHandle();
+		// context
+		COPSContext context = new COPSContext(COPSContext.CONFIG, (short) 0);
+		// decision
 		COPSDecision decision = new COPSDecision();
-		// TODO add property to set this
-		decision.setCmdCode(COPSDecision.DEC_INSTALL);
-		prop.put(IMessage.MessageProperties.CLIENT_HANDLE, "SOME ID");
-		COPSDecisionMsgEX msg = new COPSDecisionMsgEX();
-		COPSClientSI si = new COPSClientSI((byte) 4);
+		if (prop.get(IMessage.MessageProperties.DECISION_TYPE) != null)
+			decision.setCmdCode((byte) prop
+					.get(IMessage.MessageProperties.DECISION_TYPE));
+		if (prop.get(IMessage.MessageProperties.DECISION_FLAG) != null)
+			decision.setFlags((short) prop
+					.get(IMessage.MessageProperties.DECISION_FLAG));
+
+		COPSClientSI si = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
+
 		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
 			si.setData((COPSData) prop
 					.get(IMessage.MessageProperties.GATE_CONTROL));
 		try {
 			msg.add(hdr);
-			COPSHandle handle = new COPSHandle();
 			if (prop.get(IMessage.MessageProperties.CLIENT_HANDLE) != null)
 				handle.setId(new COPSData((String) prop
 						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
@@ -200,15 +212,15 @@ public class MessageFactory implements IMessageFactory {
 		COPSKATimer katimer = null;
 		COPSAcctTimer acctTimer = null;
 		if (prop.get(IMessage.MessageProperties.KA_TIMER) != null)
-			katimer = new COPSKATimer((short) KA_TIMER_VALUE);
-		// (Short) prop.get(IMessage.MessageProperties.KA_TIMER));
+			katimer = new COPSKATimer(
+					(short) prop.get(IMessage.MessageProperties.KA_TIMER));
 		else
 			katimer = new COPSKATimer((short) KA_TIMER_VALUE);
 		if (prop.get(IMessage.MessageProperties.ACCEPT_TIMER) != null)
 			acctTimer = new COPSAcctTimer(
-					(Short) prop.get(IMessage.MessageProperties.ACCEPT_TIMER));
+					(short) prop.get(IMessage.MessageProperties.ACCEPT_TIMER));
 		else
-			acctTimer = new COPSAcctTimer();
+			acctTimer = new COPSAcctTimer(ACCT_TIMER_VALUE);
 		COPSClientAcceptMsg acceptMsg = new COPSClientAcceptMsg();
 		try {
 			acceptMsg.add(hdr);
@@ -232,11 +244,15 @@ public class MessageFactory implements IMessageFactory {
 		COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_CC,
 				IPCMMClient.CLIENT_TYPE);
 		COPSError err = null;
-		if (prop.get(IMessage.MessageProperties.ERR_MESSAGE) != null)
-			err = new COPSError(
-					(Short) prop.get(IMessage.MessageProperties.ERR_MESSAGE),
-					(short) 0);
-		else
+		if (prop.get(IMessage.MessageProperties.ERR_MESSAGE) != null) {
+			short code = (short) 0;
+			short error = (short) prop
+					.get(IMessage.MessageProperties.ERR_MESSAGE);
+			if (prop.get(IMessage.MessageProperties.ERR_MESSAGE_SUB_CODE) != null)
+				code = (short) prop
+						.get(IMessage.MessageProperties.ERR_MESSAGE_SUB_CODE);
+			err = new COPSError(error, code);
+		} else
 			err = new COPSError(COPSError.COPS_ERR_UNKNOWN, (short) 0);
 		COPSClientCloseMsg closeMsg = new COPSClientCloseMsg();
 		try {
