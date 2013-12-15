@@ -8,7 +8,7 @@ module packetcable-cmts
     import ietf-snmp    	{ prefix snmp;   }
     import ietf-reverse-ssh    	{ prefix rssh;   }
 
-description "This module contains a collection of groupings";
+description "This module contains a collection of CMTS definitions";
 organization "OpenDaylight Project";
 contact "TBD";
 
