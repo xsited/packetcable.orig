@@ -96,6 +96,10 @@ SOURCES = \
 	org/pcmm/PCMMPdpConnection.java  \
 	org/pcmm/PCMMPdpReqStateMan.java \
 	org/pcmm/utils/PCMMUtils.java \
+	org/pcmm/objects//PCMMIDHolder.java \
+	org/pcmm/objects//PCMMResource.java \
+	org/pcmm/objects//PCMMResourceSet.java \
+	org/pcmm/objects//PCMMResourcesMapper.java \
 	org/pcmm/utils/PCMMLogger.java 
 
 

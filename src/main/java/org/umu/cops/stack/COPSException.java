@@ -9,32 +9,32 @@ package org.umu.cops.stack;
 /**
  * COPS Exception
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSException.java, v 1.00 2003
  *
  */
 public class COPSException extends Exception {
-	
-  private int rc;
-  final static int GENERAL_ERROR = 0x00000001;
-	
-  public COPSException(String s) {
-    super(s); rc=0;
-  }
 
-  public COPSException(String msg, int retCode) {
-    super(msg);
-    rc = retCode;
-  }
+    private int rc;
+    final static int GENERAL_ERROR = 0x00000001;
 
-  /**
-   * Method returnCode
-   *
-   * @return   an int
-   *
-   */
-  public int returnCode() {
-    return rc;
-  }
-  
+    public COPSException(String s) {
+        super(s);
+        rc=0;
+    }
+
+    public COPSException(String msg, int retCode) {
+        super(msg);
+        rc = retCode;
+    }
+
+    /**
+     * Method returnCode
+     *
+     * @return   an int
+     *
+     */
+    public int returnCode() {
+        return rc;
+    }
+
 }

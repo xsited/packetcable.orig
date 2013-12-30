@@ -1,3 +1,8 @@
+/**
+ @header@
+ */
+
+
 package org.pcmm.rcd;
 
 import org.pcmm.state.IStateful;
@@ -14,7 +19,6 @@ import org.pcmm.state.IStateful;
  * <p>
  * As described in [11] and in keeping with the PacketCable 1.x DQoS model, the
  * Policy Server serves as Policy Decision Point (PDP) in relation to the CMTS
- * in that the Policy Server implements MSO-defined authorization and
  * resource-management procedures. Conversely, the Policy Server assumes the
  * role of Policy Enforcement Point (PEP) in relation to the Application Manager
  * as it proxies Gate Control messages to and from the CMTS element.
@@ -59,32 +63,30 @@ import org.pcmm.state.IStateful;
  * with scalability and fault-tolerance.
  * </p>
  * </p>
- * 
- * @author rhadjamor@gmail.com
- * 
+ *
+ *
  */
 public interface IPCMMServer extends IStateful {
 
-	final int DEFAULT_LISTENING_PORT = 3918;
+    final int DEFAULT_LISTENING_PORT = 3918;
 
-	/**
-	 * 
-	 */
-	void startServer();
+    /**
+     *
+     */
+    void startServer();
 
-	/**
-	 * 
-	 */
-	void stopServer();
+    /**
+     *
+     */
+    void stopServer();
 
-	/**
-	 * When a client connects to the server, a handler is needed to manage the
-	 * exchange of the messages between this client and the server.
-	 * 
-	 * @author rhadjamor@gmail.com
-	 * 
-	 */
-	public static interface IPCMMClientHandler extends Runnable, IPCMMClient {
+    /**
+     * When a client connects to the server, a handler is needed to manage the
+     * exchange of the messages between this client and the server.
+     *
+     *
+     */
+    public static interface IPCMMClientHandler extends Runnable, IPCMMClient {
 
-	}
+    }
 }

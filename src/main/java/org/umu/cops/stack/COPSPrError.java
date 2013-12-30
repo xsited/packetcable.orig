@@ -12,104 +12,100 @@ import java.net.Socket;
 /**
  * COPS Provisioning Error
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSPrError.java, v 1.00 2003
  *
  */
 public class COPSPrError extends COPSPrObjBase {
 
-	protected short _errCode;
-	protected short _errSubCode;
-	
-	public COPSPrError(short eCode, short eSubCode)
-	{
-		_errCode = eCode;
-		_errSubCode = eSubCode;
-		_len = 8;
-	}
-	
-	/**
-	 	Parse the data and create a PrGlobalError object
-	 */
-	protected COPSPrError(byte[] dataPtr) {
-		_dataRep = null;
+    protected short _errCode;
+    protected short _errSubCode;
 
-		_len |= ((short) dataPtr[0]) << 8;
-		_len |= ((short) dataPtr[1]) & 0xFF;
+    public COPSPrError(short eCode, short eSubCode) {
+        _errCode = eCode;
+        _errSubCode = eSubCode;
+        _len = 8;
+    }
 
-		_sNum |= ((short) dataPtr[2]) << 8;
-		_sNum |= ((short) dataPtr[3]) & 0xFF;
+    /**
+          Parse the data and create a PrGlobalError object
+     */
+    protected COPSPrError(byte[] dataPtr) {
+        _dataRep = null;
 
-		_errCode |= ((short) dataPtr[4]) << 8;
-		_errCode |= ((short) dataPtr[5]) & 0xFF;
+        _len |= ((short) dataPtr[0]) << 8;
+        _len |= ((short) dataPtr[1]) & 0xFF;
 
-		_errSubCode |= ((short) dataPtr[6]) << 8;
-		_errSubCode |= ((short) dataPtr[7]) & 0xFF;
-	}
-	
-	/**
-	 * Method strError
-	 *
-	 * @return   a String
-	 *
-	 */
-	public String strError() {
-		return "Error";
-	}
+        _sNum |= ((short) dataPtr[2]) << 8;
+        _sNum |= ((short) dataPtr[3]) & 0xFF;
 
-	/**
-	 * Method setData
-	 *
-	 * @param    data                a  COPSData
-	 *
-	 */
-	public void setData(COPSData data)
-	{ }	;
+        _errCode |= ((short) dataPtr[4]) << 8;
+        _errCode |= ((short) dataPtr[5]) & 0xFF;
 
-	/**
-	 * Write data on a given network socket
-	 *
-	 * @param    id                  a  Socket
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void writeData(Socket id) throws IOException {
-		byte[] dataRep = getDataRep();
-		COPSUtil.writeData(id, dataRep, dataRep.length);
-	}
+        _errSubCode |= ((short) dataPtr[6]) << 8;
+        _errSubCode |= ((short) dataPtr[7]) & 0xFF;
+    }
 
-	/**
-	 * Returns size in number of octects, including header
-	 *
-	 * @return   a short
-	 *
-	 */
-	public short getDataLength()
-	{
-		return 8;
-	}
+    /**
+     * Method strError
+     *
+     * @return   a String
+     *
+     */
+    public String strError() {
+        return "Error";
+    }
 
-	/**
-	 * Method getDataRep
-	 *
-	 * @return   a byte[]
-	 *
-	 */
-	public byte[] getDataRep() {
-		_dataRep = new byte[getDataLength()];
-	
-		_dataRep[0] = (byte) (_len >> 8);
-		_dataRep[1] = (byte) _len;
-		_dataRep[2] = (byte) (_sNum >> 8);
-		_dataRep[3] = (byte) _sNum;
-		_dataRep[4] = (byte) (_errCode >> 8);
-		_dataRep[5] = (byte) _errCode;
-		_dataRep[6] = (byte) (_errSubCode >> 8);
-		_dataRep[7] = (byte) _errSubCode;
-				
-		return _dataRep;
-	}
+    /**
+     * Method setData
+     *
+     * @param    data                a  COPSData
+     *
+     */
+    public void setData(COPSData data) { }     ;
+
+    /**
+     * Write data on a given network socket
+     *
+     * @param    id                  a  Socket
+     *
+     * @throws   IOException
+     *
+     */
+    public void writeData(Socket id) throws IOException {
+        byte[] dataRep = getDataRep();
+        COPSUtil.writeData(id, dataRep, dataRep.length);
+    }
+
+    /**
+     * Returns size in number of octects, including header
+     *
+     * @return   a short
+     *
+     */
+    public short getDataLength() {
+        return 8;
+    }
+
+    /**
+     * Method getDataRep
+     *
+     * @return   a byte[]
+     *
+     */
+    public byte[] getDataRep() {
+        _dataRep = new byte[getDataLength()];
+
+        _dataRep[0] = (byte) (_len >> 8);
+        _dataRep[1] = (byte) _len;
+        _dataRep[2] = (byte) (_sNum >> 8);
+        _dataRep[3] = (byte) _sNum;
+        _dataRep[4] = (byte) (_errCode >> 8);
+        _dataRep[5] = (byte) _errCode;
+        _dataRep[6] = (byte) (_errSubCode >> 8);
+        _dataRep[7] = (byte) _errSubCode;
+
+        return _dataRep;
+    }
 
 }
 

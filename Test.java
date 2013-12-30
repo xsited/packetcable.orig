@@ -271,13 +271,19 @@ public class Test {
             case 0:
                 quit = true;
                 pcmm_sender = new PCMMPdpMsgSender (PCMMDef.C_PCMM, pcmm_pdp.getClientHandle(), pcmm_pdp.getSocket());
-		deleteFlow(pcmm_sender, toggle, PCMMGlobalConfig.getGateID2());
-		deleteFlow(pcmm_sender, toggle, PCMMGlobalConfig.getGateID1());
-                /*
-                   if (lpdp.isConnected()) lpdp.disconnect();
-                   if (lpdp.isConnected()) rpdp.disconnect();
-                   if (lpdp.isConnected()) pcmm_pdp.disconnect();
-                */
+		deleteFlow(pcmm_sender, 2, PCMMGlobalConfig.getGateID2());
+		deleteFlow(pcmm_sender, 1, PCMMGlobalConfig.getGateID1());
+                try {
+                try {
+                    if (lpdp.isConnected()) lpdp.disconnect(lpdp.getPepIdString(), null);
+                    if (rpdp.isConnected()) rpdp.disconnect(rpdp.getPepIdString(), null);
+                    if (pcmm_pdp.isConnected()) pcmm_pdp.disconnect(pcmm_pdp.getPepIdString(), null);
+                } catch (COPSException e) {
+                    System.out.println("Failed to disconnect, reason: " + e.getMessage());
+                }
+                } catch (IOException e) {
+                    System.out.println("Failed to disconnect, reason: " + e.getMessage());
+                }
                 break;
             default:
                 System.out.println("Invalid choice.");

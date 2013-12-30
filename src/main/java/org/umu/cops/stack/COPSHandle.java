@@ -35,118 +35,112 @@ import java.net.Socket;
  *   object with respect to the handle object values of other currently
  *   installed requests.
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSHandle.java, v 1.00 2003
  *
  */
 public class COPSHandle extends COPSObjBase {
 
-	private COPSObjHeader _objHdr;
-	private COPSData _id;
-	private COPSData _padding;
-	
-	public COPSHandle()
-	{
-		_objHdr = new COPSObjHeader();
-		_objHdr.setCNum(COPSObjHeader.COPS_HANDLE);
-		_objHdr.setCType((byte) 1);
-		_padding = new COPSData();
-	}
+    private COPSObjHeader _objHdr;
+    private COPSData _id;
+    private COPSData _padding;
 
-	/**
-	 	Parse data and create COPSHandle object
-	 */
-	protected COPSHandle(byte[] dataPtr) {
-		_objHdr = new COPSObjHeader();
-		_objHdr.parse(dataPtr);
-		// _objHdr.checkDataLength();
-		
-		//Get the length of data following the obj header
-		int dLen = _objHdr.getDataLength() - 4;
-		COPSData d = new COPSData (dataPtr, 4, dLen);
-		setId(d);
-	}
-	
-	/**
-	 * Set handle value
-	 *
-	 * @param    id                  a  COPSData
-	 *
-	 */
-	public void setId(COPSData id) {
-		_id = id;
-		if ((id.length() % 4) != 0)
-		{
-			int padLen = 4 - (_id.length() % 4);
-			_padding = getPadding(padLen);
-		}
-		_objHdr.setDataLength((short) _id.length());
-	}
-	
-	/**
-	 * Returns size in number of octects, including header
-	 *
-	 * @return   a short
-	 *
-	 */
-	public short getDataLength() {
-		//Add the size of the header also
-		int lpadding = 0;
-		if (_padding != null) lpadding = _padding.length();
-		return ((short) (_objHdr.getDataLength() + lpadding));
-	}
-	
-	/**
-	 * Get handle value
-	 *
-	 * @return   a COPSData
-	 *
-	 */
-	public COPSData getId()
-	{
-		return _id;
-	}
-	
-	/**
-	 * Always return true
-	 *
-	 * @return   a boolean
-	 *
-	 */
-	public boolean isClientHandle()
-	{
-		return true;
-	}
-	
-	/**
-	 * Write data in network byte order on a given network socket
-	 *
-	 * @param    id                  a  Socket
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void writeData(Socket id) throws IOException {
-		_objHdr.writeData(id);
+    public COPSHandle() {
+        _objHdr = new COPSObjHeader();
+        _objHdr.setCNum(COPSObjHeader.COPS_HANDLE);
+        _objHdr.setCType((byte) 1);
+        _padding = new COPSData();
+    }
 
-		COPSUtil.writeData(id, _id.getData(), _id.length());
-		if (_padding != null)
-		{
-			COPSUtil.writeData(id, _padding.getData(), _padding.length());
-		}
-	}
-	
-	/**
-	 * Write an object textual description in the output stream
-	 *
-	 * @param    os                  an OutputStream
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void dump(OutputStream os) throws IOException{
-		_objHdr.dump(os);
-		os.write(new String("client-handle: " + _id.str() + "\n").getBytes());
-	}
+    /**
+          Parse data and create COPSHandle object
+     */
+    protected COPSHandle(byte[] dataPtr) {
+        _objHdr = new COPSObjHeader();
+        _objHdr.parse(dataPtr);
+        // _objHdr.checkDataLength();
+
+        //Get the length of data following the obj header
+        int dLen = _objHdr.getDataLength() - 4;
+        COPSData d = new COPSData (dataPtr, 4, dLen);
+        setId(d);
+    }
+
+    /**
+     * Set handle value
+     *
+     * @param    id                  a  COPSData
+     *
+     */
+    public void setId(COPSData id) {
+        _id = id;
+        if ((id.length() % 4) != 0) {
+            int padLen = 4 - (_id.length() % 4);
+            _padding = getPadding(padLen);
+        }
+        _objHdr.setDataLength((short) _id.length());
+    }
+
+    /**
+     * Returns size in number of octects, including header
+     *
+     * @return   a short
+     *
+     */
+    public short getDataLength() {
+        //Add the size of the header also
+        int lpadding = 0;
+        if (_padding != null) lpadding = _padding.length();
+        return ((short) (_objHdr.getDataLength() + lpadding));
+    }
+
+    /**
+     * Get handle value
+     *
+     * @return   a COPSData
+     *
+     */
+    public COPSData getId() {
+        return _id;
+    }
+
+    /**
+     * Always return true
+     *
+     * @return   a boolean
+     *
+     */
+    public boolean isClientHandle() {
+        return true;
+    }
+
+    /**
+     * Write data in network byte order on a given network socket
+     *
+     * @param    id                  a  Socket
+     *
+     * @throws   IOException
+     *
+     */
+    public void writeData(Socket id) throws IOException {
+        _objHdr.writeData(id);
+
+        COPSUtil.writeData(id, _id.getData(), _id.length());
+        if (_padding != null) {
+            COPSUtil.writeData(id, _padding.getData(), _padding.length());
+        }
+    }
+
+    /**
+     * Write an object textual description in the output stream
+     *
+     * @param    os                  an OutputStream
+     *
+     * @throws   IOException
+     *
+     */
+    public void dump(OutputStream os) throws IOException {
+        _objHdr.dump(os);
+        os.write(new String("client-handle: " + _id.str() + "\n").getBytes());
+    }
 }
 

@@ -39,7 +39,6 @@ import org.umu.cops.stack.COPSSyncStateMsg;
  *   states MUST be unique within the context of a particular TCP
  *   connection and client-type.
  *
- * @author F�lix Jes�s Garc�a Clemente  (fgarcia@dif.um.es)
  * @version COPSPepReqStateMan.java, v 2.00 2004
  *
  */
@@ -48,7 +47,7 @@ public class COPSPepReqStateMan {
     /**
      * Request State created
      */
-	public final static short ST_CREATE = 1;
+    public final static short ST_CREATE = 1;
     /**
      * Request sent
      */
@@ -94,73 +93,73 @@ public class COPSPepReqStateMan {
      */
     public final static short ST_ACCT = 12;
 
-	/**
+    /**
      * The client-type identifies the policy client
-	 */
-	protected short _clientType;
-	
-	/**
-	 *	The client handle is used to uniquely identify a particular
-	 *	PEP's request for a client-type
-	 */
-	protected COPSHandle _handle;
-	
-	/**
-		The PolicyDataProcess is used to process policy data in the PEP
-	 */
-	protected COPSPepDataProcess _process;
+     */
+    protected short _clientType;
+
+    /**
+     *  The client handle is used to uniquely identify a particular
+     *  PEP's request for a client-type
+     */
+    protected COPSHandle _handle;
+
+    /**
+        The PolicyDataProcess is used to process policy data in the PEP
+     */
+    protected COPSPepDataProcess _process;
 
     /**
      *  State Request State
      */
     protected short _status;
 
-	/**
-		The Msg Sender is used to send COPS messages
-	 */
-	protected COPSPepMsgSender _sender;
+    /**
+        The Msg Sender is used to send COPS messages
+     */
+    protected COPSPepMsgSender _sender;
 
     /**
      * Sync State
      */
-	protected boolean _syncState;
-	
-	/**
-	 * Create a State Request Manager
-	 *
-	 * @param    clientHandle                a Client Handle
-	 *
-	 */
-	public COPSPepReqStateMan(short clientType, String clientHandle) {
-		// COPS Handle
-		_handle = new COPSHandle();
-		COPSData id = new COPSData(clientHandle);
-		_handle.setId(id);
-		// client-type
-		_clientType = clientType;
-		_syncState = true;
+    protected boolean _syncState;
+
+    /**
+     * Create a State Request Manager
+     *
+     * @param    clientHandle                a Client Handle
+     *
+     */
+    public COPSPepReqStateMan(short clientType, String clientHandle) {
+        // COPS Handle
+        _handle = new COPSHandle();
+        COPSData id = new COPSData(clientHandle);
+        _handle.setId(id);
+        // client-type
+        _clientType = clientType;
+        _syncState = true;
         _status = ST_CREATE;
-	}
-	
-	/**
-	 * Return client handle
-	 *
-	 * @return   a COPSHandle
-	 *
-	 */
-	public COPSHandle getClientHandle() {
-		return _handle;
-	}
-	
-	/**
-	 * Return client-type
-	 *
-	 * @return   a short
-	 *
-	 */
-	public short getClientType() {
-		return _clientType;
-	}
+    }
+
+    /**
+     * Return client handle
+     *
+     * @return   a COPSHandle
+     *
+     */
+    public COPSHandle getClientHandle() {
+        return _handle;
+    }
+
+    /**
+     * Return client-type
+     *
+     * @return   a short
+     *
+     */
+    public short getClientType() {
+        return _clientType;
+    }
 
     /**
      * Return Request State status
@@ -171,235 +170,232 @@ public class COPSPepReqStateMan {
         return _status;
     }
 
-	/**
-	 * Return the Policy Data Process
-	 *
-	 * @return   a PolicyConfigure
-	 *
-	 */
-	public COPSPepDataProcess getDataProcess() {
-		return _process;
-	}
+    /**
+     * Return the Policy Data Process
+     *
+     * @return   a PolicyConfigure
+     *
+     */
+    public COPSPepDataProcess getDataProcess() {
+        return _process;
+    }
 
-	/**
-	 * Establish the Policy Data Process
-	 *
-	 * @param    process              a  PolicyConfigure
-	 *
-	 */
-	public void setDataProcess(COPSPepDataProcess process) {
-		_process = process;
-	}
+    /**
+     * Establish the Policy Data Process
+     *
+     * @param    process              a  PolicyConfigure
+     *
+     */
+    public void setDataProcess(COPSPepDataProcess process) {
+        _process = process;
+    }
 
-	/**
-	 * Init Request State
-	 *
-	 * @throws   COPSPepException
-	 *
-	 */
-	protected void initRequestState(Socket sock)
-		throws COPSPepException {
-		// Inits an object for sending COPS messages to the PDP
-		_sender = new COPSPepMsgSender(_clientType, _handle, sock);
-		
-		// If an object for retrieving PEP features exists,
-		// use it for retrieving them
-		Hashtable clientSIs;
-		if (_process != null)
-			clientSIs = _process.getClientData(this);
-		else
-			clientSIs = null;
+    /**
+     * Init Request State
+     *
+     * @throws   COPSPepException
+     *
+     */
+    protected void initRequestState(Socket sock)
+    throws COPSPepException {
+        // Inits an object for sending COPS messages to the PDP
+        _sender = new COPSPepMsgSender(_clientType, _handle, sock);
 
-		// Send the request
-		_sender.sendRequest(clientSIs);
+        // If an object for retrieving PEP features exists,
+        // use it for retrieving them
+        Hashtable clientSIs;
+        if (_process != null)
+            clientSIs = _process.getClientData(this);
+        else
+            clientSIs = null;
+
+        // Send the request
+        _sender.sendRequest(clientSIs);
 
         // Initial state
         _status = ST_INIT;
-	}
-	
-	/**
-	 * Finalize Request State
-	 *
-	 * @throws   COPSPepException
-	 *
-	 */
-	protected void finalizeRequestState()
-		throws COPSPepException {
-		_sender.sendDeleteRequest();
+    }
+
+    /**
+     * Finalize Request State
+     *
+     * @throws   COPSPepException
+     *
+     */
+    protected void finalizeRequestState()
+    throws COPSPepException {
+        _sender.sendDeleteRequest();
         _status = ST_FINAL;
-	}
-	
-	/**
-	 * Process the message Decision
-	 *
-	 * @param    dMsg                a  COPSDecisionMsg
-	 *
-	 * @throws   COPSPepException
-	 *
-	 */
-	protected void processDecision(COPSDecisionMsg dMsg)
-		throws COPSPepException {
-		// COPSDebug.out(getClass().getName(), "ClientId:" + getClientHandle().getId().str());
+    }
 
-		// COPSHandle handle = dMsg.getClientHandle();
-		Hashtable decisions = dMsg.getDecisions();
-		
-		Hashtable removeDecs = new Hashtable(40);
-		Hashtable installDecs = new Hashtable(40);
-		Hashtable errorDecs = new Hashtable(40);
-		for (Enumeration e = decisions.keys() ; e.hasMoreElements() ;) {
-			
-			COPSContext context = (COPSContext) e.nextElement();
-			Vector v = (Vector) decisions.get(context);
-			Enumeration ee = v.elements();
-			COPSDecision cmddecision = (COPSDecision) ee.nextElement();
-			
-			// cmddecision --> we must check whether it is an error!
-			
-			if(cmddecision.isInstallDecision()) {
-				String prid = new String();
-				for (; ee.hasMoreElements() ;) {
-					COPSDecision decision = (COPSDecision) ee.nextElement();
+    /**
+     * Process the message Decision
+     *
+     * @param    dMsg                a  COPSDecisionMsg
+     *
+     * @throws   COPSPepException
+     *
+     */
+    protected void processDecision(COPSDecisionMsg dMsg)
+    throws COPSPepException {
+        // COPSDebug.out(getClass().getName(), "ClientId:" + getClientHandle().getId().str());
 
-					COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
-					switch (obj.getSNum())
-					{
-						case COPSPrObjBase.PR_PRID:
-							prid = obj.getData().str();
-							break;
-						case COPSPrObjBase.PR_EPD:
-							installDecs.put(prid, obj.getData().str());
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			
-			if(cmddecision.isRemoveDecision()) {
+        // COPSHandle handle = dMsg.getClientHandle();
+        Hashtable decisions = dMsg.getDecisions();
 
-				String prid = new String();
-				for (; ee.hasMoreElements() ;) {
-					COPSDecision decision = (COPSDecision) ee.nextElement();
+        Hashtable removeDecs = new Hashtable(40);
+        Hashtable installDecs = new Hashtable(40);
+        Hashtable errorDecs = new Hashtable(40);
+        for (Enumeration e = decisions.keys() ; e.hasMoreElements() ;) {
 
-					COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
-					switch (obj.getSNum())
-					{
-						case COPSPrObjBase.PR_PRID:
-							prid = obj.getData().str();
-							break;
-						case COPSPrObjBase.PR_EPD:
-							removeDecs.put(prid, obj.getData().str());
-							break;
-						default:
-							break;
-					}
-				}
-			}
-		}
-		
-		//** Apply decisions to the configuration
-		_process.setDecisions(this, removeDecs, installDecs, errorDecs);
+            COPSContext context = (COPSContext) e.nextElement();
+            Vector v = (Vector) decisions.get(context);
+            Enumeration ee = v.elements();
+            COPSDecision cmddecision = (COPSDecision) ee.nextElement();
+
+            // cmddecision --> we must check whether it is an error!
+
+            if (cmddecision.isInstallDecision()) {
+                String prid = new String();
+                for (; ee.hasMoreElements() ;) {
+                    COPSDecision decision = (COPSDecision) ee.nextElement();
+
+                    COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
+                    switch (obj.getSNum()) {
+                    case COPSPrObjBase.PR_PRID:
+                        prid = obj.getData().str();
+                        break;
+                    case COPSPrObjBase.PR_EPD:
+                        installDecs.put(prid, obj.getData().str());
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+
+            if (cmddecision.isRemoveDecision()) {
+
+                String prid = new String();
+                for (; ee.hasMoreElements() ;) {
+                    COPSDecision decision = (COPSDecision) ee.nextElement();
+
+                    COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
+                    switch (obj.getSNum()) {
+                    case COPSPrObjBase.PR_PRID:
+                        prid = obj.getData().str();
+                        break;
+                    case COPSPrObjBase.PR_EPD:
+                        removeDecs.put(prid, obj.getData().str());
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
+
+        //** Apply decisions to the configuration
+        _process.setDecisions(this, removeDecs, installDecs, errorDecs);
         _status = ST_DECS;
 
-		
-		if (_process.isFailReport(this)) {
-			// COPSDebug.out(getClass().getName(),"Sending FAIL Report\n");
-			_sender.sendFailReport(_process.getReportData(this));
-		}
-		else {
-			// COPSDebug.out(getClass().getName(),"Sending SUCCESS Report\n");
-			_sender.sendSuccessReport(_process.getReportData(this));
-		}
+
+        if (_process.isFailReport(this)) {
+            // COPSDebug.out(getClass().getName(),"Sending FAIL Report\n");
+            _sender.sendFailReport(_process.getReportData(this));
+        } else {
+            // COPSDebug.out(getClass().getName(),"Sending SUCCESS Report\n");
+            _sender.sendSuccessReport(_process.getReportData(this));
+        }
         _status = ST_REPORT;
 
-		if (!_syncState) {
-			_sender.sendSyncComplete();
-			_syncState = true;
+        if (!_syncState) {
+            _sender.sendSyncComplete();
+            _syncState = true;
             _status = ST_SYNCALL;
-		}
-	}
-					
-	/**
-	 * Process the message NewRequestState
-	 *
-	 * @throws   COPSPepException
-	 *
-	 */
-	protected void processOpenNewRequestState()
-		throws COPSPepException {
+        }
+    }
 
-		if(_process != null)
-			_process.newRequestState(this);
+    /**
+     * Process the message NewRequestState
+     *
+     * @throws   COPSPepException
+     *
+     */
+    protected void processOpenNewRequestState()
+    throws COPSPepException {
+
+        if (_process != null)
+            _process.newRequestState(this);
 
         _status = ST_NEW;
-	}
-	
-	/**
-	 * Process the message DeleteRequestState
-	 *
-	 * @param    dMsg                a  COPSDecisionMsg
-	 *
-	 * @throws   COPSPepException
-	 *
-	 */
-	protected void processDeleteRequestState(COPSDecisionMsg dMsg)
-		throws COPSPepException {
-		if(_process != null)
-			_process.closeRequestState(this);
+    }
+
+    /**
+     * Process the message DeleteRequestState
+     *
+     * @param    dMsg                a  COPSDecisionMsg
+     *
+     * @throws   COPSPepException
+     *
+     */
+    protected void processDeleteRequestState(COPSDecisionMsg dMsg)
+    throws COPSPepException {
+        if (_process != null)
+            _process.closeRequestState(this);
 
         _status = ST_DEL;
-	}
+    }
 
-	/**
-	 * Process the message SycnStateRequest.
-	 * The message SycnStateRequest indicates that the remote PDP
-	 * wishes the client (which appears in the common header)
- 	 * to re-send its state.
-	 *
-	 * @param    ssMsg               a  COPSSyncStateMsg
-	 *
-	 * @throws   COPSPepException
-	 *
-	 */
-	protected void processSyncStateRequest(COPSSyncStateMsg ssMsg)
-		throws COPSPepException {
-		_syncState = false;
+    /**
+     * Process the message SycnStateRequest.
+     * The message SycnStateRequest indicates that the remote PDP
+     * wishes the client (which appears in the common header)
+     * to re-send its state.
+     *
+     * @param    ssMsg               a  COPSSyncStateMsg
+     *
+     * @throws   COPSPepException
+     *
+     */
+    protected void processSyncStateRequest(COPSSyncStateMsg ssMsg)
+    throws COPSPepException {
+        _syncState = false;
         // If an object for retrieving PEP features exists,
         // use it for retrieving them
-		Hashtable clientSIs;
-		if (_process != null)
-			clientSIs = _process.getClientData(this);
-		else
-			clientSIs = null;
-		
-		// Send request
-		_sender.sendRequest(clientSIs);
+        Hashtable clientSIs;
+        if (_process != null)
+            clientSIs = _process.getClientData(this);
+        else
+            clientSIs = null;
+
+        // Send request
+        _sender.sendRequest(clientSIs);
 
         _status = ST_SYNC;
-	}
+    }
 
     protected void processClosedConnection(COPSError error)
-        throws COPSPepException {
-        if(_process != null)
+    throws COPSPepException {
+        if (_process != null)
             _process.notifyClosedConnection(this, error);
 
         _status = ST_CCONN;
     }
 
     protected void processNoKAConnection()
-        throws COPSPepException {
-        if(_process != null)
+    throws COPSPepException {
+        if (_process != null)
             _process.notifyNoKAliveReceived(this);
 
         _status = ST_NOKA;
     }
 
     protected void processAcctReport()
-        throws COPSPepException {
+    throws COPSPepException {
 
         Hashtable report = new Hashtable();
-        if(_process != null)
+        if (_process != null)
             report = _process.getAcctData(this);
 
         _sender.sendAcctReport(report);

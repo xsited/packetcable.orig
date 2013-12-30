@@ -12,53 +12,49 @@ import java.net.Socket;
 /**
  * COPS IPv6 Input Interface
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSIpv6InInterface.java, v 1.00 2003
  *
  */
 public class COPSIpv6InInterface extends COPSIpv6Interface {
-    public COPSIpv6InInterface()
-	{
-		_objHdr = new COPSObjHeader();
-		_objHdr.setCNum(COPSObjHeader.COPS_ININTF);
-	}
+    public COPSIpv6InInterface() {
+        _objHdr = new COPSObjHeader();
+        _objHdr.setCNum(COPSObjHeader.COPS_ININTF);
+    }
 
-	public COPSIpv6InInterface(byte[] dataPtr) {
-		super(dataPtr);
-	}
-	
-	/**
-	 * Method className
-	 *
-	 * @return   a String
-	 *
-	 */
-	public String className()
-	{
-		return "COPSIpv6InInterface";
-	}
+    public COPSIpv6InInterface(byte[] dataPtr) {
+        super(dataPtr);
+    }
 
-	/**
-	 * Method isInInterface
-	 *
-	 * @return   a boolean
-	 *
-	 */
-	public boolean isInInterface()
-	{
-		return true;
-	}
+    /**
+     * Method className
+     *
+     * @return   a String
+     *
+     */
+    public String className() {
+        return "COPSIpv6InInterface";
+    }
 
-	/**
-	 * Writes data to given socket
-	 *
-	 * @param    id                  a  Socket
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void writeData(Socket id) throws IOException {
-	}
+    /**
+     * Method isInInterface
+     *
+     * @return   a boolean
+     *
+     */
+    public boolean isInInterface() {
+        return true;
+    }
+
+    /**
+     * Writes data to given socket
+     *
+     * @param    id                  a  Socket
+     *
+     * @throws   IOException
+     *
+     */
+    public void writeData(Socket id) throws IOException {
+    }
 }
 
 

@@ -13,12 +13,10 @@ import org.umu.cops.stack.COPSError;
 /**
  * COPSPepDataProcess process policy data and events.
  *
- * @author F�lix Jes�s Garc�a Clemente  (fgarcia@dif.um.es)
  * @version COPSPepDataProcess.java, v 2.00 2004
  *
  */
-public abstract class COPSPepDataProcess
-{
+public abstract class COPSPepDataProcess {
 
     /**
      * Establish PDP decisions
@@ -27,14 +25,14 @@ public abstract class COPSPepDataProcess
      * @param installDecs
      * @param errorDecs
      */
-	public abstract void setDecisions(COPSPepReqStateMan man, Hashtable removeDecs, Hashtable installDecs, Hashtable errorDecs);
+    public abstract void setDecisions(COPSPepReqStateMan man, Hashtable removeDecs, Hashtable installDecs, Hashtable errorDecs);
 
     /**
      *  If the report is fail, return true
      *
      * @return
      */
-	public abstract boolean isFailReport(COPSPepReqStateMan man);
+    public abstract boolean isFailReport(COPSPepReqStateMan man);
 
     /**
      * Return Report Data
@@ -74,13 +72,13 @@ public abstract class COPSPepDataProcess
      *
      * @param man       Request State Manager
      */
-	public abstract void closeRequestState(COPSPepReqStateMan man);
+    public abstract void closeRequestState(COPSPepReqStateMan man);
 
     /**
      * Process a PDP request to open a new Request State
      *
      * @param man
      */
-	public abstract void newRequestState(COPSPepReqStateMan man);
+    public abstract void newRequestState(COPSPepReqStateMan man);
 }
 

@@ -42,14 +42,12 @@ import java.net.Socket;
  *                   Sub-code (octet 2) contains unknown object's C-Num
  *                   and (octet 3) contains unknown object's C-Type.
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSReason.java, v 1.00 2003
  *
  */
 public class COPSReason extends COPSPrObjBase {
-	
-	public final static String[] G_msgArray =
-    {
+
+    public final static String[] G_msgArray = {
         "Unknown.",
         "Unspecified.",
         "Management.",
@@ -65,112 +63,110 @@ public class COPSReason extends COPSPrObjBase {
         "Malformed decision.",
         "Unknown COPS object from PDP.",
     };
-	
-	private COPSObjHeader _objHdr;
-	private short _reasonCode;
-	private short _reasonSubCode;
 
-	///
-	public COPSReason(short reasonCode, short subCode) {
-		_objHdr = new COPSObjHeader();
-		_reasonCode = reasonCode;
-		_reasonSubCode = subCode;
-		_objHdr.setCNum(COPSObjHeader.COPS_REASON_CODE);
-		_objHdr.setCType((byte) 1);
-		_objHdr.setDataLength((short) 4);
-	}
+    private COPSObjHeader _objHdr;
+    private short _reasonCode;
+    private short _reasonSubCode;
 
-	/**
-	 	Parse data and create COPSReason object
-	 */
-	protected COPSReason(byte[] dataPtr) {
-		_objHdr = new COPSObjHeader();
-		_objHdr.parse(dataPtr);
-		// _objHdr.checkDataLength();
-	
-		_reasonCode |= ((short) dataPtr[4]) << 8;
-		_reasonCode |= ((short) dataPtr[5]) & 0xFF;
-		_reasonSubCode |= ((short) dataPtr[6]) << 8;
-		_reasonSubCode |= ((short) dataPtr[7]) & 0xFF;
-		
-		_objHdr.setDataLength((short) 4);
-	}
-	
-	/**
-	 * Returns size in number of octects, including header
-	 *
-	 * @return   a short
-	 *
-	 */
-	public short getDataLength()
-	{
-		return (_objHdr.getDataLength());
-	}
-	
-	/**
-	 * Get Reason description
-	 *
-	 * @return   a String
-	 *
-	 */
-	public String getDescription() {
-		String reasonStr1;
-		String reasonStr2;
-	
-		///Get the details from the error code
-		reasonStr1 = G_msgArray[_reasonCode];
-		//TODO - defind reason sub-codes
-		reasonStr2 = "";
-		return (reasonStr1 + ":" + reasonStr2);
-	}
-	
-	/**
-	 * Always return true
-	 *
-	 * @return   a boolean
-	 *
-	 */
-	public boolean isReason()
-	{
-		return true;
-	}
-	
-	/**
-	 * Write object in network byte order to a given network socket
-	 *
-	 * @param    id                  a  Socket
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void writeData(Socket id) throws IOException {
+    ///
+    public COPSReason(short reasonCode, short subCode) {
+        _objHdr = new COPSObjHeader();
+        _reasonCode = reasonCode;
+        _reasonSubCode = subCode;
+        _objHdr.setCNum(COPSObjHeader.COPS_REASON_CODE);
+        _objHdr.setCType((byte) 1);
+        _objHdr.setDataLength((short) 4);
+    }
 
-		_objHdr.writeData(id);
+    /**
+          Parse data and create COPSReason object
+     */
+    protected COPSReason(byte[] dataPtr) {
+        _objHdr = new COPSObjHeader();
+        _objHdr.parse(dataPtr);
+        // _objHdr.checkDataLength();
 
-		byte[] buf = new byte[4];
-		
-		buf[0] = (byte) (_reasonCode >> 8);
-		buf[1] = (byte) _reasonCode;
-		buf[2] = (byte) (_reasonSubCode >> 8);
-		buf[3] = (byte) _reasonSubCode;
-		
-		
-		COPSUtil.writeData(id, buf, 4);
-	}
-		
-	/**
-	 * Write an object textual description in the output stream
-	 *
-	 * @param    os                  an OutputStream
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void dump(OutputStream os) throws IOException{
-		_objHdr.dump(os);
-		os.write(new String("Reason Code: " + _reasonCode + "\n").getBytes());
-		os.write(new String("Reason Sub Code: " + _reasonSubCode + "\n").getBytes());
-	}
+        _reasonCode |= ((short) dataPtr[4]) << 8;
+        _reasonCode |= ((short) dataPtr[5]) & 0xFF;
+        _reasonSubCode |= ((short) dataPtr[6]) << 8;
+        _reasonSubCode |= ((short) dataPtr[7]) & 0xFF;
+
+        _objHdr.setDataLength((short) 4);
+    }
+
+    /**
+     * Returns size in number of octects, including header
+     *
+     * @return   a short
+     *
+     */
+    public short getDataLength() {
+        return (_objHdr.getDataLength());
+    }
+
+    /**
+     * Get Reason description
+     *
+     * @return   a String
+     *
+     */
+    public String getDescription() {
+        String reasonStr1;
+        String reasonStr2;
+
+        ///Get the details from the error code
+        reasonStr1 = G_msgArray[_reasonCode];
+        //TODO - defind reason sub-codes
+        reasonStr2 = "";
+        return (reasonStr1 + ":" + reasonStr2);
+    }
+
+    /**
+     * Always return true
+     *
+     * @return   a boolean
+     *
+     */
+    public boolean isReason() {
+        return true;
+    }
+
+    /**
+     * Write object in network byte order to a given network socket
+     *
+     * @param    id                  a  Socket
+     *
+     * @throws   IOException
+     *
+     */
+    public void writeData(Socket id) throws IOException {
+
+        _objHdr.writeData(id);
+
+        byte[] buf = new byte[4];
+
+        buf[0] = (byte) (_reasonCode >> 8);
+        buf[1] = (byte) _reasonCode;
+        buf[2] = (byte) (_reasonSubCode >> 8);
+        buf[3] = (byte) _reasonSubCode;
+
+
+        COPSUtil.writeData(id, buf, 4);
+    }
+
+    /**
+     * Write an object textual description in the output stream
+     *
+     * @param    os                  an OutputStream
+     *
+     * @throws   IOException
+     *
+     */
+    public void dump(OutputStream os) throws IOException {
+        _objHdr.dump(os);
+        os.write(new String("Reason Code: " + _reasonCode + "\n").getBytes());
+        os.write(new String("Reason Sub Code: " + _reasonSubCode + "\n").getBytes());
+    }
 }
 
 

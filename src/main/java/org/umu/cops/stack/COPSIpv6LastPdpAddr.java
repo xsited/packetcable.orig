@@ -12,45 +12,42 @@ import java.io.OutputStream;
 /**
  * COPS IPv6 Last PDP Address
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSIpv6LastPdpAddr.java, v 1.00 2003
  *
  */
 public class COPSIpv6LastPdpAddr extends COPSIpv6PdpAddress {
-    
-	public COPSIpv6LastPdpAddr()
-	{
-		super();
-		_objHdr.setCNum(COPSObjHeader.COPS_LAST_PDP_ADDR);
-	}
 
-	public COPSIpv6LastPdpAddr(byte[] dataPtr) {
-		super(dataPtr);
-	}
+    public COPSIpv6LastPdpAddr() {
+        super();
+        _objHdr.setCNum(COPSObjHeader.COPS_LAST_PDP_ADDR);
+    }
 
-	/**
-	 * Method isLastPdpAddress
-	 *
-	 * @return   a boolean
-	 *
-	 */
-	public boolean isLastPdpAddress()
-	{
-		return true;
-	}
-	
-	/**
-	 * Write an object textual description in the output stream
-	 *
-	 * @param    os                  an OutputStream
-	 *
-	 * @throws   IOException
-	 *
-	 */
-	public void dump(OutputStream os) throws IOException{
-		_objHdr.dump(os);
-		os.write(new String("Ipv6PdpAddress" + "\n").getBytes());
-		os.write(new String("Address: " + _addr.getIpName() + "\n").getBytes());
-		os.write(new String("Port: " + _tcpPort + "\n").getBytes());
-	}
+    public COPSIpv6LastPdpAddr(byte[] dataPtr) {
+        super(dataPtr);
+    }
+
+    /**
+     * Method isLastPdpAddress
+     *
+     * @return   a boolean
+     *
+     */
+    public boolean isLastPdpAddress() {
+        return true;
+    }
+
+    /**
+     * Write an object textual description in the output stream
+     *
+     * @param    os                  an OutputStream
+     *
+     * @throws   IOException
+     *
+     */
+    public void dump(OutputStream os) throws IOException {
+        _objHdr.dump(os);
+        os.write(new String("Ipv6PdpAddress" + "\n").getBytes());
+        os.write(new String("Address: " + _addr.getIpName() + "\n").getBytes());
+        os.write(new String("Port: " + _tcpPort + "\n").getBytes());
+    }
 };

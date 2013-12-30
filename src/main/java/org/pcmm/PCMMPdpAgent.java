@@ -1,4 +1,5 @@
-/*
+/**
+ @header@
  */
 
 package org.pcmm;
@@ -42,6 +43,8 @@ public class PCMMPdpAgent extends COPSPdpAgent {
     /** Well-known port for PCMM */
     public static final int WELL_KNOWN_PDP_PORT = 3918;
 
+    private COPSPepId _pepId;
+    private String _pepIdString;
     /**
      * PEP host name
      */
@@ -218,7 +221,7 @@ public class PCMMPdpAgent extends COPSPdpAgent {
 
             throw new COPSException("Mandatory COPS object missing (PEPId)");
         }
-
+        setPepId(pepId);
         // Support
         if ((cMsg.getClientSI() != null) ) {
             _mminfo = new MMVersionInfo(cMsg
@@ -281,8 +284,8 @@ public class PCMMPdpAgent extends COPSPdpAgent {
             } else {
                 // Request
                 if (rmsg.getHeader().isARequest()) {
-    		    COPSReqMsg rMsg = (COPSReqMsg) rmsg;
-		    _handle = rMsg.getClientHandle();
+                    COPSReqMsg rMsg = (COPSReqMsg) rmsg;
+                    _handle = rMsg.getClientHandle();
                 } else
                     throw new COPSException("Can't understand request");
 
@@ -293,17 +296,17 @@ public class PCMMPdpAgent extends COPSPdpAgent {
 
         COPSDebug.err(getClass().getName(), "PDPCOPSConnection");
         PCMMPdpConnection pdpConn = new PCMMPdpConnection(pepId, conn, _process);
-        pdpConn.setKaTimer((short)360); //getKaTimer());
+        pdpConn.setKaTimer(getKaTimer());
         if (getAcctTimer() != 0)
             pdpConn.setAccTimer(getAcctTimer());
 
         // XXX - handleRequestMsg
-	// XXX - check handle is valid
+        // XXX - check handle is valid
         PCMMPdpReqStateMan man = new PCMMPdpReqStateMan(getClientType(), _handle.getId().str());
-	pdpConn.getReqStateMans().put(_handle.getId().str(),man);
+        pdpConn.getReqStateMans().put(_handle.getId().str(),man);
         man.setDataProcess(_process);
         try {
-           man.initRequestState(conn);
+            man.initRequestState(conn);
         } catch (COPSPdpException unae) {
         }
         // XXX - End handleRequestMsg
@@ -373,12 +376,41 @@ public class PCMMPdpAgent extends COPSPdpAgent {
         this._process = _process;
     }
 
-   /**
-     * Gets the client handle
-     * @return   Client's <tt>COPSHandle</tt>
-     */
+    /**
+      * Gets the client handle
+      * @return   Client's <tt>COPSHandle</tt>
+      */
     public COPSHandle getClientHandle() {
         return _handle;
+    }
+
+    /**
+      * Gets the PepId
+      * @return   <tt>COPSPepId</tt>
+      */
+    public COPSPepId getPepId() {
+        return _pepId;
+    }
+
+    public String getPepIdString() {
+        return _pepIdString;
+    }
+
+    /**
+      * Sets the PepId
+      * @param   <tt>COPSPepId</tt>
+      */
+    public void setPepId(COPSPepId pepId) {
+        _pepId = pepId;
+        _pepIdString = pepId.getData().str();
+     }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.pcmm.rcd.IPCMMClient#isConnected()
+     */
+    public boolean isConnected() {
+        return socket != null && socket.isConnected();
     }
 
 

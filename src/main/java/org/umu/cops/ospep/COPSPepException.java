@@ -9,42 +9,42 @@ package org.umu.cops.ospep;
 /**
  * COPS PEP Exception
  *
- * @author Félix Jesús García Clemente  (fgarcia@dif.um.es)
  * @version COPSPepException.java, v 2.00 2004
  *
  */
 public class COPSPepException extends Exception {
 
-  private int rc;
-  final static int GENERAL_ERROR = 0x00000001;
+    private int rc;
+    final static int GENERAL_ERROR = 0x00000001;
 
-  /**
-   * Creates a <tt>COPSPdpException</tt> with the given message.
-   * @param msg	Exception message
-   */
+    /**
+     * Creates a <tt>COPSPdpException</tt> with the given message.
+     * @param msg    Exception message
+     */
 
-  public COPSPepException(String msg) {
-    super(msg); rc=0;
-  }
+    public COPSPepException(String msg) {
+        super(msg);
+        rc=0;
+    }
 
- /**
-   * Creates a <tt>COPSPdpException</tt> with the given message and return code.
-   * @param msg	Exception message
-   * @param retCode	Return code
-   */
-  public COPSPepException(String msg, int retCode) {
-    super(msg);
-    rc = retCode;
-  }
+    /**
+      * Creates a <tt>COPSPdpException</tt> with the given message and return code.
+      * @param msg      Exception message
+      * @param retCode     Return code
+      */
+    public COPSPepException(String msg, int retCode) {
+        super(msg);
+        rc = retCode;
+    }
 
-  /**
-   * Returns the return code of the exception
-   *
-   * @return   Exception's return code
-   *
-   */
-  public int returnCode() {
-    return rc;
-  }
-  
+    /**
+     * Returns the return code of the exception
+     *
+     * @return   Exception's return code
+     *
+     */
+    public int returnCode() {
+        return rc;
+    }
+
 }

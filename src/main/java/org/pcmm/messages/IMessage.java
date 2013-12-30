@@ -1,9 +1,13 @@
+/**
+ @header@
+ */
+
 package org.pcmm.messages;
 
 /**
  * This defines the messages exchanged between client and server.
- * 
- * 
+ *
+ *
  * <pre>
  * 1 = Request                 (REQ)
  * 2 = Decision                (DEC)
@@ -29,15 +33,15 @@ public interface IMessage {
 				"Client-Handle"), GATE_CONTROL("Gate-Control"), DECISION_TYPE(
 				"Decision-Type"), DECISION_FLAG("Decision-Flag");
 
-		private MessageProperties(String valueString) {
-			this.value = valueString;
-		}
+        private MessageProperties(String valueString) {
+            this.value = valueString;
+        }
 
-		private String value;
+        private String value;
 
-		public String getValue() {
-			return value;
-		}
-	}
+        public String getValue() {
+            return value;
+        }
+    }
 
 }

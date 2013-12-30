@@ -1,3 +1,8 @@
+/**
+ @header@
+ */
+
+
 package org.pcmm.gates;
 
 import java.net.InetAddress;
@@ -23,23 +28,22 @@ import org.pcmm.base.IPCMMBaseObject;
  * reject the Gate as having an invalid SubscriberID see 6.4.2.14 PacketCable
  * Error.
  * </p>
- * 
- * @author rhadjamor@gmail.com
- * 
+ *
+ *
  */
 
 public interface ISubscriberID extends IPCMMBaseObject {
-	static final short LENGTH = 8;
-	static final byte SNUM = 3;
-	static final byte STYPE = 1;
+    static final short LENGTH = 8;
+    static final byte SNUM = 3;
+    static final byte STYPE = 1;
 
-	/**
-	 * source IP address for the PCMM gate.
-	 * 
-	 * @return IP v4 or v6 ip address.
-	 */
-	InetAddress getSourceIPAddress();
+    /**
+     * source IP address for the PCMM gate.
+     *
+     * @return IP v4 or v6 ip address.
+     */
+    InetAddress getSourceIPAddress();
 
-	void setSourceIPAddress(InetAddress address);
+    void setSourceIPAddress(InetAddress address);
 
 }
