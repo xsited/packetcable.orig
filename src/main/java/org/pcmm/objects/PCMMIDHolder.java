@@ -6,8 +6,6 @@ package org.pcmm.objects;
 /**
  * this class holds and maps flow ID to PCMM gate ID and Transaction ID
  *
- * @author rhadjamor@gmail.com
- *
  */
 public class PCMMIDHolder extends PCMMResource {
 

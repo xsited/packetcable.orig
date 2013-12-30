@@ -54,8 +54,6 @@ import org.umu.cops.stack.COPSReqMsg;
  * 
  * PCMM policy server
  * 
- * @author rhadjamor@gmail.com
- * 
  */
 public class PCMMPolicyServer extends AbstractPCMMClient implements
 		IPCMMPolicyServer {
