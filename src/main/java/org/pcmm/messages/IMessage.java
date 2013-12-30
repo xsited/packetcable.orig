@@ -17,7 +17,6 @@ package org.pcmm.messages;
  * 10= Synchronize Complete    (SSC)
  * </pre>
  * 
- * @author rhadjamor@gmail.com
  */
 public interface IMessage {
 

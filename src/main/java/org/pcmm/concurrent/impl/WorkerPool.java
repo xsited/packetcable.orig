@@ -1,12 +1,12 @@
-package org.pcmm.threading.impl;
+package org.pcmm.concurrent.impl;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.pcmm.threading.IWorker;
-import org.pcmm.threading.IWorkerPool;
+import org.pcmm.concurrent.IWorker;
+import org.pcmm.concurrent.IWorkerPool;
 /**
  * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR
  * 

@@ -37,9 +37,6 @@ import org.umu.cops.stack.COPSPepId;
 import org.umu.cops.stack.COPSReqMsg;
 
 /**
- * factory to create messages.
- * 
- * @author rhadjamor@gmail.com
  * 
  * 
  */

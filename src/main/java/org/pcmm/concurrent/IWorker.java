@@ -1,4 +1,4 @@
-package org.pcmm.threading;
+package org.pcmm.concurrent;
 
 import java.util.concurrent.Callable;
 /**

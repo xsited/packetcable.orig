@@ -1,11 +1,11 @@
 /**
  * 
  */
-package org.pcmm.threading.impl;
+package org.pcmm.concurrent.impl;
 
 import java.util.concurrent.Callable;
 
-import org.pcmm.threading.IWorker;
+import org.pcmm.concurrent.IWorker;
 
 /**
  * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR

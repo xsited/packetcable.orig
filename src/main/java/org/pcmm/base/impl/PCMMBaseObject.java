@@ -11,7 +11,8 @@ import org.pcmm.base.IPCMMBaseObject;
 import org.umu.cops.stack.COPSData;
 
 /**
- * @author rhadjamor@gmail.com
+ * 
+ * Implementation of the base class {@link IPCMMBaseObject}
  * 
  */
 public class PCMMBaseObject /* extends COPSPrObjBase */implements
@@ -45,7 +46,7 @@ public class PCMMBaseObject /* extends COPSPrObjBase */implements
 	}
 
 	/**
-	 * Add head padding to the specified byte array filled with zeros 
+	 * Add head padding to the specified byte array filled with zeros
 	 * 
 	 * @param off
 	 *            offset

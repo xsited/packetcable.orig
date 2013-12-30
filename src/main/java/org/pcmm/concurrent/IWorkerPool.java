@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.pcmm.threading;
+package org.pcmm.concurrent;
 
 /**
  * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR
