@@ -9,8 +9,6 @@ import java.util.Map;
 /**
  * This stores and handles the PCMM resources.
  *
- * @author rhadjamor@gmail.com
- *
  */
 public class PCMMResourceSet {
 
