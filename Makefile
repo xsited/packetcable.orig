@@ -5,9 +5,11 @@
 JFLAGS = -g
 JC = javac
 JUNIT=/usr/share/junit/junit.jar
+SLF4J=/usr/share/slf4j/slf4j-api-1.7.5.jar:/usr/share/slf4j/slf4j-simple-1.7.5.jar
+
 JCOPS=src/main/java/jcops.jar
 PCMM=src/main/java/pcmm.jar
-CLASSPATH =  -classpath .:$(PCMM):$(JCOPS):$(JUNIT)
+CLASSPATH =  -classpath .:$(PCMM):$(JCOPS):$(JUNIT):$(SLF4J)
 JFLAGS = -encoding UTF-8  $(CLASSPATH) 
 JAR_PKG = Test.jar
 

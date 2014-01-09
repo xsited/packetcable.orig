@@ -4,7 +4,8 @@
 JFLAGS = -g
 JC = javac
 JUNIT=/usr/share/junit/junit.jar
-CLASSPATH =  -classpath .:jcops.jar:$(JUNIT)
+SLF4J=/usr/share/slf4j/slf4j-api-1.7.5.jar:/usr/share/slf4j/slf4j-simple-1.7.5.jar
+CLASSPATH =  -classpath .:jcops.jar:$(JUNIT):$(SLF4J)
 JFLAGS = -encoding UTF-8  $(CLASSPATH) 
 JAR_PKG = pcmm.jar
 TARBALL = pcmm.tar.gz
@@ -100,6 +101,11 @@ SOURCES = \
 	org/pcmm/objects//PCMMResource.java \
 	org/pcmm/objects//PCMMResourceSet.java \
 	org/pcmm/objects//PCMMResourcesMapper.java \
+	org/pcmm/PCMMProperties.java \
+	org/pcmm/concurrent/IWorker.java \
+	org/pcmm/concurrent/IWorkerPool.java \
+	org/pcmm/concurrent/impl/Worker.java \
+	org/pcmm/concurrent/impl/WorkerPool.java \
 	org/pcmm/utils/PCMMLogger.java 
 
 
