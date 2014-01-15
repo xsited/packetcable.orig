@@ -4,7 +4,6 @@ module packetcable-match-types
     prefix "match";
 
     import ietf-inet-types {prefix inet; }
-    import ietf-yang-types {prefix yang; }
 
 
     grouping "ip-match-fields" {
@@ -74,6 +73,7 @@ module packetcable-match-types
         }
     }
 
+
     grouping "udp-match-fields" {
         leaf udp-source-port {
             description "UDP source port.";
@@ -96,41 +96,45 @@ module packetcable-match-types
         }
     }
 
-    grouping "sctp-match-fields" {
-        leaf sctp-source-port {
-            description "SCTP source port.";
+    grouping "udp-match-ranges" {
+        leaf udp-source-port-start {
+            description "UDP source port start.";
             type inet:port-number;
         }
-        leaf sctp-destination-port {
-            description "SCTP destination port.";
+        leaf udp-source-port-end {
+            description "UDP source port end.";
+            type inet:port-number;
+        }
+        leaf udp-destination-port-start {
+            description "UDP destination port start.";
+            type inet:port-number;
+        }
+        leaf udp-destination-port-end {
+            description "UDP destination port end.";
             type inet:port-number;
         }
     }
 
-    grouping "icmpv4-match-fields" {
-        leaf icmpv4-type {
-            description "ICMP type.";
-            type uint8; // Define ICMP Type
+    grouping "tcp-match-ranges" {
+        leaf tcp-source-port-start {
+            description "TCP source port start.";
+            type inet:port-number;
         }
-        description "ICMP code.";
-        leaf icmpv4-code {
-            type uint8; // Define ICMP Code
+        leaf tcp-source-port-end {
+            description "TCP source port end.";
+            type inet:port-number;
         }
-    }
-
-    grouping "icmpv6-match-fields" {
-        leaf icmpv6-type {
-            description "ICMP type.";
-            type uint8; // Define ICMP Type
+        leaf tcp-destination-port-begin {
+            description "TCP destination port begin.";
+            type inet:port-number;
         }
-        description "ICMP code.";
-        leaf icmpv6-code {
-            type uint8; // Define ICMP Code
+        leaf tcp-destination-port-end {
+            description "TCP destination port end.";
+            type inet:port-number;
         }
     }
 
     grouping match {
-
 
         container "ip-match" {
             uses "ip-match-fields";
@@ -145,22 +149,28 @@ module packetcable-match-types
             }
         }
 
+        description "if tpSrc then tpSrcStart = tpSrcEnd = tpSrc";
         choice layer-4-match {
         case "udp-match" {
-                uses "udp-match-fields";
+            choice "udp-field-range" {
+		    case "udp-field" {
+                        uses "udp-match-fields";
+		    }
+		    case "udp-range" {
+                        uses "udp-match-ranges";
+		    }
+		}
             }
         case "tcp-match" {
-                uses "tcp-match-fields";
+            choice "tcp-field-range" {
+		    case "tcp-field" {
+                        uses "tcp-match-fields";
+		    }
+		    case "tcp-range" {
+                        uses "tcp-match-ranges";
+		    }
+		}
             }
         }
-
-        container "icmpv4-match" {
-            uses "icmpv4-match-fields";
-        }
-
-        container "icmpv6-match" {
-            uses "icmpv6-match-fields";
-        }
-
     }
 }

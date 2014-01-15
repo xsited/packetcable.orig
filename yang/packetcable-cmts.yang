@@ -3,6 +3,7 @@ module packetcable-cmts
     namespace "urn:opendaylight:node:cmts";
     prefix "cmts";
 
+    import ietf-yang-types 	{ prefix yang; }
     import ietf-inet-types 	{ prefix inet; }
     import ietf-interfaces 	{ prefix if;   }
     import ietf-snmp    	{ prefix snmp;   }
@@ -31,11 +32,32 @@ typedef up-down-state-type {
     description "Type to specify state information for a port or a connection.";
 }
 
+grouping cable-modem-subscriber-grouping
+{
+    description "A cable modem subscriber terminated by CMTS instance and it's configuration resources.";
+    leaf enabled {
+        type boolean;
+        mandatory true;
+        description "Specifies if the CM is enabled.";
+    }
+
+    leaf subscriber-id {
+            type inet:ip-address;
+            mandatory true;
+            description "An identifier that identifies a cable modem. The IP address of the CM.";
+    }
+    leaf mac-address {
+            type yang:mac-address;
+            description "The MAC address of the CM.";
+    }
+}
+
+
 container cmts-instance
 {
     description "A PCMM capable CMTS and other available configuration resources.";
     leaf id {
-        type inet:uri;
+        type inet:ip-address;
         mandatory true;
         description
         "An unique but locally arbitrary identifier that identifies a PCMM capable CMTS
@@ -46,6 +68,16 @@ container cmts-instance
         type boolean;
         mandatory true;
         description "Specifies if the CMTS is enabled.";
+    }
+
+    container managed-cable-modem-subscribers {
+        list managed-cable-modem-subscribers {
+            key "subscriber-id";
+            unique "subscriber-id";
+            description
+            "The list of all cable modems managed by CMTS instance.";
+            uses cable-modem-subscriber-grouping;
+        }
     }
 
     container configuration-points {
@@ -78,9 +110,14 @@ grouping cmts-configuration-point-grouping
             enum "snmp";
             enum "ssh";
             enum "telnet";
+            enum "netconf";
         }
     default "pcmm";
         description "The protocols that can used to configure the CMTS.";
+    }
+    leaf mac-address {
+            type yang:mac-address;
+            description "The MAC address of the CMTS for the NODE ID.";
     }
     container connection {
         leaf ip-address {

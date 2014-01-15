@@ -14,12 +14,9 @@ page 1x1
 Title packetcable-match-types 
 package "inet:ietf-inet-types" as inet_ietf_inet_types 
 end package 
-package "yang:ietf-yang-types" as yang_ietf_yang_types 
-end package 
 note top of match_packetcable_match_types : <b>Namespace: </b> urn:opendaylight:model:match:types \n<b>Prefix: </b> match \n
 package "match:packetcable-match-types" as match_packetcable_match_types 
 inet_ietf_inet_types +-- match_packetcable_match_types
-yang_ietf_yang_types +-- match_packetcable_match_types
 class "packetcable-match-types" as packetcable_match_types << (M, #33CCFF) module>> 
 class "ip-match-fields" as packetcable_match_types_I_ip_match_fields_grouping <<(G,Lime) grouping>> 
 packetcable_match_types_I_ip_match_fields_grouping : ip-protocol : uint8  
@@ -44,15 +41,16 @@ packetcable_match_types_I_udp_match_fields_grouping : udp-destination-port : ine
 class "tcp-match-fields" as packetcable_match_types_I_tcp_match_fields_grouping <<(G,Lime) grouping>> 
 packetcable_match_types_I_tcp_match_fields_grouping : tcp-source-port : inet:port-number  
 packetcable_match_types_I_tcp_match_fields_grouping : tcp-destination-port : inet:port-number  
-class "sctp-match-fields" as packetcable_match_types_I_sctp_match_fields_grouping <<(G,Lime) grouping>> 
-packetcable_match_types_I_sctp_match_fields_grouping : sctp-source-port : inet:port-number  
-packetcable_match_types_I_sctp_match_fields_grouping : sctp-destination-port : inet:port-number  
-class "icmpv4-match-fields" as packetcable_match_types_I_icmpv4_match_fields_grouping <<(G,Lime) grouping>> 
-packetcable_match_types_I_icmpv4_match_fields_grouping : icmpv4-type : uint8  
-packetcable_match_types_I_icmpv4_match_fields_grouping : icmpv4-code : uint8  
-class "icmpv6-match-fields" as packetcable_match_types_I_icmpv6_match_fields_grouping <<(G,Lime) grouping>> 
-packetcable_match_types_I_icmpv6_match_fields_grouping : icmpv6-type : uint8  
-packetcable_match_types_I_icmpv6_match_fields_grouping : icmpv6-code : uint8  
+class "udp-match-ranges" as packetcable_match_types_I_udp_match_ranges_grouping <<(G,Lime) grouping>> 
+packetcable_match_types_I_udp_match_ranges_grouping : udp-source-port-start : inet:port-number  
+packetcable_match_types_I_udp_match_ranges_grouping : udp-source-port-end : inet:port-number  
+packetcable_match_types_I_udp_match_ranges_grouping : udp-destination-port-start : inet:port-number  
+packetcable_match_types_I_udp_match_ranges_grouping : udp-destination-port-end : inet:port-number  
+class "tcp-match-ranges" as packetcable_match_types_I_tcp_match_ranges_grouping <<(G,Lime) grouping>> 
+packetcable_match_types_I_tcp_match_ranges_grouping : tcp-source-port-start : inet:port-number  
+packetcable_match_types_I_tcp_match_ranges_grouping : tcp-source-port-end : inet:port-number  
+packetcable_match_types_I_tcp_match_ranges_grouping : tcp-destination-port-begin : inet:port-number  
+packetcable_match_types_I_tcp_match_ranges_grouping : tcp-destination-port-end : inet:port-number  
 class "match" as packetcable_match_types_I_match_grouping <<(G,Lime) grouping>> 
 class "ip-match" as  packetcable_match_types_I_match_I_ip_match <<container>> 
 packetcable_match_types_I_match_grouping *-- "1" packetcable_match_types_I_match_I_ip_match 
@@ -69,26 +67,34 @@ class "layer-4-match" as packetcable_match_types_I_match_I_layer_4_match <<choic
 packetcable_match_types_I_match_grouping .. packetcable_match_types_I_match_I_layer_4_match : choice 
 class "udp-match" as packetcable_match_types_I_match_I_layer_4_match_I_udp_match_case <<case>>
 packetcable_match_types_I_match_I_layer_4_match .. packetcable_match_types_I_match_I_layer_4_match_I_udp_match_case  : choice layer-4-match
-packetcable_match_types_I_match_I_layer_4_match_I_udp_match_case : udp-match-fields {uses} 
+class "udp-field-range" as packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range <<choice>> 
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_case .. packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range : choice 
+class "udp-field" as packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_field_case <<case>>
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range .. packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_field_case  : choice udp-field-range
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_field_case : udp-match-fields {uses} 
+class "udp-range" as packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_range_case <<case>>
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range .. packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_range_case  : choice udp-field-range
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_range_case : udp-match-ranges {uses} 
 class "tcp-match" as packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_case <<case>>
 packetcable_match_types_I_match_I_layer_4_match .. packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_case  : choice layer-4-match
-packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_case : tcp-match-fields {uses} 
-class "icmpv4-match" as  packetcable_match_types_I_match_I_icmpv4_match <<container>> 
-packetcable_match_types_I_match_grouping *-- "1" packetcable_match_types_I_match_I_icmpv4_match 
-packetcable_match_types_I_match_I_icmpv4_match : icmpv4-match-fields {uses} 
-class "icmpv6-match" as  packetcable_match_types_I_match_I_icmpv6_match <<container>> 
-packetcable_match_types_I_match_grouping *-- "1" packetcable_match_types_I_match_I_icmpv6_match 
-packetcable_match_types_I_match_I_icmpv6_match : icmpv6-match-fields {uses} 
+class "tcp-field-range" as packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range <<choice>> 
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_case .. packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range : choice 
+class "tcp-field" as packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_field_case <<case>>
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range .. packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_field_case  : choice tcp-field-range
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_field_case : tcp-match-fields {uses} 
+class "tcp-range" as packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_range_case <<case>>
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range .. packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_range_case  : choice tcp-field-range
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_range_case : tcp-match-ranges {uses} 
 end package
 
 packetcable_match_types_I_match_I_ip_match --> packetcable_match_types_I_ip_match_fields_grouping : uses 
 packetcable_match_types_I_match_I_layer_3_match_I_ipv4_match_case --> packetcable_match_types_I_ipv4_match_fields_grouping : uses 
 packetcable_match_types_I_match_I_layer_3_match_I_ipv6_match_case --> packetcable_match_types_I_ipv6_match_fields_grouping : uses 
-packetcable_match_types_I_match_I_layer_4_match_I_udp_match_case --> packetcable_match_types_I_udp_match_fields_grouping : uses 
-packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_case --> packetcable_match_types_I_tcp_match_fields_grouping : uses 
-packetcable_match_types_I_match_I_icmpv4_match --> packetcable_match_types_I_icmpv4_match_fields_grouping : uses 
-packetcable_match_types_I_match_I_icmpv6_match --> packetcable_match_types_I_icmpv6_match_fields_grouping : uses 
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_field_case --> packetcable_match_types_I_udp_match_fields_grouping : uses 
+packetcable_match_types_I_match_I_layer_4_match_I_udp_match_I_udp_field_range_I_udp_range_case --> packetcable_match_types_I_udp_match_ranges_grouping : uses 
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_field_case --> packetcable_match_types_I_tcp_match_fields_grouping : uses 
+packetcable_match_types_I_match_I_layer_4_match_I_tcp_match_I_tcp_field_range_I_tcp_range_case --> packetcable_match_types_I_tcp_match_ranges_grouping : uses 
 center footer
- <size:20> UML Generated : 2013-11-29 02:32 </size>
+ <size:20> UML Generated : 2014-01-14 18:19 </size>
  endfooter 
 @enduml 

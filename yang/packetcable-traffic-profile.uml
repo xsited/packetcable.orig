@@ -34,15 +34,19 @@ class "default-envelope" as packetcable_traffic_profile_I_default_envelope_group
 packetcable_traffic_profile_I_default_envelope_grouping : traffic-priority : uint8  
 packetcable_traffic_profile_I_default_envelope_grouping : reserved0 : uint8  
 packetcable_traffic_profile_I_default_envelope_grouping : reserved1 : uint16  
-packetcable_traffic_profile_I_default_envelope_grouping : request-transmission-prolicy : uint32  
+packetcable_traffic_profile_I_default_envelope_grouping : request-transmission-policy : uint32  
 packetcable_traffic_profile_I_default_envelope_grouping : maximum-sustained-traffic-rate : uint32  
 packetcable_traffic_profile_I_default_envelope_grouping : maximum-traffic-burst : uint32  
-packetcable_traffic_profile_I_default_envelope_grouping : maximum-reserved-traffic-rate : uint16  
-packetcable_traffic_profile_I_default_envelope_grouping : traffic-rate-packet-size-maximum-concatenated-burst : uint16  
-packetcable_traffic_profile_I_default_envelope_grouping : assumed-minimum-reserved : uint32  
+packetcable_traffic_profile_I_default_envelope_grouping : minimum-reserved-traffic-rate : uint16  
+packetcable_traffic_profile_I_default_envelope_grouping : assumed-minimum-reserved-traffic-rate-packet-size : uint16  
+packetcable_traffic_profile_I_default_envelope_grouping : maximum-concatenated-burst : uint16  
+packetcable_traffic_profile_I_default_envelope_grouping : upstream-peak-traffic-rate : uint32  
 packetcable_traffic_profile_I_default_envelope_grouping : required-attribute-mask : uint32  
 packetcable_traffic_profile_I_default_envelope_grouping : forbidden-attribute-mask : uint32  
 packetcable_traffic_profile_I_default_envelope_grouping : attribute-aggregation-rule-mask : uint32  
+packetcable_traffic_profile_I_default_envelope_grouping : minimum-buffer : uint32  
+packetcable_traffic_profile_I_default_envelope_grouping : target-buffer : uint32  
+packetcable_traffic_profile_I_default_envelope_grouping : maximum-buffer : uint32  
 class "ugs-envelope" as packetcable_traffic_profile_I_ugs_envelope_grouping <<(G,Lime) grouping>> 
 packetcable_traffic_profile_I_ugs_envelope_grouping : request-transmission-policy : uint32  
 packetcable_traffic_profile_I_ugs_envelope_grouping : unsolicited-grant-size : uint16  
@@ -182,6 +186,6 @@ packetcable_traffic_profile_I_traffic_profile_downstream_service_I_authorized_en
 packetcable_traffic_profile_I_traffic_profile_downstream_service_I_reserved_envelope --> packetcable_traffic_profile_I_us_envelope_grouping : uses 
 packetcable_traffic_profile_I_traffic_profile_downstream_service_I_committed_envelope --> packetcable_traffic_profile_I_us_envelope_grouping : uses 
 center footer
- <size:20> UML Generated : 2013-12-14 23:16 </size>
+ <size:20> UML Generated : 2014-01-14 18:19 </size>
  endfooter 
 @enduml 

@@ -21,6 +21,6 @@ class "packetcable-traffic-profile-types" as packetcable_traffic_profile_types <
 end package
 
 center footer
- <size:20> UML Generated : 2013-11-29 02:33 </size>
+ <size:20> UML Generated : 2014-01-14 18:19 </size>
  endfooter 
 @enduml 

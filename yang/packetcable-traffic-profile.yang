@@ -149,7 +149,7 @@ grouping default-envelope {
 	leaf reserved1 {
 		type uint16;
 	}
-	leaf request-transmission-prolicy {
+	leaf request-transmission-policy {
 		type uint32;
 		description "
 			Request/Transmission Policy is a 4-byte bit field as defined in section C.2.2.6.3 of [1]. A default Request/Transmission policy of 0 SHOULD be used if a specific Request/Transmission Policy value is not required.
@@ -168,7 +168,7 @@ grouping default-envelope {
 			Maximum Traffic Burst is a 4-byte unsigned integer field specifying the token bucket size, in bytes, for a token- bucket-based rate limit for this Service Flow. This field is fully defined in section C.2.2.5.3 of [1]. A default Maximum Traffic Burst of 3044 bytes SHOULD be used if a specific Maximum Traffic Burst is not required. The value of this parameter has no effect unless a non-zero value has been provided for the Maximum Sustained Traffic Rate parameter.
 		";
 	}
-	leaf maximum-reserved-traffic-rate {
+	leaf minimum-reserved-traffic-rate {
 		type uint16;
 		description 
 			"
@@ -176,7 +176,7 @@ grouping default-envelope {
 
 ";
 	}
-	leaf traffic-rate-packet-size-maximum-concatenated-burst {
+	leaf assumed-minimum-reserved-traffic-rate-packet-size {
 		type uint16;
 		description 
 		"
@@ -184,13 +184,23 @@ grouping default-envelope {
 	
 ";
 	}
-	leaf assumed-minimum-reserved {
-		type uint32;
+	leaf maximum-concatenated-burst {
+		type uint16;
 		description 
 		"
 			Maximum Concatenated Burst is a 2-byte unsigned integer specifying the maximum concatenated burst (in bytes) which a Service Flow is allowed. This field is fully defined in section C.2.2.6.1 of [1]. A value of 0 means there is no limit. A default Maximum Concatenated Burst of 1522 bytes SHOULD be used if a specific Maximum Concatenated Burst is not required.
 ";
 	}
+
+	leaf upstream-peak-traffic-rate {
+		type uint32;
+		description 
+		"
+Upstream Peak Traffic Rate is a 4-byte unsigned integer specifying the Peak traffic rate (in bits per second) which a 
+Service Flow is allowed. This field is fully defined in section C.2.2.5.10.1 of [1]. 
+		";
+	}
+
 	leaf required-attribute-mask {
 		type uint32;
 		description 
@@ -212,6 +222,28 @@ grouping default-envelope {
 		"
 			Attribute Masks define a specific set of attributes associated with a DOCSIS 3.0 service flow. The CMTS MUST ignore the bonded bit in the Required and Forbidden Attribute Mask objects if the cable modem associated with the service flow is operating in pre-3.0 DOCSIS mode. The Required Attribute Mask limits the set of channels and bonding groups to which the CMTS assigns the service flow by requiring certain attributes. This field is fully defined in section C.2.2.3.6 of [1]. The Forbidden Attribute Mask limits the set of channels and bonding groups to which the CMTS assigns the service flow by forbidding certain attributes. This field is fully defined in section C.2.2.3.7 of [1]. The CMTS is free to assign the service flow to any channel that satisfies the traffic profile if no ￼channel is available that satisfies the Required Attribute Mask and Forbidden Attribute Mask for the service flow. The Attribute Aggregation Rule Mask provides guidance to the CMTS as to how it might use the attribute masks of individual channels to construct a dynamic bonding group for this service flow. This field is fully described in section 'Service Flow Attribute Aggregation Rule Mask' of [1]. As described in that section a default Attribute Aggregation Rule Mask of 0 SHOULD be used if specific Attribute Aggregation Rules are not required.
 ";
+	}
+	leaf minimum-buffer {
+		type uint32;
+		description 
+		"
+Minimum Buffer is a 4-byte unsigned integer parameter that defines a lower limit for the size of the buffer that is to be provided for a service flow. This field is fully defined in section C.2.2.5.11.3 of [1]. If this parameter is omitted, the Minimum Buffer defaults to a value of 0, which indicates that there is no lower limit.
+		";
+	}
+	leaf target-buffer {
+		type uint32;
+		description 
+		"
+Target Buffer is a 4-byte unsigned integer parameter that defines a desired value for the size of the buffer that is to be provided for a service flow. This field is fully defined in section C.2.2.5.11.4 of [1]. If this parameter is omitted or set to a value of 0, the device selects any buffer size within the range of the Minimum and Maximum Buffers, via a vendor-specific algorithm.
+
+		";
+	}
+	leaf maximum-buffer {
+		type uint32;
+		description 
+		"
+Maximum Buffer is a 4-byte unsigned integer parameter that defines an upper limit for the size of the buffer that is to be provided for a service flow. This field is fully defined in section C.2.2.5.11.5 of [1]. If this parameter is omitted, the Maximum Buffer defaults to a value of no limit.
+		";
 	}
 }
 
