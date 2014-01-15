@@ -109,7 +109,7 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
                             + socket.toString());
                     }
                 } catch (COPSPepException e) {
-                    logger.severe(e.getMessage());
+                    logger.error(e.getMessage());
                 }
             }
 

@@ -10,6 +10,9 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.pcmm.PCMMGlobalConfig;
+import org.pcmm.PCMMProperties;
+import org.pcmm.concurrent.IWorkerPool;
+import org.pcmm.concurrent.impl.WorkerPool;
 import org.pcmm.gates.IAMID;
 import org.pcmm.gates.IClassifier;
 import org.pcmm.gates.IExtendedClassifier;
@@ -28,7 +31,6 @@ import org.pcmm.gates.impl.GateSpec;
 import org.pcmm.gates.impl.PCMMGateReq;
 import org.pcmm.gates.impl.SubscriberID;
 import org.pcmm.gates.impl.TransactionID;
-import org.pcmm.messages.IMessage;
 import org.pcmm.messages.IMessage.MessageProperties;
 import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.objects.MMVersionInfo;
@@ -43,10 +45,8 @@ import org.umu.cops.stack.COPSClientSI;
 import org.umu.cops.stack.COPSData;
 import org.umu.cops.stack.COPSDecision;
 import org.umu.cops.stack.COPSException;
-import org.umu.cops.stack.COPSHandle;
 import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSMsg;
-import org.umu.cops.stack.COPSObjHeader;
 import org.umu.cops.stack.COPSReportMsg;
 import org.umu.cops.stack.COPSReqMsg;
 
@@ -57,12 +57,27 @@ import org.umu.cops.stack.COPSReqMsg;
  */
 public class PCMMPolicyServer extends AbstractPCMMClient implements
 		IPCMMPolicyServer {
+	/**
+	 * since PCMMPolicyServer can connect to multiple CMTS (PEP) we need to
+	 * manage each connection in a separate thread.
+	 */
+	private IWorkerPool workerPool;
 
 	private static final short MAX_PORT_NB = (short) 65535;
 	private static final String DEFAULT_IP_MASK = "0.0.0.0";
 	private short transactionID;
 	private short classifierID;
 	private int gateID;
+
+	public PCMMPolicyServer() {
+		super();
+		int size = 3;
+		String sizeProp = PCMMProperties.get("pcmm.ps.pool.size");
+		if (sizeProp != null) {
+			size = Integer.valueOf(sizeProp);
+		}
+		workerPool = new WorkerPool(size);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -75,7 +90,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 			InetAddress address = InetAddress.getByName(host);
 			return requestCMTSConnection(address);
 		} catch (UnknownHostException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -165,7 +180,7 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 			}
 			// else raise exception.
 		} catch (Exception e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 			// no need to keep connection.
 			disconnect();
 			return null;
@@ -306,10 +321,6 @@ public class PCMMPolicyServer extends AbstractPCMMClient implements
 				: transactionID);
 		trID.setTransactionIdentifier(transactionID);
 		return false;
-	}
-
-	public PCMMPolicyServer() {
-		super();
 	}
 
 	/*

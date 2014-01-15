@@ -25,5 +25,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jcops-1.0.jar" sourcepath="/jcops/src/main/java"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.7.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

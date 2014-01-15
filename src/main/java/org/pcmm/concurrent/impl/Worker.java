@@ -17,6 +17,14 @@ public class Worker implements IWorker {
 
 	private Callable<?> task;
 
+	public Worker() {
+
+	}
+
+	public Worker(Callable<?> task) {
+		this.task = task;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -24,13 +32,12 @@ public class Worker implements IWorker {
 	 */
 	@Override
 	public void run() {
-		if (waitTimer > 0) {
-			try {
-				wait(waitTimer);
-				task.call();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+		try {
+			if (waitTimer > 0)
+				Thread.sleep(waitTimer);
+			task.call();
+		} catch (Throwable e) {
+			e.printStackTrace();
 		}
 	}
 

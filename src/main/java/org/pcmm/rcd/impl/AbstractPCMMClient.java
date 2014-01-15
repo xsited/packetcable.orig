@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+
 
 // import org.junit.Assert;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSMsg;
 import org.umu.cops.stack.COPSTransceiver;
@@ -25,7 +27,7 @@ import org.umu.cops.stack.COPSTransceiver;
  */
 public class AbstractPCMMClient implements IPCMMClient {
 
-    protected Logger logger = Logger.getLogger(getClass().getName());
+    protected Logger logger = LoggerFactory.getLogger(AbstractPCMMClient.class);
     /**
      * socket used to communicated with server.
      */
@@ -36,7 +38,6 @@ public class AbstractPCMMClient implements IPCMMClient {
     private MMVersionInfo versionInfo;
 
     public AbstractPCMMClient() {
-        logger.setLevel(Level.ALL);
     }
 
     /*
@@ -54,9 +55,9 @@ public class AbstractPCMMClient implements IPCMMClient {
             // requestMessage.getHeader());
             COPSTransceiver.sendMsg(requestMessage, getSocket());
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         } catch (COPSException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -74,9 +75,9 @@ public class AbstractPCMMClient implements IPCMMClient {
             // logger.info("received message : " + recvdMsg.getHeader());
             return recvdMsg;
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         } catch (COPSException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -91,7 +92,7 @@ public class AbstractPCMMClient implements IPCMMClient {
             InetAddress addr = InetAddress.getByName(address);
             tryConnect(addr, port);
         } catch (UnknownHostException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -106,7 +107,7 @@ public class AbstractPCMMClient implements IPCMMClient {
         try {
             setSocket(new Socket(address, port));
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -122,7 +123,7 @@ public class AbstractPCMMClient implements IPCMMClient {
             try {
                 socket.close();
             } catch (IOException e) {
-                logger.severe(e.getMessage());
+                logger.error(e.getMessage());
                 return false;
             }
         }
