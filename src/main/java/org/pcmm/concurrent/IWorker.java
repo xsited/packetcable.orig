@@ -2,7 +2,6 @@ package org.pcmm.concurrent;
 
 import java.util.concurrent.Callable;
 /**
- * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR
  * 
  */
 public interface IWorker extends Runnable {

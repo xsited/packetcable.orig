@@ -11,16 +11,14 @@ import org.slf4j.LoggerFactory;
  * Loads the PCMM Properties file.
  * 
  */
-public class PCMMProperties {
+public class PCMMProperties implements PCMMConstants {
 
 	private static Properties properties;
-	private static Logger logger = LoggerFactory
-			.getLogger(PCMMProperties.class);
+	private static Logger logger = LoggerFactory.getLogger(PCMMProperties.class);
 
 	static {
 		try {
-			InputStream in = PCMMProperties.class.getClassLoader()
-					.getResourceAsStream("pcmm.properties");
+			InputStream in = PCMMProperties.class.getClassLoader().getResourceAsStream("pcmm.properties");
 			properties = new Properties();
 			properties.load(in);
 			in.close();
@@ -32,5 +30,5 @@ public class PCMMProperties {
 	public static String get(String key) {
 		return properties.getProperty(key);
 	}
-	
+
 }

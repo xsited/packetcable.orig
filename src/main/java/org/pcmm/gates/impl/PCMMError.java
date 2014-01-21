@@ -3,23 +3,21 @@
  */
 package org.pcmm.gates.impl;
 
-import java.lang.Integer;
-
 import org.pcmm.base.impl.PCMMBaseObject;
-import org.pcmm.gates.IPCError;
+import org.pcmm.gates.IPCMMError;
 
 /**
  *
  */
-public class PCError extends PCMMBaseObject implements IPCError {
+public class PCMMError extends PCMMBaseObject implements IPCMMError {
     /**
      *
      */
-    public PCError() {
+    public PCMMError() {
         this(LENGTH, STYPE, SNUM);
     }
 
-    public PCError(short errorCode, short subErrCode) {
+    public PCMMError(short errorCode, short subErrCode) {
         this();
         setErrorCode(errorCode);
         setErrorSubcode(subErrCode);
@@ -28,7 +26,7 @@ public class PCError extends PCMMBaseObject implements IPCError {
     /**
      * @param data
      */
-    public PCError(byte[] data) {
+    public PCMMError(byte[] data) {
         super(data);
     }
 
@@ -37,7 +35,7 @@ public class PCError extends PCMMBaseObject implements IPCError {
      * @param sType
      * @param sNum
      */
-    public PCError(short len, byte sType, byte sNum) {
+    public PCMMError(short len, byte sType, byte sNum) {
         super(len, sType, sNum);
     }
 

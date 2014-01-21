@@ -7,15 +7,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.pcmm.messages.IMessage;
 import org.pcmm.messages.IMessage.MessageProperties;
 import org.pcmm.messages.IMessageFactory;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.ICMTS;
 import org.pcmm.rcd.IPCMMClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.umu.cops.stack.COPSAcctTimer;
 import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
@@ -47,12 +46,11 @@ public class MessageFactory implements IMessageFactory {
 	/** Default accounting timer value (secs) */
 	public static final short ACCT_TIMER_VALUE = 0;
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private Logger logger = LoggerFactory.getLogger(getClass().getName());
 
 	private static MessageFactory instance;
 
 	private MessageFactory() {
-		logger.setLevel(Level.ALL);
 	}
 
 	public static MessageFactory getInstance() {
@@ -64,8 +62,7 @@ public class MessageFactory implements IMessageFactory {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * pcmm.messages.IMessageFactory#create(pcmm.messages.IMessage.MessageType)
+	 * @see pcmm.messages.IMessageFactory#create(pcmm.messages.MessageType)
 	 */
 	public COPSMsg create(byte messageType) {
 		return create(messageType, new Properties());
@@ -91,15 +88,15 @@ public class MessageFactory implements IMessageFactory {
 		case COPSHeader.COPS_OP_DEC:
 			return createDECMessage(properties);
 		case COPSHeader.COPS_OP_DRQ:
-			break;
+		break;
 		case COPSHeader.COPS_OP_KA:
 			return createKAMessage(properties);
 		case COPSHeader.COPS_OP_RPT:
-			break;
+		break;
 		case COPSHeader.COPS_OP_SSC:
-			break;
+		break;
 		case COPSHeader.COPS_OP_SSQ:
-			break;
+		break;
 		}
 		return null;
 	}
@@ -112,31 +109,24 @@ public class MessageFactory implements IMessageFactory {
 	protected COPSMsg createDECMessage(Properties prop) {
 		COPSDecisionMsg msg = new COPSDecisionMsg();
 		// ===common part between all gate control messages
-		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC,
-				IPCMMClient.CLIENT_TYPE);
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_DEC, IPCMMClient.CLIENT_TYPE);
 		// handle
 		COPSHandle handle = new COPSHandle();
 		// context
 		COPSContext context = new COPSContext(COPSContext.CONFIG, (short) 0);
 		// decision
 		COPSDecision decision = new COPSDecision();
-		if (prop.get(IMessage.MessageProperties.DECISION_TYPE) != null)
-			decision.setCmdCode((byte) prop
-					.get(IMessage.MessageProperties.DECISION_TYPE));
-		if (prop.get(IMessage.MessageProperties.DECISION_FLAG) != null)
-			decision.setFlags((short) prop
-					.get(IMessage.MessageProperties.DECISION_FLAG));
-
+		if (prop.get(MessageProperties.DECISION_TYPE) != null)
+			decision.setCmdCode((byte) prop.get(MessageProperties.DECISION_TYPE));
+		if (prop.get(MessageProperties.DECISION_FLAG) != null)
+			decision.setFlags((short) prop.get(MessageProperties.DECISION_FLAG));
 		COPSClientSI si = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
-
-		if (prop.get(IMessage.MessageProperties.GATE_CONTROL) != null)
-			si.setData((COPSData) prop
-					.get(IMessage.MessageProperties.GATE_CONTROL));
+		if (prop.get(MessageProperties.GATE_CONTROL) != null)
+			si.setData((COPSData) prop.get(MessageProperties.GATE_CONTROL));
 		try {
 			msg.add(hdr);
-			if (prop.get(IMessage.MessageProperties.CLIENT_HANDLE) != null)
-				handle.setId(new COPSData((String) prop
-						.get(IMessage.MessageProperties.CLIENT_HANDLE)));
+			if (prop.get(MessageProperties.CLIENT_HANDLE) != null)
+				handle.setId(new COPSData((String) prop.get(MessageProperties.CLIENT_HANDLE)));
 			msg.add(handle);
 			msg.addDecision(decision, context);
 			msg.add(si);
@@ -146,7 +136,7 @@ public class MessageFactory implements IMessageFactory {
 			}
 
 		} catch (COPSException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		return msg;
@@ -160,22 +150,18 @@ public class MessageFactory implements IMessageFactory {
 	 * @return COPS message
 	 */
 	protected COPSMsg createOPNMessage(Properties prop) {
-		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_OPN,
-				IPCMMClient.CLIENT_TYPE);
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_OPN, IPCMMClient.CLIENT_TYPE);
 		COPSPepId pepId = new COPSPepId();
 		// version infor object
 		short majorVersion = MMVersionInfo.DEFAULT_MAJOR_VERSION_INFO;
 		short minorVersion = MMVersionInfo.DEFAULT_MINOR_VERSION_INFO;
 		if (prop.get(MessageProperties.MM_MAJOR_VERSION_INFO) != null)
-			majorVersion = (Short) prop
-					.get(MessageProperties.MM_MAJOR_VERSION_INFO);
+			majorVersion = (Short) prop.get(MessageProperties.MM_MAJOR_VERSION_INFO);
 		if (prop.get(MessageProperties.MM_MINOR_VERSION_INFO) != null)
-			minorVersion = (Short) prop
-					.get(MessageProperties.MM_MINOR_VERSION_INFO);
+			minorVersion = (Short) prop.get(MessageProperties.MM_MINOR_VERSION_INFO);
 		// Mandatory MM version.
 		COPSClientSI clientSI = new COPSClientSI((byte) 1);
-		byte[] versionInfo = new MMVersionInfo(majorVersion, minorVersion)
-				.getAsBinaryArray();
+		byte[] versionInfo = new MMVersionInfo(majorVersion, minorVersion).getAsBinaryArray();
 		clientSI.setData(new COPSData(versionInfo, 0, versionInfo.length));
 		COPSClientOpenMsg msg = new COPSClientOpenMsg();
 		try {
@@ -189,9 +175,9 @@ public class MessageFactory implements IMessageFactory {
 			msg.add(pepId);
 			msg.add(clientSI);
 		} catch (COPSException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		} catch (UnknownHostException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return msg;
 	}
@@ -204,18 +190,15 @@ public class MessageFactory implements IMessageFactory {
 	 * @return COPS message
 	 */
 	protected COPSMsg createCATMessage(Properties prop) {
-		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_CAT,
-				IPCMMClient.CLIENT_TYPE);
+		COPSHeader hdr = new COPSHeader(COPSHeader.COPS_OP_CAT, IPCMMClient.CLIENT_TYPE);
 		COPSKATimer katimer = null;
 		COPSAcctTimer acctTimer = null;
-		if (prop.get(IMessage.MessageProperties.KA_TIMER) != null)
-			katimer = new COPSKATimer(
-					(short) prop.get(IMessage.MessageProperties.KA_TIMER));
+		if (prop.get(MessageProperties.KA_TIMER) != null)
+			katimer = new COPSKATimer((short) prop.get(MessageProperties.KA_TIMER));
 		else
 			katimer = new COPSKATimer((short) KA_TIMER_VALUE);
-		if (prop.get(IMessage.MessageProperties.ACCEPT_TIMER) != null)
-			acctTimer = new COPSAcctTimer(
-					(short) prop.get(IMessage.MessageProperties.ACCEPT_TIMER));
+		if (prop.get(MessageProperties.ACCEPT_TIMER) != null)
+			acctTimer = new COPSAcctTimer((short) prop.get(MessageProperties.ACCEPT_TIMER));
 		else
 			acctTimer = new COPSAcctTimer(ACCT_TIMER_VALUE);
 		COPSClientAcceptMsg acceptMsg = new COPSClientAcceptMsg();
@@ -225,7 +208,7 @@ public class MessageFactory implements IMessageFactory {
 			if (acctTimer.getTimerVal() != 0)
 				acceptMsg.add(acctTimer);
 		} catch (COPSException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return acceptMsg;
 	}
@@ -238,16 +221,13 @@ public class MessageFactory implements IMessageFactory {
 	 * @return COPS message
 	 */
 	protected COPSMsg createCCMessage(Properties prop) {
-		COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_CC,
-				IPCMMClient.CLIENT_TYPE);
+		COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_CC, IPCMMClient.CLIENT_TYPE);
 		COPSError err = null;
-		if (prop.get(IMessage.MessageProperties.ERR_MESSAGE) != null) {
+		if (prop.get(MessageProperties.ERR_MESSAGE) != null) {
 			short code = (short) 0;
-			short error = (short) prop
-					.get(IMessage.MessageProperties.ERR_MESSAGE);
-			if (prop.get(IMessage.MessageProperties.ERR_MESSAGE_SUB_CODE) != null)
-				code = (short) prop
-						.get(IMessage.MessageProperties.ERR_MESSAGE_SUB_CODE);
+			short error = (short) prop.get(MessageProperties.ERR_MESSAGE);
+			if (prop.get(MessageProperties.ERR_MESSAGE_SUB_CODE) != null)
+				code = (short) prop.get(MessageProperties.ERR_MESSAGE_SUB_CODE);
 			err = new COPSError(error, code);
 		} else
 			err = new COPSError(COPSError.COPS_ERR_UNKNOWN, (short) 0);
@@ -256,7 +236,7 @@ public class MessageFactory implements IMessageFactory {
 			closeMsg.add(cHdr);
 			closeMsg.add(err);
 		} catch (COPSException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return closeMsg;
 	}
@@ -269,20 +249,18 @@ public class MessageFactory implements IMessageFactory {
 	 * @return Request message
 	 */
 	protected COPSMsg createREQMessage(Properties prop) {
-		COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_REQ,
-				IPCMMClient.CLIENT_TYPE);
+		COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_REQ, IPCMMClient.CLIENT_TYPE);
 		COPSReqMsg req = new COPSReqMsg();
 		short rType = ICMTS.DEFAULT_R_TYPE;
 		short mType = ICMTS.DEFAULT_M_TYPE;
-		if (prop.get(IMessage.MessageProperties.R_TYPE) != null)
-			rType = (Short) prop.get(IMessage.MessageProperties.R_TYPE);
-		if (prop.get(IMessage.MessageProperties.M_TYPE) != null)
-			mType = (Short) prop.get(IMessage.MessageProperties.M_TYPE);
+		if (prop.get(MessageProperties.R_TYPE) != null)
+			rType = (Short) prop.get(MessageProperties.R_TYPE);
+		if (prop.get(MessageProperties.M_TYPE) != null)
+			mType = (Short) prop.get(MessageProperties.M_TYPE);
 		COPSContext copsContext = new COPSContext(rType, mType);
 		COPSHandle copsHandle = new COPSHandle();
-		if (prop.get(IMessage.MessageProperties.CLIENT_HANDLE) != null)
-			copsHandle.setId(new COPSData((String) prop
-					.get(IMessage.MessageProperties.CLIENT_HANDLE)));
+		if (prop.get(MessageProperties.CLIENT_HANDLE) != null)
+			copsHandle.setId(new COPSData((String) prop.get(MessageProperties.CLIENT_HANDLE)));
 		else
 			// just a random handle
 			copsHandle.setId(new COPSData("" + Math.random() * 82730));
@@ -291,7 +269,7 @@ public class MessageFactory implements IMessageFactory {
 			req.add(copsContext);
 			req.add(copsHandle);
 		} catch (COPSException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return req;
 	}
@@ -307,15 +285,14 @@ public class MessageFactory implements IMessageFactory {
 		COPSHeader cHdr = new COPSHeader(COPSHeader.COPS_OP_KA, (short) 0);
 		COPSKAMsg kaMsg = new COPSKAMsg();
 		COPSKATimer timer = null;
-		if (prop.get(IMessage.MessageProperties.KA_TIMER) != null)
-			timer = new COPSKATimer(
-					(Short) prop.get(IMessage.MessageProperties.KA_TIMER));
+		if (prop.get(MessageProperties.KA_TIMER) != null)
+			timer = new COPSKATimer((Short) prop.get(MessageProperties.KA_TIMER));
 		else
 			timer = new COPSKATimer();
 		try {
 			kaMsg.add(cHdr);
 		} catch (COPSException e) {
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return kaMsg;
 	}

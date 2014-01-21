@@ -3,16 +3,16 @@ package org.pcmm.test;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.pcmm.gates.IPCError;
-import org.pcmm.gates.impl.PCError;
+import org.pcmm.gates.IPCMMError;
+import org.pcmm.gates.impl.PCMMError;
 
 public class PCErrorTest {
 
-    IPCError error;
+    IPCMMError error;
 
     @Before
     public void init() {
-        error = new PCError();
+        error = new PCMMError();
         error.setErrorCode((short) 1);
     }
 

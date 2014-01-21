@@ -4,13 +4,17 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.pcmm.concurrent.IWorker;
 import org.pcmm.concurrent.IWorkerPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR
- * 
+ * Pool to manage PCMM workers
  */
 public class WorkerPool implements IWorkerPool {
 
@@ -19,12 +23,17 @@ public class WorkerPool implements IWorkerPool {
 	 */
 	private Map<Integer, WeakReference<IWorker>> workersMap;
 
+	private Logger logger = LoggerFactory.getLogger(IWorkerPool.class);
+	private ExecutorService executor;
+
 	public WorkerPool() {
 		this(DEFAULT_MAX_WORKERS);
 	}
 
 	public WorkerPool(int size) {
-		workersMap = new HashMap<Integer, WeakReference<IWorker>>(size);
+		logger.info("Pool size :" + size);
+		workersMap = new HashMap<Integer, WeakReference<IWorker>>();
+		executor = Executors.newFixedThreadPool(size);
 	}
 
 	/*
@@ -37,17 +46,20 @@ public class WorkerPool implements IWorkerPool {
 	public int schedule(IWorker worker, int t) {
 		if (worker == null)
 			return -1;
+		logger.debug("woker[" + worker + "] added, starts in " + t + " ms");
 		WeakReference<IWorker> workerRef = new WeakReference<IWorker>(worker);
 		int ref = workerRef.hashCode();
 		workersMap.put(ref, workerRef);
 		worker.shouldWait(t);
-		new Thread(worker).start();
+		executor.execute(worker);
 		return ref;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.pcmm.concurrent.IWorkerPool#schedule(org.pcmm.concurrent.IWorker)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.pcmm.concurrent.IWorkerPool#schedule(org.pcmm.concurrent.IWorker)
 	 */
 	@Override
 	public int schedule(IWorker worker) {
@@ -102,8 +114,7 @@ public class WorkerPool implements IWorkerPool {
 	 */
 	@Override
 	public void recycle() {
-		for (Iterator<Integer> pids = workersMap.keySet().iterator(); pids
-				.hasNext();) {
+		for (Iterator<Integer> pids = workersMap.keySet().iterator(); pids.hasNext();) {
 			WeakReference<IWorker> weakRef = workersMap.get(pids.next());
 			IWorker ref = weakRef.get();
 			if (ref == null) {
@@ -115,6 +126,33 @@ public class WorkerPool implements IWorkerPool {
 			}
 		}
 
+	}
+
+	@Override
+	public Object adapt(Object object, Class<?> clazz) {
+		if (clazz.isAssignableFrom(object.getClass()))
+			return object;
+		return null;
+	}
+
+	@Override
+	public IWorker adapt(Object object) {
+		IWorker worker = (IWorker) adapt(object, IWorker.class);
+		if (worker == null) {
+			if (object instanceof Callable<?>)
+				worker = new Worker((Callable<?>) object);
+			else if (object instanceof Runnable) {
+				final Runnable runner = (Runnable) object;
+				worker = new Worker(new Callable<Object>() {
+					@Override
+					public Object call() throws Exception {
+						((Runnable) runner).run();
+						return null;
+					}
+				});
+			}
+		}
+		return worker;
 	}
 
 }

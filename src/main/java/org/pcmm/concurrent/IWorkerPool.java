@@ -3,11 +3,12 @@
  */
 package org.pcmm.concurrent;
 
+import org.pcmm.base.IAdapter;
+
 /**
- * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR
  * 
  */
-public interface IWorkerPool {
+public interface IWorkerPool extends IAdapter<IWorker> {
 	// handles 32 workers
 	static int DEFAULT_MAX_WORKERS = 32;
 
@@ -22,7 +23,7 @@ public interface IWorkerPool {
 	 *         needed
 	 */
 	int schedule(IWorker worker, int t);
-	
+
 	/**
 	 * schedules a worker for immediate execution.
 	 * 
