@@ -6,9 +6,10 @@ package org.pcmm.concurrent.impl;
 import java.util.concurrent.Callable;
 
 import org.pcmm.concurrent.IWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author <a href="mailto:rhadjamar@gmail.com">Riadh HAJ AMOR
  * 
  */
 public class Worker implements IWorker {
@@ -16,6 +17,15 @@ public class Worker implements IWorker {
 	private int waitTimer;
 
 	private Callable<?> task;
+	private Logger logger = LoggerFactory.getLogger(IWorker.class);
+
+	public Worker() {
+
+	}
+
+	public Worker(Callable<?> task) {
+		this.task = task;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -24,13 +34,12 @@ public class Worker implements IWorker {
 	 */
 	@Override
 	public void run() {
-		if (waitTimer > 0) {
-			try {
-				wait(waitTimer);
-				task.call();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+		try {
+			if (waitTimer > 0)
+				Thread.sleep(waitTimer);
+			task.call();
+		} catch (Throwable e) {
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -41,6 +50,7 @@ public class Worker implements IWorker {
 	 */
 	@Override
 	public void task(Callable<?> c) {
+		logger.debug("Task added " + c);
 		this.task = c;
 	}
 
@@ -51,6 +61,7 @@ public class Worker implements IWorker {
 	 */
 	@Override
 	public void shouldWait(int t) {
+		logger.debug("Worker will start after :" + t + " ms");
 		waitTimer = t;
 	}
 
@@ -61,7 +72,7 @@ public class Worker implements IWorker {
 	 */
 	@Override
 	public void done() {
-		// TODO Auto-generated method stub
+		logger.debug("worker finished tasks");
 
 	}
 

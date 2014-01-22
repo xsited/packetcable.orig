@@ -8,7 +8,7 @@ import org.pcmm.base.IPCMMBaseObject;
 /**
  *
  */
-public interface IPCError extends IPCMMBaseObject {
+public interface IPCMMError extends IPCMMBaseObject {
     static final short LENGTH = 8;
     static final byte SNUM = 14;
     static final byte STYPE = 1;
