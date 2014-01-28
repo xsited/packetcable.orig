@@ -5,13 +5,17 @@ module packetcable-cmts
 
     import ietf-yang-types 	{ prefix yang; }
     import ietf-inet-types 	{ prefix inet; }
-    import ietf-interfaces 	{ prefix if;   }
-    import ietf-snmp    	{ prefix snmp;   }
-    import ietf-reverse-ssh    	{ prefix rssh;   }
+//    import ietf-interfaces 	{ prefix if;   }
+//    import ietf-snmp    	{ prefix snmp; }
+//    import ietf-reverse-ssh    	{ prefix rssh; }
 
-description "This module contains a collection of CMTS definitions";
-organization "OpenDaylight Project";
-contact "TBD";
+    description "This module contains a collection of CMTS definitions";
+    organization "OpenDaylight Project";
+    contact "TBD";
+    revision "2014-01-20" {
+        description "Initial revision of packetcable cmts";
+    }        
+    
 
 typedef pcmm-version
 {
@@ -52,8 +56,12 @@ grouping cable-modem-subscriber-grouping
     }
 }
 
+typedef cmts-reference {
+    type instance-identifier;
+}
 
-container cmts-instance
+
+grouping cmts-instance
 {
     description "A PCMM capable CMTS and other available configuration resources.";
     leaf id {
@@ -119,7 +127,7 @@ grouping cmts-configuration-point-grouping
             type yang:mac-address;
             description "The MAC address of the CMTS for the NODE ID.";
     }
-    container connection {
+    container pcmm-configuration {
         leaf ip-address {
             type inet:ip-address;
             mandatory true;
@@ -132,10 +140,12 @@ grouping cmts-configuration-point-grouping
         }
     }
     container snmp-configuration {
+/*
         leaf snmp-version {
             type snmp:security-model;
             default "v2c";
         }
+*/
         reference "Sort out the SNMP yang declaration";
         leaf community-public {
             type string;

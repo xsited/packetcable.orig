@@ -16,19 +16,10 @@ package "yang:ietf-yang-types" as yang_ietf_yang_types
 end package 
 package "inet:ietf-inet-types" as inet_ietf_inet_types 
 end package 
-package "if:ietf-interfaces" as if_ietf_interfaces 
-end package 
-package "snmp:ietf-snmp" as snmp_ietf_snmp 
-end package 
-package "rssh:ietf-reverse-ssh" as rssh_ietf_reverse_ssh 
-end package 
-note top of cmts_packetcable_cmts : <b>Namespace: </b> urn:opendaylight:node:cmts \n<b>Prefix: </b> cmts \n<b>Organization : </b>\nOpenDaylight Project \n<b>Contact : </b>\nTBD \n
+note top of cmts_packetcable_cmts : <b>Namespace: </b> urn:opendaylight:node:cmts \n<b>Prefix: </b> cmts \n<b>Organization : </b>\nOpenDaylight Project \n<b>Contact : </b>\nTBD \n<b>Revision : </b> 2014-01-20 \n
 package "cmts:packetcable-cmts" as cmts_packetcable_cmts 
 yang_ietf_yang_types +-- cmts_packetcable_cmts
 inet_ietf_inet_types +-- cmts_packetcable_cmts
-if_ietf_interfaces +-- cmts_packetcable_cmts
-snmp_ietf_snmp +-- cmts_packetcable_cmts
-rssh_ietf_reverse_ssh +-- cmts_packetcable_cmts
 class "packetcable-cmts" as packetcable_cmts << (M, #33CCFF) module>> 
 enum "pcmm-version" as packetcable_cmts_I_pcmm_version
 packetcable_cmts_I_pcmm_version : 1 
@@ -42,17 +33,18 @@ class "cable-modem-subscriber-grouping" as packetcable_cmts_I_cable_modem_subscr
 packetcable_cmts_I_cable_modem_subscriber_grouping_grouping : enabled : boolean   {mandatory}
 packetcable_cmts_I_cable_modem_subscriber_grouping_grouping : subscriber-id : inet:ip-address   {mandatory}
 packetcable_cmts_I_cable_modem_subscriber_grouping_grouping : mac-address : yang:mac-address  
-class "cmts-instance" as  packetcable_cmts_I_cmts_instance <<container>> 
-packetcable_cmts *-- "1" packetcable_cmts_I_cmts_instance 
-packetcable_cmts_I_cmts_instance : id : inet:ip-address   {mandatory}
-packetcable_cmts_I_cmts_instance : enabled : boolean   {mandatory}
+class "cmts-reference" as cmts_reference << (T, YellowGreen) typedef>>
+cmts_reference : instance-identifier
+class "cmts-instance" as packetcable_cmts_I_cmts_instance_grouping <<(G,Lime) grouping>> 
+packetcable_cmts_I_cmts_instance_grouping : id : inet:ip-address   {mandatory}
+packetcable_cmts_I_cmts_instance_grouping : enabled : boolean   {mandatory}
 class "managed-cable-modem-subscribers" as  packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers <<container>> 
-packetcable_cmts_I_cmts_instance *-- "1" packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers 
+packetcable_cmts_I_cmts_instance_grouping *-- "1" packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers 
 class "managed-cable-modem-subscribers" as packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers_I_managed_cable_modem_subscribers << (L, #FF7700) list>> 
 packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers *-- "0..N" packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers_I_managed_cable_modem_subscribers 
 packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers_I_managed_cable_modem_subscribers : cable-modem-subscriber-grouping {uses} 
 class "configuration-points" as  packetcable_cmts_I_cmts_instance_I_configuration_points <<container>> 
-packetcable_cmts_I_cmts_instance *-- "1" packetcable_cmts_I_cmts_instance_I_configuration_points 
+packetcable_cmts_I_cmts_instance_grouping *-- "1" packetcable_cmts_I_cmts_instance_I_configuration_points 
 class "configuration-points" as packetcable_cmts_I_cmts_instance_I_configuration_points_I_configuration_points << (L, #FF7700) list>> 
 packetcable_cmts_I_cmts_instance_I_configuration_points *-- "0..N" packetcable_cmts_I_cmts_instance_I_configuration_points_I_configuration_points 
 packetcable_cmts_I_cmts_instance_I_configuration_points_I_configuration_points : cmts-configuration-point-grouping {uses} 
@@ -61,13 +53,12 @@ packetcable_cmts_I_cmts_configuration_point_grouping_grouping : +id : inet:uri  
 packetcable_cmts_I_cmts_configuration_point_grouping_grouping : uri : inet:uri  
 packetcable_cmts_I_cmts_configuration_point_grouping_grouping : protocols-supported : enumeration : {pcmm,snmp,ssh,...}   = pcmm 
 packetcable_cmts_I_cmts_configuration_point_grouping_grouping : mac-address : yang:mac-address  
-class "connection" as  packetcable_cmts_I_cmts_configuration_point_grouping_I_connection <<container>> 
-packetcable_cmts_I_cmts_configuration_point_grouping_grouping *-- "1" packetcable_cmts_I_cmts_configuration_point_grouping_I_connection 
-packetcable_cmts_I_cmts_configuration_point_grouping_I_connection : ip-address : inet:ip-address   {mandatory}
-packetcable_cmts_I_cmts_configuration_point_grouping_I_connection : port : inet:port-number   = 3918 
+class "pcmm-configuration" as  packetcable_cmts_I_cmts_configuration_point_grouping_I_pcmm_configuration <<container>> 
+packetcable_cmts_I_cmts_configuration_point_grouping_grouping *-- "1" packetcable_cmts_I_cmts_configuration_point_grouping_I_pcmm_configuration 
+packetcable_cmts_I_cmts_configuration_point_grouping_I_pcmm_configuration : ip-address : inet:ip-address   {mandatory}
+packetcable_cmts_I_cmts_configuration_point_grouping_I_pcmm_configuration : port : inet:port-number   = 3918 
 class "snmp-configuration" as  packetcable_cmts_I_cmts_configuration_point_grouping_I_snmp_configuration <<container>> 
 packetcable_cmts_I_cmts_configuration_point_grouping_grouping *-- "1" packetcable_cmts_I_cmts_configuration_point_grouping_I_snmp_configuration 
-packetcable_cmts_I_cmts_configuration_point_grouping_I_snmp_configuration : snmp-version : snmp:security-model   = v2c 
 packetcable_cmts_I_cmts_configuration_point_grouping_I_snmp_configuration : community-public : string  
 class "shell-configuration" as  packetcable_cmts_I_cmts_configuration_point_grouping_I_shell_configuration <<container>> 
 packetcable_cmts_I_cmts_configuration_point_grouping_grouping *-- "1" packetcable_cmts_I_cmts_configuration_point_grouping_I_shell_configuration 
@@ -83,6 +74,6 @@ end package
 packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers_I_managed_cable_modem_subscribers --> packetcable_cmts_I_cable_modem_subscriber_grouping_grouping : uses 
 packetcable_cmts_I_cmts_instance_I_configuration_points_I_configuration_points --> packetcable_cmts_I_cmts_configuration_point_grouping_grouping : uses 
 center footer
- <size:20> UML Generated : 2014-01-14 18:19 </size>
+ <size:20> UML Generated : 2014-01-28 10:32 </size>
  endfooter 
 @enduml 

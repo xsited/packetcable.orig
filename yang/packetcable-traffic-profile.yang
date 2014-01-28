@@ -10,6 +10,9 @@ module packetcable-traffic-profile
          data definition statements related to the configuration
          of Traffic Profiles.";
 
+typedef tp-reference {
+    type instance-identifier;
+}
 
 
 typedef float {
@@ -55,8 +58,8 @@ typedef traffic-profile-type {
         enum best-effort { value 4; }
         enum unsolicited-grant-service { value 5; }
         enum unsolicited-grant-service-with-activity-detection { value 6; }
-                enum non-real-time-polling-service { value 7; }
-                enum real-time-polling-service { value 8; }
+        enum non-real-time-polling-service { value 7; }
+        enum real-time-polling-service { value 8; }
         enum downstream-service { value 9; }
     }
 
@@ -282,7 +285,7 @@ leaf nominal-grant-interval {
 leaf tolerated-grant-jitter {
 		type uint32;
 		description "
-Tolerated Grant Jitter is a 4-byte unsigned integer field specifying the maximum amount of time that transmission opportunities may be delayed from the nominal periodic schedule (in units of microseconds) as defined in section C.2.2.6.8 of [1]. The minimum allowed value is 800􏰂s. If the CMTS receives a Gate-Set message with Tolerated Grant Jitter less than 800􏰂s, the CMTS MUST reply with a Gate-Set-Err message with a PacketCable Error-Code of 'Invalid Field Value in Object'. There is no default value of Nominal Grant Interval. There is no default value for Tolerated Grant Jitter.
+Tolerated Grant Jitter is a 4-byte unsigned integer field specifying the maximum amount of time that transmission opportunities may be delayed from the nominal periodic schedule (in units of microseconds) as defined in section C.2.2.6.8 of [1]. The minimum allowed value is 800. If the CMTS receives a Gate-Set message with Tolerated Grant Jitter less than 800, the CMTS MUST reply with a Gate-Set-Err message with a PacketCable Error-Code of 'Invalid Field Value in Object'. There is no default value of Nominal Grant Interval. There is no default value for Tolerated Grant Jitter.
 		";
 }
 leaf required-attribute-mask {
