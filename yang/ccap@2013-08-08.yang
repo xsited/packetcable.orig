@@ -4,11 +4,9 @@ module ccap {
     prefix ccap;
     import ietf-inet-types {
         prefix inet;
-        revision-date 2010-09-24;
     }
     import ietf-yang-types {
         prefix yang;
-        revision-date 2010-09-24;
     }
     organization "Cable Television Laboratories, Inc.";
     contact 

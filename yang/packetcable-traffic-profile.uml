@@ -12,7 +12,7 @@ hide <<leafref>> stereotype
 hide <<leafref>> circle
 page 1x1 
 Title packetcable-traffic-profile 
-note top of traffic_packetcable_traffic_profile : <b>Namespace: </b> urn:opendaylight:flow:traffic-profile \n<b>Prefix: </b> traffic \n<b>Organization : </b>\nOpenDaylight Project \n<b>Contact : </b>\nTBD \n
+note top of traffic_packetcable_traffic_profile : <b>Namespace: </b> urn:opendaylight:flow:traffic-profile \n<b>Prefix: </b> traffic \n<b>Organization : </b>\nOpenDaylight Project \n<b>Contact : </b>\nTBD \n<b>Revision : </b> 2014-01-20 \n
 package "traffic:packetcable-traffic-profile" as traffic_packetcable_traffic_profile 
 class "packetcable-traffic-profile" as packetcable_traffic_profile << (M, #33CCFF) module>> 
 class "tp-reference" as tp_reference << (T, YellowGreen) typedef>>
@@ -188,6 +188,6 @@ packetcable_traffic_profile_I_traffic_profile_downstream_service_I_authorized_en
 packetcable_traffic_profile_I_traffic_profile_downstream_service_I_reserved_envelope --> packetcable_traffic_profile_I_us_envelope_grouping : uses 
 packetcable_traffic_profile_I_traffic_profile_downstream_service_I_committed_envelope --> packetcable_traffic_profile_I_us_envelope_grouping : uses 
 center footer
- <size:20> UML Generated : 2014-01-28 10:32 </size>
+ <size:20> UML Generated : 2014-01-28 15:48 </size>
  endfooter 
 @enduml 

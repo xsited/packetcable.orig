@@ -74,6 +74,6 @@ end package
 packetcable_cmts_I_cmts_instance_I_managed_cable_modem_subscribers_I_managed_cable_modem_subscribers --> packetcable_cmts_I_cable_modem_subscriber_grouping_grouping : uses 
 packetcable_cmts_I_cmts_instance_I_configuration_points_I_configuration_points --> packetcable_cmts_I_cmts_configuration_point_grouping_grouping : uses 
 center footer
- <size:20> UML Generated : 2014-01-28 10:32 </size>
+ <size:20> UML Generated : 2014-01-28 15:48 </size>
  endfooter 
 @enduml 
