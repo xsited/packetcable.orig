@@ -30,7 +30,7 @@ public interface IMessage {
 				"Error-Message-Code"), MM_MAJOR_VERSION_INFO(
 				"MM-Major-Version-info"), MM_MINOR_VERSION_INFO(
 				"MM-Minor-Version-info"), R_TYPE("R-Type"), M_TYPE("M-Type"), CLIENT_HANDLE(
-				"Client-Handle"), GATE_CONTROL("Gate-Control"), DECISION_TYPE(
+				"Client-Handle"), GATE_CONTROL("Gate-Control"), DECISION_CMD_CODE(
 				"Decision-Type"), DECISION_FLAG("Decision-Flag");
 
 		private MessageProperties(String valueString) {
