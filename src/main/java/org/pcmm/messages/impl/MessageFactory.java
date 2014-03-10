@@ -116,8 +116,8 @@ public class MessageFactory implements IMessageFactory {
 		COPSContext context = new COPSContext(COPSContext.CONFIG, (short) 0);
 		// decision
 		COPSDecision decision = new COPSDecision();
-		if (prop.get(MessageProperties.DECISION_TYPE) != null)
-			decision.setCmdCode((byte) prop.get(MessageProperties.DECISION_TYPE));
+		if (prop.get(MessageProperties.DECISION_CMD_CODE) != null)
+			decision.setCmdCode((byte) prop.get(MessageProperties.DECISION_CMD_CODE));
 		if (prop.get(MessageProperties.DECISION_FLAG) != null)
 			decision.setFlags((short) prop.get(MessageProperties.DECISION_FLAG));
 		COPSClientSI si = new COPSClientSI(COPSObjHeader.COPS_DEC, (byte) 4);
@@ -130,10 +130,10 @@ public class MessageFactory implements IMessageFactory {
 			msg.add(handle);
 			msg.addDecision(decision, context);
 			msg.add(si);
-			try {
-				msg.dump(System.out);
-			} catch (IOException unae) {
-			}
+			// try {
+			// msg.dump(System.out);
+			// } catch (IOException unae) {
+			// }
 
 		} catch (COPSException e) {
 			logger.error(e.getMessage());
