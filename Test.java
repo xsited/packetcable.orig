@@ -154,7 +154,9 @@ public class Test {
             case 10:
                 System.out.println("Open and Add Flow 1");
                 ps.requestCMTSConnection(PCMMGlobalConfig.DefaultCMTS);
+		/*
                 ps.gateSet();
+		*/
                 break;
             case 1:
                 System.out.println("Open and Add Flow 1");
@@ -243,7 +245,9 @@ public class Test {
                 // ps.requestCMTSConnection(PCMMGlobalConfig.DefaultCMTS);
                 // socket_id = ps.requestCMTSConnection("10.32.4.232");
                 lps.requestCMTSConnection("127.0.0.1");
+		/*
                 lps.gateSet();
+		*/
                 break;
             case 8:
                 System.out.println("Remote Open connect");
