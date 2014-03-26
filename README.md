@@ -5,7 +5,7 @@ sudo apt-get install maven
 git clone https://git.opendaylight.org/gerrit/p/controller.git
 
 # XXX - CHANGE THIS
-git clone  https://github.com/xsited/protocol_plugins.git
+git clone  https://github.com/xsited/packetcable.git
 
 DIRECTORY ORGANIZATION
 ======================
@@ -13,7 +13,10 @@ DIRECTORY ORGANIZATION
 - in the parent is pom.xml for the entire packetcable projects.
 - this will build a working controller distribution
   based on the controller + packetcable modules
-  packetcable/target/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
+  packetcable/target/protocol_plugins.packetcable-0.5.0-SNAPSHOT.jar
+- md-sal experimental
+- docs for PoC documentation and notes and PCMM specification version I05
+ 
 
 HOW TO BUILD
 ============
@@ -24,6 +27,7 @@ From the toplevel issue the following instructions to build the controller:
 
 cd controller/opendaylight/distribution/opendaylight
 
+export JAVA_HOME=/usr
 mvn clean install
 
 or if you want to avoid SNAPSHOT checking use: 
@@ -33,7 +37,10 @@ mvn clean install -nsu
 
 From the toplevel issue the following instructions to build the packetcable SB plugin:
 
-cd protocol_plugins/packetcable
+cd packetcable
+mvn clean install
+
+cd packetcable/md-sal 
 mvn clean install
 
 
@@ -42,8 +49,7 @@ HOW TO RUN
 
 Upon successful completion of a build install and run from the toplevel:
 
-cp protocol_plugins/packetcable/target/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/plugins/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
-cd controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/
+./copy.sh
 export JAVA_HOME=/usr
 ./run.sh
 
