@@ -1,29 +1,90 @@
-Target Functionality
+CHECKOUT CONTROLLER AND PLUGIN
+==============================
 
-1. PCMM Connet OPN
-PKT-SP-MM-I06-110629.pdf Section 6.5Section 6.5.1  page 77-78.
+sudo apt-get install maven
+git clone https://git.opendaylight.org/gerrit/p/controller.git
 
-2. Create Best Effort Service Flow
+# XXX - CHANGE THIS
+git clone  https://github.com/xsited/protocol_plugins.git
 
-3. Delete Service Flow
+DIRECTORY ORGANIZATION
+======================
 
-4. Map GateId to Flow Names
+- in the parent is pom.xml for the entire packetcable projects.
+- this will build a working controller distribution
+  based on the controller + packetcable modules
+  packetcable/target/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
 
-5. Modify Best Effort Service Flow (Optional)
+HOW TO BUILD
+============
 
+JDK 1.7+ and Maven 3+ are required:
 
-Git
+From the toplevel issue the following instructions to build the controller:
 
-git clone https://github.com/xsited/packetcable.git
-
-Quickstart with Makefiles
-
-run.sh
-
-Using Maven
-
-Maven (http://maven.apache.org/) is a build tool. Maven defines project types (archetypes) needed for the target delivery type of Bundles. When you choose one (or more) archetype for your project, it mandates a deep directory structure.  At the moment this repo builds a jar.
+cd controller/opendaylight/distribution/opendaylight
 
 mvn clean install
 
+or if you want to avoid SNAPSHOT checking use: 
+
+mvn clean install -nsu
+// mvn clean install -DskipTests 
+
+From the toplevel issue the following instructions to build the packetcable SB plugin:
+
+cd protocol_plugins/packetcable
+mvn clean install
+
+
+HOW TO RUN
+==========
+
+Upon successful completion of a build install and run from the toplevel:
+
+cp protocol_plugins/packetcable/target/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/plugins/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
+cd controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/
+export JAVA_HOME=/usr
+./run.sh
+
+Wait for the osgi console to startup and then point a browser at 
+
+http://localhost:8080/
+
+
+From the osgi console, verify the plugin is active
+
+osgi> ss | grep packetcable
+110	ACTIVE      org.opendaylight.controller.protocol_plugins.packetcable_0.4.0.SNAPSHOT
+true
+osgi> dm 110
+[110] org.opendaylight.controller.protocol_plugins.packetcable
+  org.opendaylight.controller.sal.flowprogrammer.IPluginInFlowProgrammerService(protocolPluginType=PC) registered
+  org.opendaylight.controller.sal.utils.INodeFactory(protocolName=PC,protocolPluginType=PC) registered
+  org.opendaylight.controller.sal.utils.INodeConnectorFactory(protocolName=PC,protocolPluginType=PC) registered
+  org.opendaylight.controller.sal.inventory.IPluginInInventoryService(scope=Global,protocolPluginType=PC) registered
+    org.opendaylight.controller.sal.inventory.IPluginOutInventoryService (scope=Global) service required available
+  org.opendaylight.controller.sal.reader.IPluginInReadService(protocolPluginType=PC,containerName=default) registered
+  org.opendaylight.controller.sal.inventory.IPluginInInventoryService(protocolPluginType=PC,containerName=default) registered
+
+osgi> s | grep packetcable
+110	file:/home/mininet/controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/plugins/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
+  ACTIVE      org.opendaylight.controller.protocol_plugins.packetcable_0.4.0.SNAPSHOT [110]
+true
+osgi> 
+
+
+ACKNOWLEDGEMENTS AND CONTRIBUTIONS
+===================================  
+
+The project development lead from
+Thomas Kee (xsited@yahoo.com)
+
+The fantastic Java stylings and support from
+Riadh HAJ AMOR (rhadjamor@gmail.com)
+
+The COPS for Java foundation from
+Copyright (c) 2004 University of Murcia.  All rights reserved.
+For more information, please see <http://www.umu.euro6ix.org/>.
+Félix Jesús García Clemente  (fgarcia@dif.um.es)
 
