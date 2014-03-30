@@ -139,7 +139,7 @@ public class WorkerPool implements IWorkerPool {
 	public IWorker adapt(Object object) {
 		IWorker worker = (IWorker) adapt(object, IWorker.class);
 		if (worker == null) {
-			if (object instanceof Callable<?>)
+			if (object instanceof Callable)
 				worker = new Worker((Callable<?>) object);
 			else if (object instanceof Runnable) {
 				final Runnable runner = (Runnable) object;

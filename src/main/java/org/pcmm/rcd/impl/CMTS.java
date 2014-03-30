@@ -10,7 +10,6 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
-import org.pcmm.concurrent.impl.Worker;
 import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.rcd.ICMTS;
 import org.umu.cops.prpep.COPSPepConnection;
@@ -39,6 +38,7 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 
 	@Override
 	protected IPCMMClientHandler getPCMMClientHandler(final Socket socket) {
+
 		return new AbstractPCMMClientHandler(socket) {
 
 			private String handle;
@@ -46,7 +46,6 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 			public void run() {
 				try {
 					// send OPN message
-
 					// set the major version info and minor version info to
 					// default (5,0)
 					logger.info("Send OPN message to the PS");
@@ -85,7 +84,7 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 						{
 							Properties prop = new Properties();
 							COPSMsg reqMsg = MessageFactory.getInstance().create(COPSHeader.COPS_OP_REQ, prop);
-							handle = ((COPSReqMsg) reqMsg).getClientHandle().toString();
+							handle = ((COPSReqMsg) reqMsg).getClientHandle().getId().str();
 							sendRequest(reqMsg);
 						}
 						// Create the connection manager
@@ -202,27 +201,26 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 					}
 				}
 			}
+			if (_process != null) {
+				// ** Apply decisions to the configuration
+				_process.setDecisions(this, removeDecs, installDecs, errorDecs);
+				_status = ST_DECS;
 
-			// ** Apply decisions to the configuration
-			_process.setDecisions(this, removeDecs, installDecs, errorDecs);
-			_status = ST_DECS;
+				if (_process.isFailReport(this)) {
+					// COPSDebug.out(getClass().getName(),"Sending FAIL Report\n");
+					_sender.sendFailReport(_process.getReportData(this));
+				} else {
+					// COPSDebug.out(getClass().getName(),"Sending SUCCESS Report\n");
+					_sender.sendSuccessReport(_process.getReportData(this));
+				}
+				_status = ST_REPORT;
 
-			if (_process.isFailReport(this)) {
-				// COPSDebug.out(getClass().getName(),"Sending FAIL Report\n");
-				_sender.sendFailReport(_process.getReportData(this));
-			} else {
-				// COPSDebug.out(getClass().getName(),"Sending SUCCESS Report\n");
-				_sender.sendSuccessReport(_process.getReportData(this));
+				if (!_syncState) {
+					_sender.sendSyncComplete();
+					_syncState = true;
+					_status = ST_SYNCALL;
+				}
 			}
-			_status = ST_REPORT;
-
-			if (!_syncState) {
-				_sender.sendSyncComplete();
-				_syncState = true;
-				_status = ST_SYNCALL;
-			}
-
-			super.processDecision(dMsg);
 		}
 	}
 

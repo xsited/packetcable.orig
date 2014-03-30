@@ -27,8 +27,34 @@ public class PCMMProperties implements PCMMConstants {
 		}
 	}
 
-	public static String get(String key) {
+	protected static String get(String key) {
 		return properties.getProperty(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T get(String key, Class<T> type, Object _default) {
+		String prop = get(key);
+		if (prop != null && !prop.isEmpty()) {
+			if (Boolean.class.isAssignableFrom(type))
+				return (T) Boolean.valueOf(prop);
+			else if (Integer.class.isAssignableFrom(type))
+				return (T) Integer.valueOf(prop);
+			else if (Short.class.isAssignableFrom(type))
+				return (T) Short.valueOf(prop);
+			if (Float.class.isAssignableFrom(type))
+				return (T) Float.valueOf(prop);
+			if (Long.class.isAssignableFrom(type))
+				return (T) Long.valueOf(prop);
+			if (Double.class.isAssignableFrom(type))
+				return (T) Double.valueOf(prop);
+			else if (String.class.isAssignableFrom(type))
+				return (T) prop;
+		}
+		return (T) _default;
+	}
+
+	public static <T> T get(String key, Class<T> type) {
+		return get(key, type, null);
 	}
 
 }

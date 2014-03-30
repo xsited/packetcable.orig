@@ -13,5 +13,7 @@ public interface PCMMConstants {
 	public static final String ACC_TIMER = "pcmm.accounting.timer";
 	// default ip mask
 	public static final String DEFAULT_MASK = "pcmm.default.mask";
+	// default timeout
+	public static final String DEFAULT_TIEMOUT = "pcmm.default.timeout";
 
 }
