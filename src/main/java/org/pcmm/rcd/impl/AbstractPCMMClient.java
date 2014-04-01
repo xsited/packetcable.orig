@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.pcmm.nio.PCMMChannel;
 // import org.junit.Assert;
 import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMClient;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSMsg;
-import org.umu.cops.stack.COPSTransceiver;
 
 /**
  * 
@@ -35,6 +35,8 @@ public class AbstractPCMMClient implements IPCMMClient {
 
 	private MMVersionInfo versionInfo;
 
+	private PCMMChannel channel;
+
 	public AbstractPCMMClient() {
 	}
 
@@ -44,14 +46,10 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 * @see pcmm.rcd.IPCMMClient#sendRequest(pcmm.messages.IMessage)
 	 */
 	public void sendRequest(COPSMsg requestMessage) {
-		/**
-		 * XXX Assert.assertNotNull("Client is not connected", isConnected());
-		 * Assert.assertNotNull("Message is Null", requestMessage);
-		 */
 		try {
 			// logger.info("Sending message type : " +
 			// requestMessage.getHeader());
-			COPSTransceiver.sendMsg(requestMessage, getSocket());
+			channel.sendMsg(requestMessage);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		} catch (COPSException e) {
@@ -65,11 +63,8 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 * @see org.pcmm.rcd.IPCMMClient#readMessage()
 	 */
 	public COPSMsg readMessage() {
-		/**
-		 * XXX Assert.assertNotNull("Client is not connected", isConnected());
-		 */
 		try {
-			COPSMsg recvdMsg = COPSTransceiver.receiveMsg(getSocket());
+			COPSMsg recvdMsg = channel.receiveMessage();
 			logger.debug("received message : " + recvdMsg.getHeader());
 			return recvdMsg;
 		} catch (IOException e) {
@@ -120,6 +115,7 @@ public class AbstractPCMMClient implements IPCMMClient {
 		if (isConnected()) {
 			try {
 				socket.close();
+				channel = null;
 			} catch (IOException e) {
 				logger.error(e.getMessage());
 			}
@@ -134,12 +130,18 @@ public class AbstractPCMMClient implements IPCMMClient {
 		return socket;
 	}
 
+	public PCMMChannel getChannel() {
+		return channel;
+	}
+
 	/**
 	 * @param socket
 	 *            the socket to set
 	 */
 	public void setSocket(Socket socket) {
 		this.socket = socket;
+		if (this.socket != null && (this.channel == null || !this.channel.getSocket().equals(this.socket)))
+			channel = new PCMMChannel(this.socket);
 	}
 
 	/*

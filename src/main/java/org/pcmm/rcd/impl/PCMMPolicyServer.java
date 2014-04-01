@@ -12,8 +12,6 @@ import java.util.Properties;
 import org.pcmm.PCMMConstants;
 import org.pcmm.PCMMGlobalConfig;
 import org.pcmm.PCMMProperties;
-import org.pcmm.concurrent.IWorkerPool;
-import org.pcmm.concurrent.impl.WorkerPool;
 import org.pcmm.gates.IAMID;
 import org.pcmm.gates.IClassifier;
 import org.pcmm.gates.IExtendedClassifier;
@@ -67,16 +65,9 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 	 * since PCMMPolicyServer can connect to multiple CMTS (PEP) we need to
 	 * manage each connection in a separate thread.
 	 */
-	private IWorkerPool workerPool;
 
 	public PCMMPolicyServer() {
 		super();
-		int size = 36;
-		String sizeProp = PCMMProperties.get(PCMMConstants.PS_POOL_SIZE);
-		if (sizeProp != null) {
-			size = Integer.valueOf(sizeProp);
-		}
-		workerPool = new WorkerPool(size);
 	}
 
 	/*
@@ -105,7 +96,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 	public IPSCMTSClient requestCMTSConnection(InetAddress host) {
 		IPSCMTSClient client = new PSCMTSClient();
 		try {
-			if (client.tryConnect(host, Integer.valueOf(PCMMProperties.get(PCMMConstants.PCMM_PORT)))) {
+			if (client.tryConnect(host, PCMMProperties.get(PCMMConstants.PCMM_PORT, Integer.class))) {
 				boolean endNegotiation = false;
 				while (!endNegotiation) {
 					logger.debug("waiting for OPN message from CMTS");
@@ -195,13 +186,14 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 
 		public PSCMTSClient() {
 			super();
+			logger.info("Client " + getClass() + hashCode() + " crated and started");
 		}
 
 		public PSCMTSClient(Socket socket) {
 			setSocket(socket);
 		}
 
-		public boolean sendGateSet() {
+		public boolean gateSet() {
 			if (!isConnected())
 				throw new IllegalArgumentException("Not connected");
 			// XXX check if other values should be provided
@@ -239,12 +231,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 			COPSMsg decisionMsg = MessageFactory.getInstance().create(COPSHeader.COPS_OP_DEC, prop);
 			// ** Send the GateSet Decision
 			// **
-			try {
-				decisionMsg.writeData(getSocket());
-			} catch (IOException e) {
-				System.out.println("Failed to send the decision, reason: " + e.getMessage());
-			}
-
+			sendRequest(decisionMsg);
 			// TODO check on this ?
 			// waits for the gate-set-ack or error
 			COPSMsg responseMsg = readMessage();
@@ -452,13 +439,89 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 		 * @see org.pcmm.rcd.IPCMMPolicyServer#synchronize()
 		 */
 		@Override
-		public boolean synchronize() {
-			IPCMMGate gate = new PCMMGateReq();
-			// set transaction ID to synch request
+		public boolean gateSynchronize() {
+			if (!isConnected()) {
+				logger.error("Not connected");
+				return false;
+			}
 			ITransactionID trID = new TransactionID();
+			// set transaction ID to gate set
 			trID.setGateCommandType(ITransactionID.SynchRequest);
-			transactionID = (short) (transactionID == 0 ? (short) (Math.random() * hashCode()) : transactionID);
 			trID.setTransactionIdentifier(transactionID);
+			// AMID
+			IAMID amid = getAMID();
+			// GATE SPEC
+			ISubscriberID subscriberID = new SubscriberID();
+			try {
+				subscriberID.setSourceIPAddress(InetAddress.getLocalHost());
+			} catch (UnknownHostException e1) {
+				logger.error(e1.getMessage());
+			}
+			IGateID gateIdObj = new GateID();
+			gateIdObj.setGateID(gateID);
+
+			IPCMMGate gate = new PCMMGateReq();
+			gate.setTransactionID(trID);
+			gate.setAMID(amid);
+			gate.setSubscriberID(subscriberID);
+			gate.setGateID(gateIdObj);
+
+			// configure message properties
+			Properties prop = new Properties();
+			prop.put(MessageProperties.CLIENT_HANDLE, getClientHandle());
+			prop.put(MessageProperties.DECISION_CMD_CODE, COPSDecision.DEC_INSTALL);
+			prop.put(MessageProperties.DECISION_FLAG, (short) COPSDecision.DEC_NULL);
+			byte[] data = gate.getData();
+			prop.put(MessageProperties.GATE_CONTROL, new COPSData(data, 0, data.length));
+			COPSMsg decisionMsg = MessageFactory.getInstance().create(COPSHeader.COPS_OP_DEC, prop);
+			// ** Send the GateSet Decision
+			// **
+			try {
+				decisionMsg.writeData(getSocket());
+			} catch (IOException e) {
+				logger.error("Failed to send the decision, reason: " + e.getMessage());
+				return false;
+			}
+			// waits for the gate-Info-ack or error
+			COPSMsg responseMsg = readMessage();
+			if (responseMsg.getHeader().isAReport()) {
+				logger.info("processing received report from CMTS");
+				COPSReportMsg reportMsg = (COPSReportMsg) responseMsg;
+				if (reportMsg.getClientSI().size() == 0) {
+					return false;
+				}
+				COPSClientSI clientSI = (COPSClientSI) reportMsg.getClientSI().elementAt(0);
+				IPCMMGate responseGate = new PCMMGateReq(clientSI.getData().getData());
+				IPCMMError error = ((PCMMGateReq) responseGate).getError();
+				ITransactionID responseTransactionID = responseGate.getTransactionID();
+				if (error != null) {
+					logger.debug(responseTransactionID != null ? responseTransactionID.toString() : "returned Transaction ID is null");
+					logger.error(error.toString());
+					return false;
+				}
+				// here CMTS responded that he acknowledged the Gate-Info
+				// message
+				/*
+				 * <Gate-Info-Ack> = <ClientSI Header> <TransactionID> <AMID>
+				 * <SubscriberID> <GateID> [<Event Generation Info>] <Gate-Spec>
+				 * <classifier> <classifier...>] <Traffic Profile> <Gate Time
+				 * Info> <Gate Usage Info> [<Volume-Based Usage Limit>] [<PSID>]
+				 * [<Msg-Receipt-Key>] [<UserID>] [<Time-Based Usage Limit>]
+				 * [<Opaque Data>] <GateState> [<SharedResourceID>]
+				 */
+				if (responseTransactionID != null && responseTransactionID.getGateCommandType() == ITransactionID.SynchReport) {
+					// TODO need to implement missing data wrapper
+					logger.info("TransactionID : " + responseTransactionID.toString());
+					logger.info("AMID :" + String.valueOf(responseGate.getAMID()));
+					logger.info("SubscriberID :" + String.valueOf(responseGate.getSubscriberID()));
+					logger.info("Traffic Profile :" + String.valueOf(responseGate.getTrafficProfile()));
+					logger.info("Gate Time Info :");
+					logger.info("Gate Usage Info :");
+					logger.info("GateState :");
+					return true;
+				}
+
+			}
 			return false;
 		}
 
@@ -480,7 +543,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 					InetAddress subIP = InetAddress.getByName(PCMMGlobalConfig.SubscriberID);
 					InetAddress srcIP = InetAddress.getByName(PCMMGlobalConfig.srcIP);
 					InetAddress dstIP = InetAddress.getByName(PCMMGlobalConfig.dstIP);
-					InetAddress mask = InetAddress.getByName(PCMMProperties.get(PCMMConstants.DEFAULT_MASK));
+					InetAddress mask = InetAddress.getByName(PCMMProperties.get(PCMMConstants.DEFAULT_MASK, String.class));
 					subscriberID.setSourceIPAddress(subIP);
 					classifier.setSourceIPAddress(srcIP);
 					classifier.setDestinationIPAddress(dstIP);

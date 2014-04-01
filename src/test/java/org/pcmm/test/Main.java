@@ -23,7 +23,7 @@ public class Main {
 		icmts.startServer();
 		IPCMMPolicyServer ps = new PCMMPolicyServer();
 		IPSCMTSClient client = ps.requestCMTSConnection("localhost");
-		client.sendGateSet();
+		client.gateSet();
 		// IWorkerPool pool = new WorkerPool(2);
 		// IWorker worker = new Worker(new Callable<String>() {
 		// @Override
@@ -44,7 +44,7 @@ public class Main {
 		// pool.schedule(worker2, 2000);
 		// pool.schedule(worker, 500);
 		// pool.recycle();
-		System.out.println(PCMMProperties.get("pcmm.default.port"));
+
 
 	}
 }

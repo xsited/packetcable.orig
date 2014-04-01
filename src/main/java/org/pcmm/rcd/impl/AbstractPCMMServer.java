@@ -44,7 +44,7 @@ public abstract class AbstractPCMMServer implements IPCMMServer {
 	IWorkerPool pool;
 
 	protected AbstractPCMMServer() {
-		this(Integer.valueOf(PCMMProperties.get(PCMMConstants.PCMM_PORT)));
+		this(PCMMProperties.get(PCMMConstants.PCMM_PORT, Integer.class));
 	}
 
 	protected AbstractPCMMServer(int port) {
@@ -52,13 +52,8 @@ public abstract class AbstractPCMMServer implements IPCMMServer {
 		this.port = port;
 		keepAlive = true;
 		logger = LoggerFactory.getLogger(getClass().getName());
-		int poolSize = Integer.valueOf(PCMMProperties.get(PCMMConstants.PS_POOL_SIZE));
+		int poolSize = PCMMProperties.get(PCMMConstants.PS_POOL_SIZE, Integer.class);
 		pool = new WorkerPool(poolSize);
-		try {
-			serverSocket = new ServerSocket(port);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
 	}
 
 	/*
@@ -67,25 +62,42 @@ public abstract class AbstractPCMMServer implements IPCMMServer {
 	 * @see pcmm.rcd.IPCMMServer#startServer()
 	 */
 	public void startServer() {
+		if (serverSocket != null)
+			return;
+		try {
+			serverSocket = new ServerSocket(port);
+			logger.info("Server started and listening on port :" + port);
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
 		// execute this in a single thread executor
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			public void run() {
 				while (keepAlive) {
 					try {
 						Socket socket = serverSocket.accept();
-						if (keepAlive)
+						logger.info("Accepted a new connection from :" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
+						if (keepAlive) {
 							pool.schedule(getPCMMClientHandler(socket));
-						else
+							logger.info("Handler attached tp : " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
+						} else {
+							logger.info("connection to be closed : " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
 							socket.close();
+						}
 					} catch (IOException e) {
 						logger.error(e.getMessage());
 					}
 				}
 				try {
-					if (stopSocket != null && stopSocket.isConnected())
+					if (stopSocket != null && stopSocket.isConnected()) {
+						logger.info("Cleaning up");
 						stopSocket.close();
-					if (serverSocket != null && serverSocket.isBound())
+					}
+					if (serverSocket != null && serverSocket.isBound()) {
+						logger.info("Server about to stop");
 						serverSocket.close();
+						logger.info("Server stopped");
+					}
 				} catch (IOException e) {
 					logger.error(e.getMessage());
 				}
@@ -97,7 +109,7 @@ public abstract class AbstractPCMMServer implements IPCMMServer {
 	 * This client is used to handle requests from within the Application
 	 * Manager
 	 * 
-	 * @param socket 
+	 * @param socket
 	 * @return client handler
 	 */
 	protected abstract IPCMMClientHandler getPCMMClientHandler(Socket socket);
@@ -111,8 +123,10 @@ public abstract class AbstractPCMMServer implements IPCMMServer {
 		// set to stop
 		keepAlive = false;
 		try {
-			if (serverSocket != null)
+			if (serverSocket != null) {
 				stopSocket = new Socket(serverSocket.getInetAddress(), serverSocket.getLocalPort());
+				logger.info("STOP socket created and attached");
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

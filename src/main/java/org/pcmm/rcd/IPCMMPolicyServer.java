@@ -144,16 +144,17 @@ public interface IPCMMPolicyServer extends IPCMMServer, IStateful {
 	 * establishes COPS connection with the CMTS
 	 * 
 	 * @param host
-	 *            : remote ip address
+	 *            : remote ip address‚
 	 * @return connected socket.
 	 */
 	IPSCMTSClient requestCMTSConnection(InetAddress host);
 
 	/**
+	 * <p>
 	 * In the PacketCable model, the CMTS (PEP) is the one that listens on the
 	 * assigned port 3918, and it is the Policy Server that MUST initiate the
 	 * TCP connection to the CMTS, thus we implement the IPCMMClient interface.
-	 * 
+	 * </p>
 	 */
 	public static interface IPSCMTSClient extends IPCMMClient {
 
@@ -181,7 +182,7 @@ public interface IPCMMPolicyServer extends IPCMMServer, IStateful {
 		 * 
 		 * @return
 		 */
-		boolean sendGateSet();
+		boolean gateSet();
 
 		/**
 		 * initiates a Gate-Info with the CMTS
@@ -202,7 +203,7 @@ public interface IPCMMPolicyServer extends IPCMMServer, IStateful {
 		 * 
 		 * @return
 		 */
-		boolean synchronize();
+		boolean gateSynchronize();
 
 		/**
 		 * Sets the value of the multi-media version info.
