@@ -25,7 +25,8 @@ public abstract class COPSPepDataProcess {
      * @param installDecs
      * @param errorDecs
      */
-    public abstract void setDecisions(COPSPepReqStateMan man, Hashtable removeDecs, Hashtable installDecs, Hashtable errorDecs);
+
+	public abstract void setDecisions(COPSPepReqStateMan man, Hashtable removeDecs, Hashtable installDecs, Hashtable errorDecs);
 
     /**
      *  If the report is fail, return true

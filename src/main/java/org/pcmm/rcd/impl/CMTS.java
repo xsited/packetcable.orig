@@ -4,27 +4,24 @@
 package org.pcmm.rcd.impl;
 
 import java.net.Socket;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import org.pcmm.messages.impl.MessageFactory;
 import org.pcmm.rcd.ICMTS;
 import org.umu.cops.prpep.COPSPepConnection;
+import org.umu.cops.prpep.COPSPepDataProcess;
 import org.umu.cops.prpep.COPSPepException;
 import org.umu.cops.prpep.COPSPepReqStateMan;
 import org.umu.cops.stack.COPSAcctTimer;
 import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
-import org.umu.cops.stack.COPSContext;
-import org.umu.cops.stack.COPSDecision;
-import org.umu.cops.stack.COPSDecisionMsg;
+import org.umu.cops.stack.COPSError;
+import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSKATimer;
 import org.umu.cops.stack.COPSMsg;
-import org.umu.cops.stack.COPSPrObjBase;
 import org.umu.cops.stack.COPSReqMsg;
 
 /**
@@ -49,13 +46,15 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 					// set the major version info and minor version info to
 					// default (5,0)
 					logger.info("Send OPN message to the PS");
-					sendRequest(MessageFactory.getInstance().create(COPSHeader.COPS_OP_OPN, new Properties()));
+					sendRequest(MessageFactory.getInstance().create(
+							COPSHeader.COPS_OP_OPN, new Properties()));
 					// wait for CAT
 					COPSMsg recvMsg = readMessage();
 
 					if (recvMsg.getHeader().isAClientClose()) {
 						COPSClientCloseMsg cMsg = (COPSClientCloseMsg) recvMsg;
-						logger.info("PS requested Client-Close" + cMsg.getError().getDescription());
+						logger.info("PS requested Client-Close"
+								+ cMsg.getError().getDescription());
 						// send a CC message and close the socket
 						disconnect();
 						return;
@@ -65,13 +64,15 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 						COPSClientAcceptMsg cMsg = (COPSClientAcceptMsg) recvMsg;
 						// Support
 						if (cMsg.getIntegrity() != null) {
-							throw new COPSPepException("Unsupported object (Integrity)");
+							throw new COPSPepException(
+									"Unsupported object (Integrity)");
 						}
 
 						// Mandatory KATimer
 						COPSKATimer kt = cMsg.getKATimer();
 						if (kt == null)
-							throw new COPSPepException("Mandatory COPS object missing (KA Timer)");
+							throw new COPSPepException(
+									"Mandatory COPS object missing (KA Timer)");
 						short kaTimeVal = kt.getTimerVal();
 
 						// ACTimer
@@ -83,23 +84,30 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 						logger.info("Send a REQ message to the PS");
 						{
 							Properties prop = new Properties();
-							COPSMsg reqMsg = MessageFactory.getInstance().create(COPSHeader.COPS_OP_REQ, prop);
-							handle = ((COPSReqMsg) reqMsg).getClientHandle().getId().str();
+							COPSMsg reqMsg = MessageFactory.getInstance()
+									.create(COPSHeader.COPS_OP_REQ, prop);
+							handle = ((COPSReqMsg) reqMsg).getClientHandle()
+									.getId().str();
 							sendRequest(reqMsg);
 						}
 						// Create the connection manager
-						PCMMCmtsConnection conn = new PCMMCmtsConnection(CLIENT_TYPE, socket);
-						// pcmm specific handler
-						conn.addReqStateMgr(handle, new PCMMPSReqStateMan(CLIENT_TYPE, handle));
+						PCMMCmtsConnection conn = new PCMMCmtsConnection(
+								CLIENT_TYPE, socket);
+						// pcmm specific processor
+						conn.addRequestState(handle,
+								new PCMMPolicyDataProcessor());
 						conn.setKaTimer(kaTimeVal);
 						conn.setAcctTimer(acctTimer);
-						logger.info(getClass().getName() + " Thread(conn).start");
+						logger.info(getClass().getName()
+								+ " Thread(conn).start");
 						new Thread(conn).start();
 					} else {
 						// messages of other types are not expected
-						throw new COPSPepException("Message not expected. Closing connection for " + socket.toString());
+						throw new COPSPepException(
+								"Message not expected. Closing connection for "
+										+ socket.toString());
 					}
-				} catch (COPSPepException e) {
+				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
 			}
@@ -131,97 +139,75 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 			super(clientType, sock);
 		}
 
-		public void addReqStateMgr(String hanlde, COPSPepReqStateMan r) {
-			// map < String(COPSHandle), COPSPepReqStateMan>;
-			getReqStateMans().put(hanlde, r);
+		public COPSPepReqStateMan addRequestState(String clientHandle,
+				COPSPepDataProcess process) throws COPSException,
+				COPSPepException {
+			return super.addRequestState(clientHandle, process);
 		}
 	}
 
-	class PCMMPSReqStateMan extends COPSPepReqStateMan {
+	@SuppressWarnings("rawtypes")
+	class PCMMPolicyDataProcessor extends COPSPepDataProcess {
+		Hashtable removeDecs, installDecs, errorDecs;
 
-		public PCMMPSReqStateMan(short clientType, String clientHandle) {
-			super(clientType, clientHandle);
+		@Override
+		public void setDecisions(COPSPepReqStateMan man, Hashtable removeDecs,
+				Hashtable installDecs, Hashtable errorDecs) {
+			this.removeDecs = removeDecs;
+			this.installDecs = installDecs;
+			this.errorDecs = errorDecs;
 		}
 
 		@Override
-		protected void processDecision(COPSDecisionMsg dMsg)
-				throws COPSPepException {
+		public boolean isFailReport(COPSPepReqStateMan man) {
+			return (errorDecs != null && errorDecs.size() > 0);
+		}
 
-			// COPSHandle handle = dMsg.getClientHandle();
-			Hashtable decisions = dMsg.getDecisions();
-
-			Hashtable removeDecs = new Hashtable(40);
-			Hashtable installDecs = new Hashtable(40);
-			Hashtable errorDecs = new Hashtable(40);
-			for (Enumeration e = decisions.keys(); e.hasMoreElements();) {
-
-				COPSContext context = (COPSContext) e.nextElement();
-				Vector v = (Vector) decisions.get(context);
-				Enumeration ee = v.elements();
-				COPSDecision cmddecision = (COPSDecision) ee.nextElement();
-
-				// cmddecision --> we must check whether it is an error!
-
-				if (cmddecision.isInstallDecision()) {
-					String prid = new String();
-					for (; ee.hasMoreElements();) {
-						COPSDecision decision = (COPSDecision) ee.nextElement();
-
-						COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
-						switch (obj.getSNum()) {
-						case COPSPrObjBase.PR_PRID:
-							prid = obj.getData().str();
-						break;
-						case COPSPrObjBase.PR_EPD:
-							installDecs.put(prid, obj.getData().str());
-						break;
-						default:
-						break;
-						}
-					}
-				}
-
-				if (cmddecision.isRemoveDecision()) {
-
-					String prid = new String();
-					for (; ee.hasMoreElements();) {
-						COPSDecision decision = (COPSDecision) ee.nextElement();
-
-						COPSPrObjBase obj = new COPSPrObjBase(decision.getData().getData());
-						switch (obj.getSNum()) {
-						case COPSPrObjBase.PR_PRID:
-							prid = obj.getData().str();
-						break;
-						case COPSPrObjBase.PR_EPD:
-							removeDecs.put(prid, obj.getData().str());
-						break;
-						default:
-						break;
-						}
-					}
-				}
-			}
-			if (_process != null) {
-				// ** Apply decisions to the configuration
-				_process.setDecisions(this, removeDecs, installDecs, errorDecs);
-				_status = ST_DECS;
-
-				if (_process.isFailReport(this)) {
-					// COPSDebug.out(getClass().getName(),"Sending FAIL Report\n");
-					_sender.sendFailReport(_process.getReportData(this));
-				} else {
-					// COPSDebug.out(getClass().getName(),"Sending SUCCESS Report\n");
-					_sender.sendSuccessReport(_process.getReportData(this));
-				}
-				_status = ST_REPORT;
-
-				if (!_syncState) {
-					_sender.sendSyncComplete();
-					_syncState = true;
-					_status = ST_SYNCALL;
-				}
+		@Override
+		public Hashtable getReportData(COPSPepReqStateMan man) {
+			if (isFailReport(man)) {
+				return errorDecs;
+			} else {
+				return removeDecs != null ? removeDecs : installDecs;
 			}
 		}
+
+		@Override
+		public Hashtable getClientData(COPSPepReqStateMan man) {
+			return null;
+		}
+
+		@Override
+		public Hashtable getAcctData(COPSPepReqStateMan man) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void notifyClosedConnection(COPSPepReqStateMan man,
+				COPSError error) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void notifyNoKAliveReceived(COPSPepReqStateMan man) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void closeRequestState(COPSPepReqStateMan man) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void newRequestState(COPSPepReqStateMan man) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 }

@@ -33,13 +33,15 @@ public class PCMMChannel {
 	public static final int DEFAULT_READ_TIMEOUT = -1;
 
 	public PCMMChannel(Socket socket) {
-		this(socket, PCMMProperties.get(PCMMProperties.DEFAULT_TIEMOUT, Integer.class, DEFAULT_READ_TIMEOUT));
+		this(socket, PCMMProperties.get(PCMMProperties.DEFAULT_TIEMOUT,
+				Integer.class, DEFAULT_READ_TIMEOUT));
 	}
 
 	public PCMMChannel(Socket socket, int timeout) {
 		this.socket = socket;
 		dataBuffer = ByteBuffer.allocateDirect(DEFAULT_BYTE_BUFFER_SIZE);
-		logger.info("Allocated byte buffer with size = " + DEFAULT_BYTE_BUFFER_SIZE);
+		logger.info("Allocated byte buffer with size = "
+				+ DEFAULT_BYTE_BUFFER_SIZE);
 		this.timeout = timeout;
 		logger.info("Set read/write timeout to : " + timeout);
 
@@ -74,8 +76,9 @@ public class PCMMChannel {
 	 * 
 	 */
 	public void sendMsg(COPSMsg msg) throws IOException, COPSException {
+		logger.debug("sendMsg({})==>{}", getSocket(), msg);
 		msg.checkSanity();
-		msg.writeData(socket);
+		msg.writeData(getSocket());
 	}
 
 	/**
@@ -91,7 +94,7 @@ public class PCMMChannel {
 		int nread = 0;
 		byte[] hBuf = new byte[8];
 
-		logger.debug("receiveMsg ******************************** START");
+		logger.debug("receiveMessage({})", getSocket());
 
 		nread = readData(hBuf, 8);
 
@@ -116,11 +119,8 @@ public class PCMMChannel {
 		if (nread != dataLen) {
 			throw new COPSException("Bad COPS message");
 		}
-
 		COPSMsgParser prser = new COPSMsgParser();
 		COPSMsg msg = prser.parse(hdr, buf);
-
-		logger.debug("receiveMsg ******************************** END");
 		return msg;
 	}
 
