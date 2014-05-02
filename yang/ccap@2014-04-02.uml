@@ -16,7 +16,7 @@ package "inet:ietf-inet-types" as inet_ietf_inet_types
 end package 
 package "yang:ietf-yang-types" as yang_ietf_yang_types 
 end package 
-note top of ccap_ccap : <b>Namespace: </b> urn:cablelabs:params:xml:ns:yang:ccap \n<b>Prefix: </b> ccap \n<b>Organization : </b>\nCable Television Laboratories, Inc. \n<b>Contact : </b>\nPostal: Cable Television Laboratories, Inc. \n858 Coal Creek Circle \nLouisville, Colorado 80027-9750 \nU.S.A. \nPhone: +1 303-661-9100 \nFax:   +1 303-661-9199 \nE-mail: mibs@cablelabs.com \n<b>Revision : </b> 2013-08-08 \n
+note top of ccap_ccap : <b>Namespace: </b> urn:cablelabs:params:xml:ns:yang:ccap \n<b>Prefix: </b> ccap \n<b>Organization : </b>\nCable Television Laboratories, Inc. \n<b>Contact : </b>\nPostal: Cable Television Laboratories, Inc. \n858 Coal Creek Circle \nLouisville, Colorado 80027-9750 \nU.S.A. \nPhone: +1 303-661-9100 \nFax:   +1 303-661-9199 \nE-mail: mibs@cablelabs.com \n<b>Revision : </b> 2014-04-02 \n
 package "ccap:ccap" as ccap_ccap 
 inet_ietf_inet_types +-- ccap_ccap
 yang_ietf_yang_types +-- ccap_ccap
@@ -38,6 +38,11 @@ class "ipv4-host-prefix" as ipv4_host_prefix << (T, YellowGreen) typedef>>
 ipv4_host_prefix : string {pattern = (([0-9]|[1-9][0-9]|1...}
 class "ipv6-host-prefix" as ipv6_host_prefix << (T, YellowGreen) typedef>>
 ipv6_host_prefix : string {pattern = ((:|[0-9a-fA-F]{0,4}...}
+enum "primary-ds-indicator-type" as ccap_I_primary_ds_indicator_type
+ccap_I_primary_ds_indicator_type : other 
+ccap_I_primary_ds_indicator_type : primary-ds-channel 
+ccap_I_primary_ds_indicator_type : backup-primary-channel 
+ccap_I_primary_ds_indicator_type : ... 
 enum "acl-comparator-type" as ccap_I_acl_comparator_type
 ccap_I_acl_comparator_type : other 
 ccap_I_acl_comparator_type : lt 
@@ -353,6 +358,33 @@ class "address-prefix-len-type" as address_prefix_len_type << (T, YellowGreen) t
 address_prefix_len_type : uint16 [0..2040]
 class "snmp-tag-list-type" as snmp_tag_list_type << (T, YellowGreen) typedef>>
 snmp_tag_list_type : string {length = 0..255}
+class "ofdm-cyclic-prefix-type" as ofdm_cyclic_prefix_type << (T, YellowGreen) typedef>>
+ofdm_cyclic_prefix_type : uint16 [192|256|512|768|1024]
+class "ofdma-cyclic-prefix-type" as ofdma_cyclic_prefix_type << (T, YellowGreen) typedef>>
+ofdma_cyclic_prefix_type : uint16 [96|128|160|192|224|256|288|320|384|512|640]
+class "ofdm-windowing-type" as ofdm_windowing_type << (T, YellowGreen) typedef>>
+ofdm_windowing_type : uint16 [0|64|128|192|256]
+class "ofdma-windowing-type" as ofdma_windowing_type << (T, YellowGreen) typedef>>
+ofdma_windowing_type : uint16 [0|32|64|96|128|160|192|224]
+enum "subcarrier-spacing-type" as ccap_I_subcarrier_spacing_type
+ccap_I_subcarrier_spacing_type : other 
+ccap_I_subcarrier_spacing_type : 25khz 
+ccap_I_subcarrier_spacing_type : 50khz 
+enum "ofdm-modulation-type" as ccap_I_ofdm_modulation_type
+ccap_I_ofdm_modulation_type : other 
+ccap_I_ofdm_modulation_type : zero-value 
+ccap_I_ofdm_modulation_type : qpsk 
+ccap_I_ofdm_modulation_type : ... 
+enum "ofdm-ncp-modulation-type" as ccap_I_ofdm_ncp_modulation_type
+ccap_I_ofdm_ncp_modulation_type : other 
+ccap_I_ofdm_ncp_modulation_type : qpsk 
+ccap_I_ofdm_ncp_modulation_type : qam16 
+ccap_I_ofdm_ncp_modulation_type : ... 
+enum "ofdma-modulation-type" as ccap_I_ofdma_modulation_type
+ccap_I_ofdma_modulation_type : other 
+ccap_I_ofdma_modulation_type : zero-value 
+ccap_I_ofdma_modulation_type : bpsk 
+ccap_I_ofdma_modulation_type : ... 
 class "vendor-extension-version" as ccap_I_vendor_extension_version_grouping <<(G,Lime) grouping>> 
 class "vendor-extension-version" as  ccap_I_vendor_extension_version_I_vendor_extension_version <<container>> 
 ccap_I_vendor_extension_version_grouping *-- "1" ccap_I_vendor_extension_version_I_vendor_extension_version 
@@ -469,6 +501,53 @@ class "yang-choice-ext2" as ccap_I_ds_rf_port_group_I_down_channel_I_channel_typ
 ccap_I_ds_rf_port_group_I_down_channel_I_channel_type .. ccap_I_ds_rf_port_group_I_down_channel_I_channel_type_I_yang_choice_ext2_case  : choice channel-type
 class "yang-ext" as  ccap_I_ds_rf_port_group_I_down_channel_I_yang_ext <<container>> 
 ccap_I_ds_rf_port_group_I_down_channel *-- "1" ccap_I_ds_rf_port_group_I_down_channel_I_yang_ext 
+class "ofdm-exclusions" as ccap_I_ds_rf_port_group_I_ofdm_exclusions << (L, #FF7700) list>> 
+ccap_I_ds_rf_port_group_grouping *-- "0..N" ccap_I_ds_rf_port_group_I_ofdm_exclusions 
+ccap_I_ds_rf_port_group_I_ofdm_exclusions : +start-freq : uint32 [108000000..177000000]  {key}  {Hertz}
+ccap_I_ds_rf_port_group_I_ofdm_exclusions : end-freq : uint32 [108000000..177000000]   {mandatory} {Hertz}
+class "yang-ext" as  ccap_I_ds_rf_port_group_I_ofdm_exclusions_I_yang_ext <<container>> 
+ccap_I_ds_rf_port_group_I_ofdm_exclusions *-- "1" ccap_I_ds_rf_port_group_I_ofdm_exclusions_I_yang_ext 
+class "ofdm-ncp-exclusions" as ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions << (L, #FF7700) list>> 
+ccap_I_ds_rf_port_group_grouping *-- "0..N" ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions 
+ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions : +start-freq : uint32 [108000000..177000000]  {key}  {Hertz}
+ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions : end-freq : uint32 [108000000..177000000]   {mandatory} {Hertz}
+class "yang-ext" as  ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions_I_yang_ext <<container>> 
+ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions *-- "1" ccap_I_ds_rf_port_group_I_ofdm_ncp_exclusions_I_yang_ext 
+class "ofdm-channel" as ccap_I_ds_rf_port_group_I_ofdm_channel << (L, #FF7700) list>> 
+ccap_I_ds_rf_port_group_grouping *-- "0..16" ccap_I_ds_rf_port_group_I_ofdm_channel 
+ccap_I_ds_rf_port_group_I_ofdm_channel : +ofdm-channel-index : uint32  {key} 
+ccap_I_ds_rf_port_group_I_ofdm_channel : admin-state : admin-state-type   = down 
+ccap_I_ds_rf_port_group_I_ofdm_channel : docs-chan-id : uint32   = 0 
+ccap_I_ds_rf_port_group_I_ofdm_channel : lower-edge-freq : uint32 [108000000..1770000000]   {mandatory} {Hertz}
+ccap_I_ds_rf_port_group_I_ofdm_channel : upper-edge-freq : uint32 [132000000..1794000000]   {mandatory} {Hertz}
+ccap_I_ds_rf_port_group_I_ofdm_channel : plc-freq : uint32 [108000000..1770000000]   {mandatory} {Hertz}
+ccap_I_ds_rf_port_group_I_ofdm_channel : cyclic-prefix : ofdm-cyclic-prefix-type   {mandatory} {Microseconds}
+ccap_I_ds_rf_port_group_I_ofdm_channel : rolloff-period : ofdm-windowing-type   {mandatory}
+ccap_I_ds_rf_port_group_I_ofdm_channel : time-interleaver-depth : uint8 [1..32]   {mandatory} {Samples}
+ccap_I_ds_rf_port_group_I_ofdm_channel : subcarrier-spacing : subcarrier-spacing-type   {mandatory}
+ccap_I_ds_rf_port_group_I_ofdm_channel : up-down-trap-enabled : boolean   = true 
+ccap_I_ds_rf_port_group_I_ofdm_channel : num-of-pilots : uint32   {mandatory}
+ccap_I_ds_rf_port_group_I_ofdm_channel : subcarrier-zero-freq : uint32 [108000000..177000000]   {mandatory} {Hertz}
+ccap_I_ds_rf_port_group_I_ofdm_channel : ncp-modulation-order : ofdm-ncp-modulation-type   {mandatory}
+ccap_I_ds_rf_port_group_I_ofdm_channel : lower-guard-band : uint32  
+ccap_I_ds_rf_port_group_I_ofdm_channel : upper-guard-band : uint32  
+class "ofdm-profile" as ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile << (L, #FF7700) list>> 
+ccap_I_ds_rf_port_group_I_ofdm_channel *-- "0..17" ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile : +ofdm-profile-index : uint8 [1..16|255]  {key} 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile : ofdm-modulation-default : ofdm-modulation-type   {mandatory}
+class "ofdm-subcarrier" as ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier << (L, #FF7700) list>> 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile *-- "0..N" ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier : +start-frequency : uint32 [108000000..1770000000]  {key} 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier : end-frequency : uint32 [108000000..1770000000]  
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier : skip : boolean   = false 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier : ofdm-main-modulation : ofdm-modulation-type   {mandatory}
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier : ofdm-skip-modulation : ofdm-modulation-type  
+class "yang-ext" as  ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier_I_yang_ext <<container>> 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier *-- "1" ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_ofdm_subcarrier_I_yang_ext 
+class "yang-ext" as  ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_yang_ext <<container>> 
+ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile *-- "1" ccap_I_ds_rf_port_group_I_ofdm_channel_I_ofdm_profile_I_yang_ext 
+class "yang-ext" as  ccap_I_ds_rf_port_group_I_ofdm_channel_I_yang_ext <<container>> 
+ccap_I_ds_rf_port_group_I_ofdm_channel *-- "1" ccap_I_ds_rf_port_group_I_ofdm_channel_I_yang_ext 
 class "us-rf-port-group" as ccap_I_us_rf_port_group_grouping <<(G,Lime) grouping>> 
 ccap_I_us_rf_port_group_grouping : port-group {uses} 
 class "upstream-physical-channel" as ccap_I_us_rf_port_group_I_upstream_physical_channel << (L, #FF7700) list>> 
@@ -512,13 +591,50 @@ class "yang-ext" as  ccap_I_us_rf_port_group_I_upstream_physical_channel_I_upstr
 ccap_I_us_rf_port_group_I_upstream_physical_channel_I_upstream_logical_channel *-- "1" ccap_I_us_rf_port_group_I_upstream_physical_channel_I_upstream_logical_channel_I_yang_ext 
 class "yang-ext" as  ccap_I_us_rf_port_group_I_upstream_physical_channel_I_yang_ext <<container>> 
 ccap_I_us_rf_port_group_I_upstream_physical_channel *-- "1" ccap_I_us_rf_port_group_I_upstream_physical_channel_I_yang_ext 
+class "ofdma-exclusions" as ccap_I_us_rf_port_group_I_ofdma_exclusions << (L, #FF7700) list>> 
+ccap_I_us_rf_port_group_grouping *-- "0..N" ccap_I_us_rf_port_group_I_ofdma_exclusions 
+ccap_I_us_rf_port_group_I_ofdma_exclusions : +start-freq : uint32 [5000000..197600000]  {key}  {Hertz}
+ccap_I_us_rf_port_group_I_ofdma_exclusions : end-freq : uint32 [11400000..204000000]   {mandatory} {Hertz}
+class "yang-ext" as  ccap_I_us_rf_port_group_I_ofdma_exclusions_I_yang_ext <<container>> 
+ccap_I_us_rf_port_group_I_ofdma_exclusions *-- "1" ccap_I_us_rf_port_group_I_ofdma_exclusions_I_yang_ext 
+class "ofdma-channel" as ccap_I_us_rf_port_group_I_ofdma_channel << (L, #FF7700) list>> 
+ccap_I_us_rf_port_group_grouping *-- "0..N" ccap_I_us_rf_port_group_I_ofdma_channel 
+ccap_I_us_rf_port_group_I_ofdma_channel : +ofdma-channel-index : uint16  {key} 
+ccap_I_us_rf_port_group_I_ofdma_channel : admin-state : admin-state-type   = down 
+ccap_I_us_rf_port_group_I_ofdma_channel : up-down-trap-enabled : boolean   = true 
+ccap_I_us_rf_port_group_I_ofdma_channel : lower-edge-freq : uint32 [5000000..197600000]   {mandatory} {Hertz}
+ccap_I_us_rf_port_group_I_ofdma_channel : upper-edge-freq : uint32 [11400000..204000000]   {mandatory} {Hertz}
+ccap_I_us_rf_port_group_I_ofdma_channel : channel-id : uint32   = 0 
+ccap_I_us_rf_port_group_I_ofdma_channel : provisioned-attribute-mask : attribute-mask-type   {mandatory}
+ccap_I_us_rf_port_group_I_ofdma_channel : ranging-backoff-start : uint8 [0..15]   {mandatory}
+ccap_I_us_rf_port_group_I_ofdma_channel : ranging-backoff-end : uint8 [0..15]   {mandatory}
+ccap_I_us_rf_port_group_I_ofdma_channel : transmit-backoff-start : uint8 [0..15]   {mandatory}
+ccap_I_us_rf_port_group_I_ofdma_channel : transmit-backoff-end : uint8 [0..15]   {mandatory}
+ccap_I_us_rf_port_group_I_ofdma_channel : auto-ofdma-profile-cfg : boolean   = false 
+ccap_I_us_rf_port_group_I_ofdma_channel : target-rx-power : uint32   {tenthdBmV}
+ccap_I_us_rf_port_group_I_ofdma_channel : ofdma-chan-profile : leafref : /ccap/docsis/ofdma-profile/ofdma-profile-index  
+class "ofdma-chan-data-iuc" as ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc << (L, #FF7700) list>> 
+ccap_I_us_rf_port_group_I_ofdma_channel *-- "0..N" ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc 
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc : +data-iuc : uint8 [5|6|9|10|11|12|13]  {key} 
+class "ofdma-minislot-cfg" as ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg << (L, #FF7700) list>> 
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc *-- "1..N" ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg 
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg : +lower-freq : uint32 [500000..204000000]  {key} 
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg : upper-freq : uint32 [500000..204000000]  
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg : minislot-pilot-pattern : uint8 [1..14]   {mandatory}
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg : minislot-modulation : ofdma-modulation-type   {mandatory}
+class "yang-ext" as  ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg_I_yang_ext <<container>> 
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg *-- "1" ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_ofdma_minislot_cfg_I_yang_ext 
+class "yang-ext" as  ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_yang_ext <<container>> 
+ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc *-- "1" ccap_I_us_rf_port_group_I_ofdma_channel_I_ofdma_chan_data_iuc_I_yang_ext 
+class "yang-ext" as  ccap_I_us_rf_port_group_I_ofdma_channel_I_yang_ext <<container>> 
+ccap_I_us_rf_port_group_I_ofdma_channel *-- "1" ccap_I_us_rf_port_group_I_ofdma_channel_I_yang_ext 
 class "down-channel-phy-params-group" as ccap_I_down_channel_phy_params_group_grouping <<(G,Lime) grouping>> 
 ccap_I_down_channel_phy_params_group_grouping : phy-index : uint32  
 ccap_I_down_channel_phy_params_group_grouping : modulation : qam-modulation-type   = qam256 
 ccap_I_down_channel_phy_params_group_grouping : interleaver-depth : interleaver-depth-type   = fecI128J1 
 ccap_I_down_channel_phy_params_group_grouping : downstream-phy-standard : downstream-phy-type   = j83annexB 
 class "upstream-logical-channel-group" as ccap_I_upstream_logical_channel_group_grouping <<(G,Lime) grouping>> 
-ccap_I_upstream_logical_channel_group_grouping : +upstream-logical-channel-index : uint32  {key} 
+ccap_I_upstream_logical_channel_group_grouping : upstream-logical-channel-index : uint32  
 ccap_I_upstream_logical_channel_group_grouping : admin-state : admin-state-type   = down 
 ccap_I_upstream_logical_channel_group_grouping : up-down-trap-enabled : boolean   = false 
 ccap_I_upstream_logical_channel_group_grouping : channel-id : uint32   = 0 
@@ -680,6 +796,9 @@ class "yang-ext10" as  ccap_I_acl_filter_group_I_dest_port_I_single_dest_port_I_
 ccap_I_acl_filter_group_I_dest_port_I_single_dest_port_case *-- "1" ccap_I_acl_filter_group_I_dest_port_I_single_dest_port_I_yang_ext10 
 class "yang-dport-choice-ext" as ccap_I_acl_filter_group_I_dest_port_I_yang_dport_choice_ext_case <<case>>
 ccap_I_acl_filter_group_I_dest_port .. ccap_I_acl_filter_group_I_dest_port_I_yang_dport_choice_ext_case  : choice dest-port
+class "ofdma-ranging-group" as ccap_I_ofdma_ranging_group_grouping <<(G,Lime) grouping>> 
+ccap_I_ofdma_ranging_group_grouping : preamble-length : uint16 [16..512]   = 128  {bit}
+ccap_I_ofdma_ranging_group_grouping : guard-band : uint32   {mandatory} {hertz}
 class "ccap-group" as ccap_I_ccap_group_grouping <<(G,Lime) grouping>> 
 ccap_I_ccap_group_grouping : name : string {length = 1..32}  
 ccap_I_ccap_group_grouping : description : string  
@@ -1132,7 +1251,7 @@ ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration : 
 class "receive-channel-configuration" as ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration << (L, #FF7700) list>> 
 ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration *-- "0..N" ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration 
 ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration : +receive-channel-id : uint8 [1..255]  {key} 
-ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration : primary-downstream-indicator : boolean   = false 
+ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration : primary-downstream-indicator : primary-ds-indicator-type   = not-specified 
 ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration : rc-rm-connectivity-identifier : leafref : ../../receive-module-configuration/receive-module-id  
 class "docsis-down-channel-ref" as  ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration_I_docsis_down_channel_ref <<container>> 
 ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration *-- "1" ccap_I_ccap_group_I_docsis_I_docs_mac_domain_I_mac_domain_I_rcc_configuration_I_receive_channel_configuration_I_docsis_down_channel_ref 
@@ -1443,6 +1562,38 @@ class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_restrict
 ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_restrict_cm_cfg *-- "1" ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_restrict_cm_cfg_I_yang_ext 
 class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_yang_ext <<container>> 
 ccap_I_ccap_group_I_docsis_I_docs_load_balancing *-- "1" ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_yang_ext 
+class "ofdma-profile" as ccap_I_ccap_group_I_docsis_I_ofdma_profile << (L, #FF7700) list>> 
+ccap_I_ccap_group_I_docsis *-- "0..N" ccap_I_ccap_group_I_docsis_I_ofdma_profile 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : +ofdma-profile-index : uint8  {key} 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : ofdma-profile-name : string {length = 10..32}   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : ofdma-profile-description : string {length = 0..255}  
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : subcarrier-spacing : subcarrier-spacing-type   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : ofdma-cyclic-prefix : ofdma-cyclic-prefix-type   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : roll-off-period : ofdma-windowing-type   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : symbols-per-frame : uint8 [1 | 6..36]   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile : pre-eq-enable : boolean   {mandatory}
+class "initial-ranging-iuc" as  ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc <<container>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile *-- "1" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc : ofdma-ranging-group {uses} 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc : num-subcarriers : uint16 [16..128]   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc : num-admission-slots : uint8 [1..8]   {mandatory}
+class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc_I_yang_ext <<container>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc *-- "1" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc_I_yang_ext 
+class "fine-ranging-iuc" as  ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc <<container>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile *-- "1" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc : ofdma-ranging-group {uses} 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc : num-subcarriers : uint16 [16..512]   {mandatory}
+class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc_I_yang_ext <<container>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc *-- "1" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc_I_yang_ext 
+class "data-iuc" as ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc << (L, #FF7700) list>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile *-- "1..7" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc : +data-iuc-index : uint8 [5|6|9..13]  {key} 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc : def-modulation : ofdma-modulation-type   {mandatory}
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc : def-pilot-pattern : uint8 [1..14]   {mandatory}
+class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc_I_yang_ext <<container>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc *-- "1" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_data_iuc_I_yang_ext 
+class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_yang_ext <<container>> 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile *-- "1" ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_yang_ext 
 class "yang-ext" as  ccap_I_ccap_group_I_docsis_I_yang_ext <<container>> 
 ccap_I_ccap_group_I_docsis *-- "1" ccap_I_ccap_group_I_docsis_I_yang_ext 
 class "video" as  ccap_I_ccap_group_I_video <<container>> 
@@ -2114,6 +2265,8 @@ ccap_I_ccap_group_I_docsis_I_docs_multicast_authorization_I_profiles_I_session_r
 ccap_I_ccap_group_I_docsis_I_docs_dsg_I_dsg_downstream_I_docsis_down_channel_ref --> ccap_I_docsis_down_channel_reference_grouping : uses 
 ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_restricted_grp_cfg_I_upstream_logical_channel_ref --> ccap_I_upstream_logical_channel_reference_grouping : uses 
 ccap_I_ccap_group_I_docsis_I_docs_load_balancing_I_restricted_grp_cfg_I_docsis_down_channel_ref --> ccap_I_docsis_down_channel_reference_grouping : uses 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_initial_ranging_iuc --> ccap_I_ofdma_ranging_group_grouping : uses 
+ccap_I_ccap_group_I_docsis_I_ofdma_profile_I_fine_ranging_iuc --> ccap_I_ofdma_ranging_group_grouping : uses 
 ccap_I_ccap_group_I_video_I_static_udp_map --> ccap_I_udp_map_grouping : uses 
 ccap_I_ccap_group_I_video_I_reserved_udp_map --> ccap_I_udp_map_grouping : uses 
 ccap_I_ccap_group_I_video_I_pid_session --> ccap_I_video_session_group_grouping : uses 
@@ -2143,6 +2296,6 @@ ccap_I_ccap_group_I_management_I_snmp_I_notification_receiver_config_I_notificat
 ccap_I_ccap_group_I_management_I_snmp_I_notification_receiver_config --> ccap_I_view_config_ref_grouping : uses 
 ccap_I_ccap --> ccap_I_ccap_group_grouping : uses 
 center footer
- <size:20> UML Generated : 2014-05-01 17:57 </size>
+ <size:20> UML Generated : 2014-05-01 17:58 </size>
  endfooter 
 @enduml 
