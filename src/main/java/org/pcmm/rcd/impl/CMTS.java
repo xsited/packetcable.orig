@@ -22,7 +22,6 @@ import org.umu.cops.prpep.COPSPepReqStateMan;
 import org.umu.cops.stack.COPSAcctTimer;
 import org.umu.cops.stack.COPSClientAcceptMsg;
 import org.umu.cops.stack.COPSClientCloseMsg;
-import org.umu.cops.stack.COPSClientSI;
 import org.umu.cops.stack.COPSContext;
 import org.umu.cops.stack.COPSData;
 import org.umu.cops.stack.COPSDecision;
@@ -32,7 +31,6 @@ import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSHeader;
 import org.umu.cops.stack.COPSKATimer;
 import org.umu.cops.stack.COPSMsg;
-import org.umu.cops.stack.COPSObjHeader;
 import org.umu.cops.stack.COPSPrObjBase;
 import org.umu.cops.stack.COPSReqMsg;
 
@@ -142,7 +140,6 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 			super(clientType, sock);
 		}
 
-		@Override
 		public COPSPepReqStateMan addRequestState(String clientHandle, COPSPepDataProcess process)
 				throws COPSException, COPSPepException {
 			return super.addRequestState(clientHandle, process);
@@ -233,12 +230,6 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 					_sender.sendSuccessReport(_process.getReportData(this));
 				}
 				_status = ST_REPORT;
-
-				if (!_syncState) {
-					_sender.sendSyncComplete();
-					_syncState = true;
-					_status = ST_SYNCALL;
-				}
 			}
 		}
 	}
@@ -268,27 +259,30 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 
 		@Override
 		public boolean isFailReport(COPSPepReqStateMan man) {
-			// we don't handle fail report just ignore them.
-			return false;
+			return (errorDecs != null && errorDecs.size() > 0);
 		}
 
 		@Override
 		public Hashtable getReportData(COPSPepReqStateMan man) {
-			ITransactionID transactionID = null;
-			String key = null;
-			Hashtable<String, String> siDataHashTable = new Hashtable<String, String>();
-			if (installDecs.size() > 0) {
-				String data = "";
-				for (String k : installDecs.keySet()) {
-					data = installDecs.get(k);
-					break;
+			if (isFailReport(man)) {
+				return errorDecs;
+			} else {
+				ITransactionID transactionID = null;
+				String key = null;
+				Hashtable<String, String> siDataHashTable = new Hashtable<String, String>();
+				if (installDecs.size() > 0) {
+					String data = "";
+					for (String k : installDecs.keySet()) {
+						data = installDecs.get(k);
+						break;
+					}
+					transactionID = new PCMMGateReq(new COPSData(data).getData()).getTransactionID();
+					IPCMMGate responseGate = new PCMMGateReq();
+					responseGate.setTransactionID(transactionID);
+					siDataHashTable.put(key, new String(responseGate.getData()));
 				}
-				transactionID = new PCMMGateReq(new COPSData(data).getData()).getTransactionID();
-				IPCMMGate responseGate = new PCMMGateReq();
-				responseGate.setTransactionID(transactionID);
-				siDataHashTable.put(key, new String(responseGate.getData()));
+				return siDataHashTable;
 			}
-			return siDataHashTable;
 		}
 
 		@Override
@@ -357,6 +351,5 @@ public class CMTS extends AbstractPCMMServer implements ICMTS {
 		public void setStateManager(COPSPepReqStateMan stateManager) {
 			this.stateManager = stateManager;
 		}
-
 	}
 }

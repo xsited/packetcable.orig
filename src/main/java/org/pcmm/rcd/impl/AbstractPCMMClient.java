@@ -14,7 +14,6 @@ import org.pcmm.objects.MMVersionInfo;
 import org.pcmm.rcd.IPCMMClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.umu.cops.stack.COPSException;
 import org.umu.cops.stack.COPSMsg;
 
 /**
@@ -47,13 +46,9 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 */
 	public void sendRequest(COPSMsg requestMessage) {
 		try {
-			// logger.info("Sending message type : " +
-			// requestMessage.getHeader());
 			channel.sendMsg(requestMessage);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		} catch (COPSException e) {
-			logger.error(e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), getSocket());
 		}
 	}
 
@@ -65,12 +60,10 @@ public class AbstractPCMMClient implements IPCMMClient {
 	public COPSMsg readMessage() {
 		try {
 			COPSMsg recvdMsg = channel.receiveMessage();
-			logger.debug("received message : " + recvdMsg.getHeader());
+			// logger.debug("received message : " + recvdMsg.getHeader());
 			return recvdMsg;
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		} catch (COPSException e) {
-			logger.error(e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), getSocket());
 		}
 		return null;
 	}
@@ -140,7 +133,9 @@ public class AbstractPCMMClient implements IPCMMClient {
 	 */
 	public void setSocket(Socket socket) {
 		this.socket = socket;
-		if (this.socket != null && (this.channel == null || !this.channel.getSocket().equals(this.socket)))
+		if (this.socket != null
+				&& (this.channel == null || !this.channel.getSocket().equals(
+						this.socket)))
 			channel = new PCMMChannel(this.socket);
 	}
 
