@@ -77,26 +77,26 @@ public class PCMMWorkflowTest {
 	@Test
 	public void testGateSet() {
 		assertNotNull(client);
-		assertTrue("Gate-Set failed", client.gateSet());
+		assertTrue("Gate-Set failed", !client.gateSet());
 	}
 
 	@Test
 	public void testGateDelete() {
 		assertNotNull(client);
-		assertTrue("Gate-Delete failed", client.gateDelete());
+		assertTrue("Gate-Delete failed", !client.gateDelete());
 
 	}
 
 	@Test
 	public void testGateInfo() {
 		assertNotNull(client);
-		assertTrue("Gate-Info failed", client.gateInfo());
+		assertTrue("Gate-Info failed", !client.gateInfo());
 	}
 
-	//@Test
+	@Test
 	public void testGateSynchronize() {
 		assertNotNull(client);
-		assertTrue("Gate-Synchronize failed", client.gateSynchronize());
+		assertTrue("Gate-Synchronize failed", !client.gateSynchronize());
 	}
 
 }
