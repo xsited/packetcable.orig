@@ -1,11 +1,11 @@
 CHECKOUT CONTROLLER AND PLUGIN
 ==============================
 
-  sudo apt-get install maven
-  git clone https://git.opendaylight.org/gerrit/p/controller.git
+    sudo apt-get install maven
+    git clone https://git.opendaylight.org/gerrit/p/controller.git
 
 # XXX - CHANGE THIS
-  git clone  https://github.com/xsited/packetcable.git
+    git clone  https://github.com/xsited/packetcable.git
 
 DIRECTORY ORGANIZATION
 ======================
