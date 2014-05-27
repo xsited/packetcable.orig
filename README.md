@@ -18,6 +18,15 @@
 - docs for PoC documentation and notes and PCMM specification version I05
  
 
+### Replacing OpenJDK on Ubuntu
+
+    apt-get purge -y openjdk*
+    add-apt-repository ppa:webupd8team/java
+    apt-get update
+    apt-get install -y oracle-java7-installer
+    apt-get --no-install-recommends install -y maven
+
+
 ### How to Build 
 
 
