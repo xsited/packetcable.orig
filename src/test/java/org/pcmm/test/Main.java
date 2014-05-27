@@ -3,7 +3,6 @@
  */
 package org.pcmm.test;
 
-import org.pcmm.PCMMProperties;
 import org.pcmm.rcd.ICMTS;
 import org.pcmm.rcd.IPCMMPolicyServer;
 import org.pcmm.rcd.IPCMMPolicyServer.IPSCMTSClient;
