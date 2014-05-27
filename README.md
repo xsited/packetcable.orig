@@ -1,15 +1,14 @@
-CHECKOUT CONTROLLER AND PLUGIN
-==============================
+### Checkout the Controller and Plugin
+
 
     sudo apt-get install maven
     git clone https://git.opendaylight.org/gerrit/p/controller.git
 
-XXX - CHANGE THIS
+### XXX - CHANGE THIS
 
     git clone  https://github.com/xsited/packetcable.git
 
-DIRECTORY ORGANIZATION
-======================
+### Directory Organization
 
 - in the parent is pom.xml for the entire packetcable projects.
 - this will build a working controller distribution
@@ -19,8 +18,8 @@ DIRECTORY ORGANIZATION
 - docs for PoC documentation and notes and PCMM specification version I05
  
 
-HOW TO BUILD
-============
+### How to Build 
+
 
 JDK 1.7+ and Maven 3+ are required:
 
@@ -47,8 +46,9 @@ From the toplevel issue the following instructions to build the packetcable mode
     mvn clean install
 
 
-HOW TO RUN
-==========
+### How to Run
+
+
 
 Upon successful completion of a build install and run from the toplevel:
 
@@ -84,8 +84,8 @@ From the osgi console, verify the plugin is active
     osgi> 
 
 
-ACKNOWLEDGEMENTS AND CONTRIBUTIONS
-===================================  
+### Acknowledgements and Contributions
+
 
 The project development lead from
 Thomas Kee (xsited@yahoo.com)
