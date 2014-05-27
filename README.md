@@ -40,6 +40,8 @@ From the toplevel issue the following instructions to build the packetcable SB p
     cd packetcable
     mvn clean install
 
+From the toplevel issue the following instructions to build the packetcable model:
+
     cd packetcable/md-sal 
     mvn clean install
 
@@ -49,35 +51,36 @@ HOW TO RUN
 
 Upon successful completion of a build install and run from the toplevel:
 
-  ./copy.sh
-  export JAVA_HOME=/usr
-  ./run.sh
+    ./copy.sh
+    export JAVA_HOME=/usr
+    ./run.sh
 
 Wait for the osgi console to startup and then point a browser at 
 
-  http://localhost:8080/
+    http://localhost:8080/
 
 
 From the osgi console, verify the plugin is active
 
-  osgi> ss | grep packetcable
-  110	ACTIVE      org.opendaylight.controller.protocol_plugins.packetcable_0.4.0.SNAPSHOT true
+    osgi> ss | grep packetcable
+    110	ACTIVE      org.opendaylight.controller.protocol_plugins.packetcable_0.4.0.SNAPSHOT true
 
-  osgi> dm 110
-  [110] org.opendaylight.controller.protocol_plugins.packetcable
-    org.opendaylight.controller.sal.flowprogrammer.IPluginInFlowProgrammerService(protocolPluginType=PC) registered
-    org.opendaylight.controller.sal.utils.INodeFactory(protocolName=PC,protocolPluginType=PC) registered
-    org.opendaylight.controller.sal.utils.INodeConnectorFactory(protocolName=PC,protocolPluginType=PC) registered
-    org.opendaylight.controller.sal.inventory.IPluginInInventoryService(scope=Global,protocolPluginType=PC) registered
-    org.opendaylight.controller.sal.inventory.IPluginOutInventoryService (scope=Global) service required available
-    org.opendaylight.controller.sal.reader.IPluginInReadService(protocolPluginType=PC,containerName=default) registered
-    org.opendaylight.controller.sal.inventory.IPluginInInventoryService(protocolPluginType=PC,containerName=default) registered
+    osgi> dm 110
+    [110] org.opendaylight.controller.protocol_plugins.packetcable
+      org.opendaylight.controller.sal.flowprogrammer.IPluginInFlowProgrammerService(protocolPluginType=PC) registered
+      org.opendaylight.controller.sal.utils.INodeFactory(protocolName=PC,protocolPluginType=PC) registered
+      org.opendaylight.controller.sal.utils.INodeConnectorFactory(protocolName=PC,protocolPluginType=PC) registered
+      org.opendaylight.controller.sal.inventory.IPluginInInventoryService(scope=Global,protocolPluginType=PC) registered
+      org.opendaylight.controller.sal.inventory.IPluginOutInventoryService (scope=Global) service required available
+      org.opendaylight.controller.sal.reader.IPluginInReadService(protocolPluginType=PC,containerName=default) registered
+      org.opendaylight.controller.sal.inventory.IPluginInInventoryService(protocolPluginType=PC,containerName=default) registered
 
 
-  osgi> s | grep packetcable
-  110	file:/home/mininet/controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/plugins/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
-    ACTIVE      org.opendaylight.controller.protocol_plugins.packetcable_0.4.0.SNAPSHOT [110] true
-  osgi> 
+    osgi> s | grep packetcable
+    110	file:/home/mininet/controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/plugins/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
+      ACTIVE      org.opendaylight.controller.protocol_plugins.packetcable_0.4.0.SNAPSHOT [110] true
+      
+    osgi> 
 
 
 ACKNOWLEDGEMENTS AND CONTRIBUTIONS
