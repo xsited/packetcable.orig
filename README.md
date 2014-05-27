@@ -1,14 +1,15 @@
-    CHECKOUT CONTROLLER AND PLUGIN
-    ==============================
+CHECKOUT CONTROLLER AND PLUGIN
+==============================
 
     sudo apt-get install maven
     git clone https://git.opendaylight.org/gerrit/p/controller.git
 
-    # XXX - CHANGE THIS
+XXX - CHANGE THIS
+
     git clone  https://github.com/xsited/packetcable.git
 
-    DIRECTORY ORGANIZATION
-    ======================
+DIRECTORY ORGANIZATION
+======================
 
 - in the parent is pom.xml for the entire packetcable projects.
 - this will build a working controller distribution
