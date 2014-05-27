@@ -23,25 +23,25 @@ HOW TO BUILD
 
 JDK 1.7+ and Maven 3+ are required:
 
-From the toplevel issue the following instructions to build the controller:
+    From the toplevel issue the following instructions to build the controller:
 
-cd controller/opendaylight/distribution/opendaylight
+    cd controller/opendaylight/distribution/opendaylight
 
-export JAVA_HOME=/usr
-mvn clean install
+    export JAVA_HOME=/usr
+    mvn clean install
 
-or if you want to avoid SNAPSHOT checking use: 
+    or if you want to avoid SNAPSHOT checking use: 
 
-mvn clean install -nsu
-// mvn clean install -DskipTests 
+    mvn clean install -nsu
+    // mvn clean install -DskipTests 
 
-From the toplevel issue the following instructions to build the packetcable SB plugin:
+    From the toplevel issue the following instructions to build the packetcable SB plugin:
 
-cd packetcable
-mvn clean install
+    cd packetcable
+    mvn clean install
 
-cd packetcable/md-sal 
-mvn clean install
+    cd packetcable/md-sal 
+    mvn clean install
 
 
 HOW TO RUN
@@ -72,6 +72,7 @@ osgi> dm 110
     org.opendaylight.controller.sal.inventory.IPluginOutInventoryService (scope=Global) service required available
   org.opendaylight.controller.sal.reader.IPluginInReadService(protocolPluginType=PC,containerName=default) registered
   org.opendaylight.controller.sal.inventory.IPluginInInventoryService(protocolPluginType=PC,containerName=default) registered
+
 
 osgi> s | grep packetcable
 110	file:/home/mininet/controller/opendaylight/distribution/opendaylight/target/distribution.opendaylight-0.1.1-SNAPSHOT-osgipackage/opendaylight/plugins/protocol_plugins.packetcable-0.4.0-SNAPSHOT.jar
