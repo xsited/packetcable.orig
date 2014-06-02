@@ -23,24 +23,34 @@ HOW TO BUILD
 
 JDK 1.7+ and Maven 3+ are required:
 
+
 From the toplevel issue the following instructions to build the controller:
+
 
 cd controller/opendaylight/distribution/opendaylight
 
 export JAVA_HOME=/usr
+
 mvn clean install
+
 
 or if you want to avoid SNAPSHOT checking use: 
 
+
 mvn clean install -nsu
+
 // mvn clean install -DskipTests 
+
 
 From the toplevel issue the following instructions to build the packetcable SB plugin:
 
 cd packetcable
+
 mvn clean install
 
+
 cd packetcable/md-sal 
+
 mvn clean install
 
 
