@@ -38,17 +38,17 @@ public class PCMMWorkflowTest {
 	public static void setUpBeforeClass() throws Exception {
 		// comment this when using real CMTS
 		// ###################################
-		//cmts = new CMTS();
-		//cmts.startServer();
+		cmts = new CMTS();
+		cmts.startServer();
 		cmts = null;
 		// ###################################
 
 		server = new PCMMPolicyServer();
 		try {
 			// this should be set to the cmts host ex :
-			host = InetAddress.getByName("10.200.90.3");
+			// host = InetAddress.getByName("10.200.90.3");
 			// InetAddress.getByName("my-cmts-host-name")
-			// host = InetAddress.getLocalHost();
+			host = InetAddress.getLocalHost();
 			assertNotNull(host);
 		} catch (UnknownHostException uhe) {
 			fail("could not get host address ");

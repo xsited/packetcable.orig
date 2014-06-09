@@ -186,7 +186,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 
 		public PSCMTSClient() {
 			super();
-			logger.info("Client " + getClass() + hashCode() + " crated and started");
+			logger.info("Client " + getClass() + hashCode() + " created and started");
 		}
 
 		public PSCMTSClient(Socket socket) {
