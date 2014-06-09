@@ -43,6 +43,12 @@ public class PCMMGlobalConfig {
     public static int DefaultAlternateSourcePort = 1369;
     // public static String DefaultCMTS = "127.0.0.1"
 
+/*  Sunnyvale Lab
+    public static String DefaultCMTS = "10.200.90.3";
+    public static String SubscriberID = "10.50.201.51";
+    public static String dstIP = "10.200.92.11";
+    public static String srcIP = "10.50.201.51";
+*/
 /*  Demo Kit Layout
     public static String DefaultCMTS = "10.32.4.3";
     public static String SubscriberID = "10.32.104.2";

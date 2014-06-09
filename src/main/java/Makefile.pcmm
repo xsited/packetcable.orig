@@ -90,10 +90,9 @@ SOURCES = \
 	org/pcmm/rcd/IPCMMClient.java \
 	org/pcmm/rcd/IPCMMPolicyServer.java \
 	org/pcmm/rcd/IPCMMServer.java \
-	org/pcmm/utils/PCMMError.java \
 	org/pcmm/gates/impl/BestEffortService.java \
-	org/pcmm/gates/IPCError.java \
-	org/pcmm/gates/impl/PCError.java \
+	org/pcmm/gates/IPCMMError.java \
+	org/pcmm/gates/impl/PCMMError.java \
 	org/pcmm/PCMMPdpConnection.java  \
 	org/pcmm/PCMMPdpReqStateMan.java \
 	org/pcmm/utils/PCMMUtils.java \
@@ -106,7 +105,8 @@ SOURCES = \
 	org/pcmm/concurrent/IWorkerPool.java \
 	org/pcmm/concurrent/impl/Worker.java \
 	org/pcmm/concurrent/impl/WorkerPool.java \
-	org/pcmm/utils/PCMMLogger.java 
+	org/pcmm/utils/PCMMException.java \
+	org/pcmm/utils/PCMMUtils.java 
 
 
 
@@ -131,7 +131,7 @@ default: classes jar
 classes: $(SOURCES:.java=.class)
 
 jar:
-	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class org/pcmm/messages/impl/*.class org/pcmm/gates/impl/*.class
+	jar cvf $(JAR_PKG) $(CLASSES) org/pcmm/messages/*.class org/pcmm/gates/*.class org/pcmm/rcd/impl/*.class org/pcmm/rcd/*.class org/pcmm/messages/impl/*.class org/pcmm/gates/impl/*.class org/pcmm/utils/*.class
 
 tar:
 	tar czpf $(TARBALL) $(SOURCES) Makefile
