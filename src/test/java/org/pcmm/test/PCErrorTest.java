@@ -8,25 +8,22 @@ import org.pcmm.gates.impl.PCMMError;
 
 public class PCErrorTest {
 
-    IPCMMError error;
+	IPCMMError error;
 
-    @Before
-    public void init() {
-        error = new PCMMError();
-        error.setErrorCode((short) 1);
-    }
+	@Before
+	public void init() {
+		error = new PCMMError();
+		error.setErrorCode((short) 1);
+	}
 
-    @Test
-    public void testGetDescription() {
+	@Test
+	public void testGetDescription() {
+		for (IPCMMError.Description d : IPCMMError.Description.values()) {
+			error.setErrorCode(d.getCode());
+			Assert.assertNotNull(error.getDescription());
+			System.out.println(error.getDescription());
+		}
 
-/*
-        for (IPCError.Description d : IPCError.Description.values()) {
-            error.setErrorCode(d.getCode());
-            Assert.assertNotNull(error.getDescription());
-            System.out.println(error.getDescription());
-        }
-*/
-
-    }
+	}
 
 }

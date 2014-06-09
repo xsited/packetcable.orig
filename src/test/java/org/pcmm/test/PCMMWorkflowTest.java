@@ -80,14 +80,14 @@ public class PCMMWorkflowTest {
 		assertTrue("Gate-Set failed", !client.gateSet());
 	}
 
-	//@Test
+	@Test
 	public void testGateDelete() {
 		assertNotNull(client);
 		assertTrue("Gate-Delete failed", !client.gateDelete());
 
 	}
 
-	//@Test
+	@Test
 	public void testGateInfo() {
 		assertNotNull(client);
 		assertTrue("Gate-Info failed", !client.gateInfo());
