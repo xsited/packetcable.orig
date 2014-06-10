@@ -194,6 +194,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 		}
 
 		public boolean gateSet() {
+			logger.debug("Sending Gate-Set message");
 			if (!isConnected())
 				throw new IllegalArgumentException("Not connected");
 			// XXX check if other values should be provided
@@ -239,6 +240,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 				logger.info("processing received report from CMTS");
 				COPSReportMsg reportMsg = (COPSReportMsg) responseMsg;
 				if (reportMsg.getClientSI().size() == 0) {
+					logger.debug("CMTS responded with an empty SI");
 					return false;
 				}
 				COPSClientSI clientSI = (COPSClientSI) reportMsg.getClientSI().elementAt(0);
@@ -248,6 +250,7 @@ public class PCMMPolicyServer extends AbstractPCMMServer implements
 					logger.error(error.toString());
 					return false;
 				}
+				logger.info("the CMTS has sent TransactionID :"+responseGate.getTransactionID());
 				if (responseGate.getTransactionID() != null && responseGate.getTransactionID().getGateCommandType() == ITransactionID.GateSetAck) {
 					logger.info("the CMTS has sent a Gate-Set-Ack response");
 					// here CMTS responded that he acknowledged the Gate-Set
