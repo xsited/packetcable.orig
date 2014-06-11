@@ -33,7 +33,7 @@ public class PCMMWorkflowTest {
 	private static IPCMMPolicyServer server;
 	private static IPSCMTSClient client;
 
-	private static boolean real_cmts = true;
+	private static boolean real_cmts = false;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
