@@ -1,0 +1,165 @@
+2.5.1	CIA Portal API: Collect EPL Parameters
+•	CIA provides DNS name or other ID of each endpoint
+•	CIA obtains from the customer the type of service desired 
+o	IEEE 802.1 ad S Tag requested or assigned
+•	String or integer field
+•	Suggest: research MSO EPL service requirements
+•	CIA obtains from user the required latency (500 ms)
+o	Options: Requested or Assigned
+•	CIA obtains from the user the required uptime
+•	(Optional) CIA obtains from the user a day and time of day for service activation
+•	(Optional) CIA obtains from the user a day and time for service de-activation
+•	CIA transfers input to orchestration API the following information
+o	Endpoint A management interface IP address
+o	Endpoint B management interface IP address
+o	Service type (transport only for now)
+o	Service tag request
+o	Latency
+o	Uptime
+NOTE: Request CIA group to provide a simple GUI to allow the user to input the information
+Orchestration API: NFV Orchestrator/CIA Input Interpreter May no longer be relevant
+•	Receive two endpoint IP addresses
+•	Receive service type
+•	Make decision about which VNF Manager to use 
+•	Forward TBD information to the appropriate VNF Manager
+
+2.5.2	Orchestrator API: EPL configuration – Begin – Received from CIA
+•	Receive the two confirmed endpoint IP addresses
+•	Receive the service type
+•	Receive the tag number
+•	Receive latency
+•	Receive uptime
+•	{TBD: Where is the unique identifier for the service assigned or selected?}
+o	MEF 6.1 – identifies service parameters for all defined services
+•	{TBD: What is the output from this API?}
+2.5.3	Orchestrator API: IP Validation
+•	Receive IP addresses for endpoint A and endpoint B
+•	Confirm whether IP addresses are present/exist and are configurable
+o	If check fails return error
+•	{TBD: what is returned if check passes?}
+2.5.4	Orchestrator API: Send Policy Request
+•	Send the two confirmed endpoint IP addresses
+•	Send the service type
+•	Send the tag number
+•	Send latency
+•	Send uptime
+•	Submit request to policy server with parameters
+•	Obtain result from policy server (yes/no; always yes for now)
+2.5.5	Orchestrator API: Policy Response
+•	Receive policy server approval response (from Policy Request API)
+•	If Error, forward to CIA
+•	{TBD: What is the error-free case response?}
+2.5.6	Orchestrator API: Send to EPL VNF Module
+•	Send two confirmed endpoint IP addresses
+•	Send requested service type
+•	Send requested tag number
+•	Orchestrator API: Return from EPL VNF Module
+•	Receive the two confirmed endpoint IP addresses
+•	Receive the service type
+•	Receive the tag number
+•	Output to SDN (TBD)
+2.5.7	Orchestrator API:  - Begin - Fault configuration 
+•	Send the two confirmed IP addresses to Fault Management VNF
+•	Send Uptime to Fault Management VNF
+
+
+
+•	Orchestrator API: NFV Bring Up
+•	Orchestrator API: Create L2VPN (Endpoint addresses, Encapsulation types (VLAN, tag?))  SOAM?
+•	Orchestrator API: Get Circuit Performance Details ( Circuit ID )
+•	Orchestrator API: Configure L2VPN Path (Primary Path, Standby Path)
+•	Orchestration API: NFV Tear Down
+	CIA API: Verify Policy
+
+	cia_2_onfv_bring_up_nid
+	(
+		
+	);
+	
+
+	onfv_2_cia_bring_up_nid_completed
+	(
+		
+	);
+
+	cia_2_onfv_provision_circuit
+	(
+		
+	);
+	
+
+	onfv_2_cia_bring_up_completed
+	(
+		
+	);
+	
+
+typedef epl_service_type
+{
+    type enumeration {
+        enum "1";
+        enum "2";
+        enum "3";
+        enum "4";
+        enum "5";
+    }
+    description "This enumeration contains the all EPL service types epl, evpl, .";
+}
+
+typedef up-down-state-type {
+    type enumeration {
+        enum up;
+        enum down;
+    }
+    description "Type to specify state  of a circuit.";
+}
+
+typedef circuit-reference {
+    type instance-identifier;
+    description "Type to specify the connection between two endpoint NID's or circuit.";
+}
+
+grouping circuit-grouping
+{
+	container nid-endpoint-a
+	{
+		use nid;
+	} 	
+	container nid-endpoint-b
+	{
+		use nid;
+	} 	
+}
+
+
+grouping nid
+{
+    description "An endpoint device is an Internet-capable computer hardware device on a TCP/IP network and for our purposes representsa device that be or emulate the functions as network devices that acts as a switch."
+    leaf enabled {
+        type boolean;
+        mandatory true;
+        description "Specifies if the NID is enabled.";
+    }    
+
+    leaf nid-id {
+            type inet:ip-address;
+            mandatory true;
+            description "An identifier that identifies a NID. The IP address of the NID.";
+    }
+    leaf mac-address {
+            type yang:mac-address;
+            description "The MAC address of the CM.";
+    }
+    container circuits-managed {
+        list circuits-managed {
+            key "circuit-reference";
+            unique "circuit-reference";
+            description
+            "The list of all circuits managed by NID instance.";
+            uses circuit-grouping;
+        }
+    }
+}   
+
+
+
