@@ -47,7 +47,7 @@ public class PCMMGlobalConfig {
 */
     public static String DefaultCMTS = "10.200.90.3";
     public static String SubscriberID = "10.50.201.51";
-    public static String dstIP = "10.200.92.10";
+    public static String dstIP = "10.200.90.10";
     public static String srcIP = "10.50.201.51";
 
 /*  Demo Kit Layout
