@@ -173,8 +173,8 @@ public class InventoryService implements IPluginInInventoryService {
             node = null;
         }
         nodeProps.put(node, propMap);
-
 */
+
     }
 
     /**
