@@ -35,7 +35,7 @@ public class PCMMWorkflowTest {
 
 	private static boolean real_cmts = false;
 
-	@BeforeClass
+	//@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// comment this when using real CMTS
 		// ###################################
@@ -64,7 +64,7 @@ public class PCMMWorkflowTest {
 		setupConnection();
 	}
 
-	@AfterClass
+	//@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		tearDown();
 		if (cmts != null)
@@ -85,26 +85,26 @@ public class PCMMWorkflowTest {
 	}
 
 	
-	@Test
+	//@Test
 	public void testGateSet() {
 		assertNotNull(client);
 		assertTrue("Gate-Set failed", client.gateSet());
 	}
 
-	@Test
+	//@Test
 	public void testGateDelete() {
 		assertNotNull(client);
 		assertTrue("Gate-Delete failed", client.gateDelete());
 
 	}
 
-	@Test
+	//@Test
 	public void testGateInfo() {
 		assertNotNull(client);
 		assertTrue("Gate-Info failed", client.gateInfo());
 	}
 
-	@Test
+	//@Test
 	public void testGateSynchronize() {
 		assertNotNull(client);
 		assertTrue("Gate-Synchronize failed", client.gateSynchronize());
